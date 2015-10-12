@@ -1,0 +1,70 @@
+#!/usr/bin/env python
+
+import struct
+import socket
+import ssl
+from pprint import pprint
+
+class EPPClient:
+    def __init__(self, config):
+        self.config = config
+        self.socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        self.socket.connect((self.config['host'], self.config['port']))
+        self.ssl = ssl.wrap_socket(self.socket,
+            keyfile  = self.config['keyfile'],
+            certfile = self.config['certfile'],
+            ca_certs = self.config['ca_certs'])
+        self.format_32 = self.format_32()
+        self.login()
+
+    def command(self, xml):
+        self.write(cmd)
+        return self.read()
+
+    def login(self):
+        g = self.read()
+        print(g)
+
+    # http://www.bortzmeyer.org/4934.html
+    def format_32(self):
+        # Get the size of C integers. We need 32 bits unsigned.
+        format_32 = ">I"
+        if struct.calcsize(format_32) < 4:
+            format_32 = ">L"
+            if struct.calcsize(format_32) != 4:
+                raise Exception("Cannot find a 32 bits integer")
+        elif struct.calcsize(format_32) > 4:
+            format_32 = ">H"
+            if struct.calcsize(format_32) != 4:
+                raise Exception("Cannot find a 32 bits integer")
+        else:
+            pass
+        return format_32
+
+    def int_from_net(self, data):
+        return struct.unpack(self.format_32, data)[0]
+
+    def int_to_net(self, value):
+        return struct.pack(self.format_32, value)
+
+    def write(self, xml):
+        epp_as_string = xml
+        # +4 for the length field itself (section 4 mandates that)
+        # +2 for the CRLF at the end
+        length = self.int_to_net(len(epp_as_string) + 4 + 2)
+        self.ssl.send(length)
+        return self.ssl.send(epp_as_string + "\r\n")
+
+    def read(self):
+        length = self.ssl.read(4)
+        if length:
+            i = self.int_from_net(length)-4
+            return self.ssl.read(i)
+
+server = EPPClient({
+    'host':         'ote1.meregistry.net',
+    'port':         700,
+    'certfile':     'all.pem',
+    'keyfile':      'key.pem',
+    'ca_certs':     'intermediate.pem',
+})
