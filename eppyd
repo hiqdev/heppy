@@ -50,6 +50,7 @@ class REPP:
 
     def connect(self):
         self.epp = EPP(self.config)
+        self.greeting = self.epp.greeting
 
     def command(self, xml):
         res = self.epp.command(xml)
