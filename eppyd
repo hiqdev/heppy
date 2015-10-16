@@ -1,11 +1,20 @@
 #!/usr/bin/env python
 
-import struct
-import socket
+import sys
 import ssl
+import socket
+import asyncore
 from pprint import pprint
 
-class EPPClient:
+import Net
+
+SIZE = 1024
+
+def d(a):
+    pprint(a)
+    exit(1)
+
+class EPP:
     def __init__(self, config):
         self.config = config
         self.socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -14,57 +23,134 @@ class EPPClient:
             keyfile  = self.config['keyfile'],
             certfile = self.config['certfile'],
             ca_certs = self.config['ca_certs'])
-        self.format_32 = self.format_32()
         self.login()
 
     def command(self, xml):
-        self.write(cmd)
+        self.write(xml)
         return self.read()
 
     def login(self):
-        g = self.read()
-        print(g)
-
-    # http://www.bortzmeyer.org/4934.html
-    def format_32(self):
-        # Get the size of C integers. We need 32 bits unsigned.
-        format_32 = ">I"
-        if struct.calcsize(format_32) < 4:
-            format_32 = ">L"
-            if struct.calcsize(format_32) != 4:
-                raise Exception("Cannot find a 32 bits integer")
-        elif struct.calcsize(format_32) > 4:
-            format_32 = ">H"
-            if struct.calcsize(format_32) != 4:
-                raise Exception("Cannot find a 32 bits integer")
-        else:
-            pass
-        return format_32
-
-    def int_from_net(self, data):
-        return struct.unpack(self.format_32, data)[0]
-
-    def int_to_net(self, value):
-        return struct.pack(self.format_32, value)
+        self.greeting = self.read()
+        print(self.greeting)
 
     def write(self, xml):
-        epp_as_string = xml
-        # +4 for the length field itself (section 4 mandates that)
-        # +2 for the CRLF at the end
-        length = self.int_to_net(len(epp_as_string) + 4 + 2)
-        self.ssl.send(length)
-        return self.ssl.send(epp_as_string + "\r\n")
+        Net.write(self.ssl, xml)
 
     def read(self):
-        length = self.ssl.read(4)
-        if length:
-            i = self.int_from_net(length)-4
-            return self.ssl.read(i)
+        return Net.read(self.ssl)
 
-server = EPPClient({
+    def __del__(self):
+        self.ssl = None
+        self.socket = None
+
+class REPP:
+    def __init__(self, config):
+        self.config = config
+        self.connect()
+
+    def connect(self):
+        self.epp = EPP(self.config)
+
+    def command(self, xml):
+        res = self.epp.command(xml)
+        if not res:
+            self.connect()
+            res = self.epp.command(xml)
+        return res
+
+class AsyncServer(asyncore.dispatcher):
+    def __init__(self, address, epp):
+        self.epp = epp
+        asyncore.dispatcher.__init__(self)
+        self.create_socket(socket.AF_INET, socket.SOCK_STREAM)
+        self.bind(address)
+        self.address = self.socket.getsockname()
+        self.listen(5)
+        return
+
+    def handle_accept(self):
+        socket, address = self.accept()
+        self.handler = Handler(socket, address, self)
+        # We only want to deal with one client at a time,
+        # so close as soon as we set up the handler.
+        # Normally you would not do this and the server
+        # would run forever or until it received instructions
+        # to stop.
+        return
+
+    def handle_close(self):
+        #self.close()
+        pass
+
+class Handler(asyncore.dispatcher):
+    def __init__(self, socket, address, server):
+        self.server  = server
+        self.epp     = server.epp
+        self.address = address
+        self.buffer  = ''
+        self.answer  = ''
+        self.length  = None
+
+        # We dont have anything to write, to start with
+        self.is_reading = True
+
+        # Create ourselves, but with an already provided socket
+        asyncore.dispatcher.__init__(self, socket)
+
+    def readable(self):
+        return self.is_reading
+
+    def writable(self):
+        return not self.is_reading
+
+    def handle_read(self):
+        if self.length is None:
+            net = self.recv(4)
+            self.length = Net.int_from_net(net)-4
+        else:
+            data = self.recv(self.length)
+            self.buffer += data
+            self.length -= len(data)
+        if self.length<1:
+            self.is_reading = False
+            self.answer = self.command(self.buffer)
+            self.length = None
+
+    def handle_write(self):
+        if self.length is None:
+            self.length = len(self.answer) + 4
+            self.send(Net.int_to_net(self.length))
+        elif len(self.answer) > 0:
+            print("Answering: " + self.answer)
+            sent = self.send(self.answer)
+            self.answer = self.answer[sent:]
+        else:
+            self.close()
+
+    def command(self, cmd):
+        cmd = cmd.strip()
+        if cmd == 'greeting':
+            return self.epp.greeting
+        else:
+            return self.epp.command(cmd)
+
+    # Will this ever get called?  Does loop() call
+    # handle_close() if we called close, to start with?
+    def handle_close(self):
+        self.close()
+
+if len(sys.argv)<2:
+    d('usage: eppyd port')
+port = int(sys.argv[1])
+
+epp = REPP({
     'host':         'ote1.meregistry.net',
     'port':         700,
     'certfile':     'all.pem',
     'keyfile':      'key.pem',
     'ca_certs':     'intermediate.pem',
 })
+
+server = AsyncServer(('localhost', port), epp)
+asyncore.loop()
+

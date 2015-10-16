@@ -1,0 +1,32 @@
+#!/usr/bin/env python
+
+import Net
+import sys
+import socket
+
+class Client:
+    def __init__(self, address):
+        self.socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        self.socket.connect(address)
+
+    def write(self, data):
+        Net.write(self.socket, data)
+
+    def read(self):
+        return Net.read(self.socket)
+
+    def command(self, data):
+        self.write(data)
+        return self.read()
+
+if len(sys.argv)<2:
+    d('usage: eppyc port')
+port = int(sys.argv[1])
+
+data = ''
+for line in sys.stdin:
+    data += line
+
+client = Client(('localhost', port))
+print client.command(data)
+
