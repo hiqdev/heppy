@@ -23,10 +23,16 @@ if len(sys.argv)<2:
     d('usage: eppyc port')
 port = int(sys.argv[1])
 
+socket.setdefaulttimeout(0.1)
+
 data = ''
 for line in sys.stdin:
     data += line
 
-client = Client(('localhost', port))
-print client.command(data)
+try:
+    client = Client(('localhost', port))
+    res = client.command(data)
+except socket.timeout:
+    res = None
 
+print res

@@ -2,6 +2,7 @@
 
 import sys
 import ssl
+import time
 import socket
 import asyncore
 from pprint import pprint
@@ -62,6 +63,7 @@ class REPP:
 class AsyncServer(asyncore.dispatcher):
     def __init__(self, address, epp):
         self.epp = epp
+        self.handler = None
         asyncore.dispatcher.__init__(self)
         self.create_socket(socket.AF_INET, socket.SOCK_STREAM)
         self.bind(address)
@@ -71,17 +73,16 @@ class AsyncServer(asyncore.dispatcher):
 
     def handle_accept(self):
         socket, address = self.accept()
-        self.handler = Handler(socket, address, self)
-        # We only want to deal with one client at a time,
-        # so close as soon as we set up the handler.
-        # Normally you would not do this and the server
-        # would run forever or until it received instructions
-        # to stop.
-        return
+        print("\nACCEPT\n")
+        # We only want to deal with one client at a time
+        if self.handler:
+            socket.close()
+            socket = None
+        else:
+            self.handler = Handler(socket, address, self)
 
     def handle_close(self):
-        #self.close()
-        pass
+        self.handler = None
 
 class Handler(asyncore.dispatcher):
     def __init__(self, socket, address, server):
@@ -91,18 +92,25 @@ class Handler(asyncore.dispatcher):
         self.buffer  = ''
         self.answer  = ''
         self.length  = None
+        self.wait_till = 0
 
-        # We dont have anything to write, to start with
+        # Start reading
         self.is_reading = True
 
         # Create ourselves, but with an already provided socket
         asyncore.dispatcher.__init__(self, socket)
 
     def readable(self):
-        return self.is_reading
+        return self.is_ready() and self.is_reading
 
     def writable(self):
-        return not self.is_reading
+        return self.is_ready() and not self.is_reading
+
+    def is_ready(self):
+        return time.time()>self.wait_till
+
+    def wait(self, seconds):
+        self.wait_till = time.time()+seconds
 
     def handle_read(self):
         if self.length is None:
@@ -122,23 +130,24 @@ class Handler(asyncore.dispatcher):
             self.length = len(self.answer) + 4
             self.send(Net.int_to_net(self.length))
         elif len(self.answer) > 0:
-            print("Answering: " + self.answer)
             sent = self.send(self.answer)
             self.answer = self.answer[sent:]
         else:
-            self.close()
+            self.handle_close()
 
     def command(self, cmd):
         cmd = cmd.strip()
         if cmd == 'greeting':
             return self.epp.greeting
+        elif cmd == 'wait':
+            self.wait(20)
+            return 'waited 20'
         else:
             return self.epp.command(cmd)
 
-    # Will this ever get called?  Does loop() call
-    # handle_close() if we called close, to start with?
     def handle_close(self):
         self.close()
+        self.server.handler = None
 
 if len(sys.argv)<2:
     d('usage: eppyd port')
