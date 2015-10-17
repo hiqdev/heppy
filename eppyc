@@ -7,7 +7,7 @@ import socket
 class Client:
     def __init__(self, address):
         self.socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        self.socket.settimeout(0.1)
+        self.socket.settimeout(0.01)
         self.socket.connect(address)
         self.socket.settimeout(None)
 

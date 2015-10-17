@@ -117,10 +117,8 @@ class Handler(asyncore.dispatcher):
             net = self.recv(4)
             self.length = Net.int_from_net(net)-4
         else:
-            data = self.recv(self.length)
-            self.buffer += data
-            self.length -= len(data)
-        if self.length<1:
+            self.buffer += self.recv(self.length)
+        if len(self.buffer)>=self.length:
             self.is_reading = False
             self.answer = self.command(self.buffer)
             print self.answer
@@ -140,6 +138,8 @@ class Handler(asyncore.dispatcher):
         cmd = cmd.strip()
         if cmd == 'greeting':
             return self.epp.greeting
+        elif cmd == 'info':
+            return 'eppyd info: ...'
         elif cmd == 'wait':
             self.wait(20)
             return 'waited 20'
