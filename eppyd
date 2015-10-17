@@ -89,7 +89,7 @@ class Handler(asyncore.dispatcher):
         self.server  = server
         self.epp     = server.epp
         self.address = address
-        self.buffer  = ''
+        self.query   = ''
         self.answer  = ''
         self.length  = None
         self.wait_till = 0
@@ -117,11 +117,10 @@ class Handler(asyncore.dispatcher):
             net = self.recv(4)
             self.length = Net.int_from_net(net)-4
         else:
-            self.buffer += self.recv(self.length)
-        if len(self.buffer)>=self.length:
+            self.query += self.recv(self.length)
+        if len(self.query)>=self.length:
             self.is_reading = False
-            self.answer = self.command(self.buffer)
-            print self.answer
+            self.command(self.query)
             self.length = None
 
     def handle_write(self):
@@ -137,14 +136,14 @@ class Handler(asyncore.dispatcher):
     def command(self, cmd):
         cmd = cmd.strip()
         if cmd == 'greeting':
-            return self.epp.greeting
+            self.answer = self.epp.greeting
         elif cmd == 'info':
-            return 'eppyd info: ...'
+            self.answer = 'eppyd info: ...'
         elif cmd == 'wait':
             self.wait(20)
-            return 'waited 20'
+            self.answer = 'waited 20'
         else:
-            return self.epp.command(cmd)
+            self.answer = self.epp.command(cmd)
 
     def handle_close(self):
         self.close()
