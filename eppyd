@@ -123,6 +123,7 @@ class Handler(asyncore.dispatcher):
         if self.length<1:
             self.is_reading = False
             self.answer = self.command(self.buffer)
+            print self.answer
             self.length = None
 
     def handle_write(self):
