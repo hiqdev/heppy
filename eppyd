@@ -9,7 +9,7 @@ from pprint import pprint
 
 import Net
 
-SIZE = 1024
+SIZE = 4096
 
 def d(a):
     pprint(a)
@@ -24,27 +24,10 @@ class EPP:
             keyfile  = self.config['keyfile'],
             certfile = self.config['certfile'],
             ca_certs = self.config['ca_certs'])
-        self.login()
-
-    def command(self, xml):
-        self.write(xml)
-        return self.read()
-
-    def login(self):
-        self.greeting = self.read()
+        self.greeting = Net.read(self.ssl)
         print(self.greeting)
 
-    def write(self, xml):
-        Net.write(self.ssl, xml)
-
-    def read(self):
-        return Net.read(self.ssl)
-
-    def __del__(self):
-        self.ssl = None
-        self.socket = None
-
-class REPP:
+class oldPP:
     def __init__(self, config):
         self.config = config
         self.connect()
@@ -60,6 +43,25 @@ class REPP:
             res = self.epp.command(xml)
         return res
 
+class REPP(asyncore.dispatcher):
+    def __init__(self, config):
+        self.config     = config
+        self.epp        = EPP(config)
+        self.socket     = self.epp.ssl
+        self.greeting   = self.epp.greeting
+        self.query      = ''
+        self.answer     = ''
+        self.is_reading = False
+        self.has_answer = False
+
+    def command(self, xml):
+        self.query      = xml
+        self.answer     = 'Answer to: ' + xml[:50]
+        self.has_answer = True
+
+    def got_answer(self):
+        return self.has_answer
+
 class AsyncServer(asyncore.dispatcher):
     def __init__(self, address, epp):
         self.epp = epp
@@ -73,7 +75,6 @@ class AsyncServer(asyncore.dispatcher):
 
     def handle_accept(self):
         socket, address = self.accept()
-        print("\nACCEPT\n")
         # We only want to deal with one client at a time
         if self.handler:
             socket.close()
@@ -104,7 +105,15 @@ class Handler(asyncore.dispatcher):
         return self.is_ready() and self.is_reading
 
     def writable(self):
-        return self.is_ready() and not self.is_reading
+        return self.is_ready() and not self.is_reading and self.got_answer()
+
+    def got_answer(self):
+        if self.answer:
+            return True
+        if self.epp.got_answer():
+            self.answer = self.epp.answer
+            return True
+        return False
 
     def is_ready(self):
         return time.time()>self.wait_till
@@ -117,23 +126,22 @@ class Handler(asyncore.dispatcher):
             net = self.recv(4)
             self.length = Net.int_from_net(net)-4
         else:
-            self.query += self.recv(self.length)
+            self.query += self.recv(SIZE)
         if len(self.query)>=self.length:
-            self.is_reading = False
             self.command(self.query)
-            self.length = None
 
     def handle_write(self):
         if self.length is None:
             self.length = len(self.answer) + 4
             self.send(Net.int_to_net(self.length))
-        elif len(self.answer) > 0:
+        elif self.answer:
             sent = self.send(self.answer)
             self.answer = self.answer[sent:]
-        else:
+        if not self.answer:
             self.handle_close()
 
     def command(self, cmd):
+        print "COMMAND: " + cmd
         cmd = cmd.strip()
         if cmd == 'greeting':
             self.answer = self.epp.greeting
@@ -143,11 +151,15 @@ class Handler(asyncore.dispatcher):
             self.wait(20)
             self.answer = 'waited 20'
         else:
-            self.answer = self.epp.command(cmd)
+            self.epp.command(cmd)
+            self.answer = ''
+        self.is_reading = False
+        self.length = None
 
     def handle_close(self):
         self.close()
         self.server.handler = None
+        print self.server.handler
 
 if len(sys.argv)<2:
     d('usage: eppyd port')
