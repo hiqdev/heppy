@@ -27,40 +27,74 @@ class EPP:
         self.greeting = Net.read(self.ssl)
         print(self.greeting)
 
-class oldPP:
+class REPP(asyncore.dispatcher):
     def __init__(self, config):
-        self.config = config
+        self.config     = config
+        self.last_query = 'greeting'
+        self.query      = ''
+        self.answer     = ''
+        self.length     = None
+        self.is_reading = False
+        self.has_answer = False
         self.connect()
 
     def connect(self):
         self.epp = EPP(self.config)
         self.greeting = self.epp.greeting
+        asyncore.dispatcher.__init__(self, self.epp.ssl)
 
     def command(self, xml):
-        res = self.epp.command(xml)
-        if not res:
-            self.connect()
-            res = self.epp.command(xml)
-        return res
-
-class REPP(asyncore.dispatcher):
-    def __init__(self, config):
-        self.config     = config
-        self.epp        = EPP(config)
-        self.socket     = self.epp.ssl
-        self.greeting   = self.epp.greeting
-        self.query      = ''
-        self.answer     = ''
         self.is_reading = False
+        self.last_query = xml
+        self.query      = xml
+        self.answer     = ''
+        self.length     = None
         self.has_answer = False
 
-    def command(self, xml):
-        self.query      = xml
-        self.answer     = 'Answer to: ' + xml[:50]
-        self.has_answer = True
+    def set_mode(self, is_reading):
+        self.is_reading = is_reading
 
     def got_answer(self):
         return self.has_answer
+
+    def readable(self):
+        print 'READABLE {0}'.format(self.is_reading)
+        return self.is_reading
+
+    def writable(self):
+        print 'WRITEABLE {0}'.format(not self.is_reading and self.query)
+        return not self.is_reading and self.query
+
+    def handle_read(self):
+        print 'READ 0'
+        if self.length is None:
+            net = self.recv(4)
+            print 'READ 1.1'
+            print net
+            if not net:
+                self.connect()
+                self.command(self.last_query)
+                return
+            self.length = Net.int_from_net(net)-4
+            print self.length
+            print 'READ 2'
+            self.answer += self.recv(SIZE)
+        if len(self.answer)>=self.length:
+            self.is_reading = False
+            self.has_answer = True
+            self.length     = None
+
+    def handle_write(self):
+        print 'WRITE'
+        if self.length is None:
+            self.length = len(self.query) + 4
+            self.send(Net.int_to_net(self.length))
+        elif self.query:
+            sent = self.send(self.query)
+            self.query = self.query[sent:]
+        if not self.query:
+            self.is_reading = True
+            self.length     = None
 
 class AsyncServer(asyncore.dispatcher):
     def __init__(self, address, epp):
@@ -161,7 +195,8 @@ class Handler(asyncore.dispatcher):
         self.server.handler = None
 
 if len(sys.argv)<2:
-    d('usage: eppyd port')
+    print('usage: eppyd port')
+    exit(1)
 port = int(sys.argv[1])
 
 epp = REPP({
