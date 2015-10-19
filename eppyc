@@ -30,6 +30,9 @@ data = ''
 for line in sys.stdin:
     data += line
 
+if not data:
+    exit(1)
+
 try:
     client = Client(('localhost', port))
     res = client.command(data)

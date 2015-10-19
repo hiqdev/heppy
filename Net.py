@@ -36,7 +36,6 @@ def read(socket):
     if net:
         length = int_from_net(net)-4
         buffer = ''
-        print length
         while (length>len(buffer)):
             buffer += socket.recv(4096)
         return buffer

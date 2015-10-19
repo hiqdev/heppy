@@ -2,6 +2,7 @@
 
 import sys
 import ssl
+import json
 import time
 import socket
 import asyncore
@@ -10,10 +11,6 @@ from pprint import pprint
 import Net
 
 SIZE = 4096
-
-def d(a):
-    pprint(a)
-    exit(1)
 
 class EPP:
     def __init__(self, config):
@@ -25,7 +22,6 @@ class EPP:
             certfile = self.config['certfile'],
             ca_certs = self.config['ca_certs'])
         self.greeting = Net.read(self.ssl)
-        print(self.greeting)
 
 class REPP(asyncore.dispatcher):
     def __init__(self, config):
@@ -62,22 +58,18 @@ class REPP(asyncore.dispatcher):
         return self.is_reading
 
     def writable(self):
-        print 'WRITEABLE {0}'.format(not self.is_reading and self.query)
+        print 'WRITEABLE {0}'.format(bool(not self.is_reading and self.query))
         return not self.is_reading and self.query
 
     def handle_read(self):
-        print 'READ 0'
         if self.length is None:
             net = self.recv(4)
-            print 'READ 1.1'
-            print net
             if not net:
                 self.connect()
                 self.command(self.last_query)
                 return
+        if self.length<len(self.answer):
             self.length = Net.int_from_net(net)-4
-            print self.length
-            print 'READ 2'
             self.answer += self.recv(SIZE)
         if len(self.answer)>=self.length:
             self.is_reading = False
@@ -85,7 +77,6 @@ class REPP(asyncore.dispatcher):
             self.length     = None
 
     def handle_write(self):
-        print 'WRITE'
         if self.length is None:
             self.length = len(self.query) + 4
             self.send(Net.int_to_net(self.length))
@@ -175,12 +166,13 @@ class Handler(asyncore.dispatcher):
             self.handle_close()
 
     def command(self, cmd):
-        print "COMMAND: " + cmd
         cmd = cmd.strip()
+        if cmd == '':
+            self.answer = 'NOTHING'
         if cmd == 'greeting':
             self.answer = self.epp.greeting
         elif cmd == 'info':
-            self.answer = 'eppyd info: ...'
+            self.answer = json.dumps(self.epp.config, indent=4)
         elif cmd == 'wait':
             self.wait(20)
             self.answer = 'waited 20'
