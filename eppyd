@@ -159,7 +159,6 @@ class Handler(asyncore.dispatcher):
     def handle_close(self):
         self.close()
         self.server.handler = None
-        print self.server.handler
 
 if len(sys.argv)<2:
     d('usage: eppyd port')
