@@ -187,18 +187,14 @@ class Handler(asyncore.dispatcher):
         self.server.handler = None
 
 if len(sys.argv)<2:
-    print('usage: eppyd port')
+    print('usage: eppyd config.json')
     exit(1)
-port = int(sys.argv[1])
+path = sys.argv[1]
+with open(path) as file:
+    config = json.load(file)
 
-epp = REPP({
-    'host':         'ote1.meregistry.net',
-    'port':         700,
-    'certfile':     'all.pem',
-    'keyfile':      'key.pem',
-    'ca_certs':     'intermediate.pem',
-})
+epp = REPP(config['epp'])
 
-server = AsyncServer(('localhost', port), epp)
+server = AsyncServer(('localhost', config['local']['port']), epp)
 asyncore.loop()
 
