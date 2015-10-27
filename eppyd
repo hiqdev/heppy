@@ -12,6 +12,10 @@ import Net
 
 SIZE = 4096
 
+def d(a):
+    pprint(a)
+    exit(1)
+
 class EPP:
     def __init__(self, config):
         self.config = config
@@ -21,71 +25,33 @@ class EPP:
             keyfile  = self.config['keyfile'],
             certfile = self.config['certfile'],
             ca_certs = self.config['ca_certs'])
-        self.greeting = Net.read(self.ssl)
+        self.greeting = self.read()
 
-class REPP(asyncore.dispatcher):
+    def command(self, xml):
+        self.write(xml)
+        return self.read()
+
+    def write(self, xml):
+        Net.write(self.ssl, xml)
+
+    def read(self):
+        return Net.read(self.ssl)
+
+class REPP:
     def __init__(self, config):
-        self.config     = config
-        self.last_query = 'greeting'
-        self.query      = ''
-        self.answer     = ''
-        self.length     = None
-        self.is_reading = False
-        self.has_answer = False
+        self.config = config
         self.connect()
 
     def connect(self):
         self.epp = EPP(self.config)
         self.greeting = self.epp.greeting
-        asyncore.dispatcher.__init__(self, self.epp.ssl)
 
     def command(self, xml):
-        self.is_reading = False
-        self.last_query = xml
-        self.query      = xml
-        self.answer     = ''
-        self.length     = None
-        self.has_answer = False
-
-    def set_mode(self, is_reading):
-        self.is_reading = is_reading
-
-    def got_answer(self):
-        return self.has_answer
-
-    def readable(self):
-        print 'READABLE {0}'.format(self.is_reading)
-        return self.is_reading
-
-    def writable(self):
-        print 'WRITEABLE {0}'.format(bool(not self.is_reading and self.query))
-        return not self.is_reading and self.query
-
-    def handle_read(self):
-        if self.length is None:
-            net = self.recv(4)
-            if not net:
-                self.connect()
-                self.command(self.last_query)
-                return
-            self.length = Net.int_from_net(net)-4
-        if len(self.answer)<self.length:
-            self.answer += self.read(SIZE)
-        if len(self.answer)>=self.length:
-            self.is_reading = False
-            self.has_answer = True
-            self.length     = None
-
-    def handle_write(self):
-        if self.length is None:
-            self.length = len(self.query) + 4
-            self.send(Net.int_to_net(self.length))
-        elif self.query:
-            sent = self.send(self.query)
-            self.query = self.query[sent:]
-        if not self.query:
-            self.is_reading = True
-            self.length     = None
+        res = self.epp.command(xml)
+        if not res:
+            self.connect()
+            res = self.epp.command(xml)
+        return res
 
 class AsyncServer(asyncore.dispatcher):
     def __init__(self, address, epp):
@@ -130,21 +96,13 @@ class Handler(asyncore.dispatcher):
         return self.is_ready() and self.is_reading
 
     def writable(self):
-        return self.is_ready() and not self.is_reading and self.got_answer()
-
-    def got_answer(self):
-        if self.answer:
-            return True
-        if self.epp.got_answer():
-            self.answer = self.epp.answer
-            return True
-        return False
+        return self.is_ready() and not self.is_reading
 
     def is_ready(self):
         return time.time()>self.wait_till
 
     def wait(self, seconds):
-        self.wait_till = time.time()+seconds
+        self.wait_till = time.time() + seconds
 
     def handle_read(self):
         if self.length is None:
@@ -153,34 +111,37 @@ class Handler(asyncore.dispatcher):
         else:
             self.query += self.recv(SIZE)
         if len(self.query)>=self.length:
-            self.command(self.query)
+            self.is_reading = False
+            self.answer = self.command(self.query)
+            self.length = None
 
     def handle_write(self):
         if self.length is None:
             self.length = len(self.answer) + 4
             self.send(Net.int_to_net(self.length))
-        elif self.answer:
+        elif len(self.answer) > 0:
             sent = self.send(self.answer)
             self.answer = self.answer[sent:]
-        if not self.answer:
+        else:
             self.handle_close()
 
     def command(self, cmd):
         cmd = cmd.strip()
-        if cmd == '':
-            self.answer = 'NOTHING'
         if cmd == 'greeting':
-            self.answer = self.epp.greeting
+            return self.epp.greeting
         elif cmd == 'info':
-            self.answer = json.dumps(self.epp.config, indent=4)
-        elif cmd == 'wait':
-            self.wait(20)
-            self.answer = 'waited 20'
+            return json.dumps(self.epp.config, indent=4)
+        elif cmd.startswith('wait'):
+            try:
+                sec = float(cmd[4:])
+            except:
+                sec = 1
+            self.wait(sec)
+            return 'waited {0} seconds'.format(sec)
+        elif cmd.startswith('<?xml '):
+            return self.epp.command(cmd)
         else:
-            self.epp.command(cmd)
-            self.answer = ''
-        self.is_reading = False
-        self.length = None
+            return 'Wrong command: ' + cmd
 
     def handle_close(self):
         self.close()
