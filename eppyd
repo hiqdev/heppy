@@ -68,9 +68,9 @@ class REPP(asyncore.dispatcher):
                 self.connect()
                 self.command(self.last_query)
                 return
-        if self.length<len(self.answer):
             self.length = Net.int_from_net(net)-4
-            self.answer += self.recv(SIZE)
+        if len(self.answer)<self.length:
+            self.answer += self.read(SIZE)
         if len(self.answer)>=self.length:
             self.is_reading = False
             self.has_answer = True
