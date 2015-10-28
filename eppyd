@@ -54,13 +54,18 @@ class REPP:
         return res
 
 class AsyncServer(asyncore.dispatcher):
-    def __init__(self, address, epp):
+    def __init__(self, config, epp):
         self.epp = epp
         self.handler = None
         asyncore.dispatcher.__init__(self)
-        self.create_socket(socket.AF_INET, socket.SOCK_STREAM)
+        address = config['address']
+        family = socket.AF_INET
+        if isinstance(address, basestring):
+            family = socket.AF_UNIX
+        else:
+            address = tuple(address)
+        self.create_socket(family, socket.SOCK_STREAM)
         self.bind(address)
-        self.address = self.socket.getsockname()
         self.listen(5)
         return
 
@@ -71,16 +76,15 @@ class AsyncServer(asyncore.dispatcher):
             socket.close()
             socket = None
         else:
-            self.handler = Handler(socket, address, self)
+            self.handler = Handler(socket, self)
 
     def handle_close(self):
         self.handler = None
 
 class Handler(asyncore.dispatcher):
-    def __init__(self, socket, address, server):
+    def __init__(self, socket, server):
         self.server  = server
         self.epp     = server.epp
-        self.address = address
         self.query   = ''
         self.answer  = ''
         self.length  = None
@@ -154,8 +158,8 @@ path = sys.argv[1]
 with open(path) as file:
     config = json.load(file)
 
-epp = REPP(config['epp'])
+epp    = REPP(config['epp'])
+server = AsyncServer(config['local'], epp)
 
-server = AsyncServer(('localhost', config['local']['port']), epp)
 asyncore.loop()
 

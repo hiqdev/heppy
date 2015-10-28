@@ -6,7 +6,7 @@ import socket
 
 class Client:
     def __init__(self, address):
-        self.socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        self.socket = socket.socket(socket.AF_UNIX, socket.SOCK_STREAM)
         self.socket.settimeout(0.01)
         self.socket.connect(address)
         self.socket.settimeout(None)
@@ -22,9 +22,9 @@ class Client:
         return self.read()
 
 if len(sys.argv)<2:
-    print('usage: eppyc port')
+    print('usage: eppyc path')
     exit(1)
-port = int(sys.argv[1])
+path = sys.argv[1]
 
 data = ''
 for line in sys.stdin:
@@ -34,9 +34,9 @@ if not data:
     exit(1)
 
 try:
-    client = Client(('localhost', port))
+    client = Client(path)
     res = client.command(data)
-except socket.timeout:
+except:
     res = None
 
 print res
