@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 
+import os
 import sys
 import ssl
 import json
@@ -62,6 +63,7 @@ class AsyncServer(asyncore.dispatcher):
         family = socket.AF_INET
         if isinstance(address, basestring):
             family = socket.AF_UNIX
+            #os.unlink(address)
         else:
             address = tuple(address)
         self.create_socket(family, socket.SOCK_STREAM)
