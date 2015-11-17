@@ -1,11 +1,11 @@
 #!/usr/bin/env python
 
-import Args
-import Client
-import Request
-import Response
-
 from pprint import pprint
+
+from reppy import Args
+from reppy import Client
+from reppy import Request
+from reppy import Response
 
 data = Args.parse()
 

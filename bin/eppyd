@@ -9,7 +9,7 @@ import socket
 import asyncore
 from pprint import pprint
 
-import Net
+from reppy import Net
 
 SIZE = 4096
 

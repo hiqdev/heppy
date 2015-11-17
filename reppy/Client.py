@@ -1,5 +1,6 @@
-import Net
 import socket
+
+from reppy import Net
 
 class Client:
     def __init__(self, address):
