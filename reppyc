@@ -1,0 +1,22 @@
+#!/usr/bin/env python
+
+import Args
+import Client
+import Request
+import Response
+
+from pprint import pprint
+
+data = Args.parse()
+
+try:
+    request = Request.build(data['command'], data)
+    xml = request.toprettyxml()
+    client = Client.Client(data['path'])
+    res = client.command(xml)
+    print res
+    response = Response.build(data['command'], res)
+    pprint(response.data)
+except (KeyError):
+    exit(1)
+
