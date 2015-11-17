@@ -1,25 +1,7 @@
 #!/usr/bin/env python
 
-import Net
+import Client
 import sys
-import socket
-
-class Client:
-    def __init__(self, address):
-        self.socket = socket.socket(socket.AF_UNIX, socket.SOCK_STREAM)
-        self.socket.settimeout(0.01)
-        self.socket.connect(address)
-        self.socket.settimeout(None)
-
-    def write(self, data):
-        Net.write(self.socket, data)
-
-    def read(self):
-        return Net.read(self.socket)
-
-    def command(self, data):
-        self.write(data)
-        return self.read()
 
 if len(sys.argv)<2:
     print('usage: eppyc path')
@@ -31,12 +13,13 @@ for line in sys.stdin:
     data += line
 
 if not data:
-    exit(1)
+    exit(2)
 
 try:
-    client = Client(path)
+    client = Client.Client(path)
     res = client.command(data)
 except:
     res = None
+    exit(1)
 
 print res
