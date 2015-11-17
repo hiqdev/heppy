@@ -1,0 +1,8 @@
+#!/usr/bin/env python
+
+import Args
+import Request
+
+data = Args.parse()
+request = Request.build(data['command'], data)
+print request.toprettyxml()

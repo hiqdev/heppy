@@ -58,19 +58,24 @@ class Login(Request):
         for svc in self.get('svcs'):
             self.sub(self.svcs, 'objURI', {}, svc)
 
-class Check(Request):
-    def __init__(self, data):
-        Request.__init__(self, data)
-        self.check = self.sub(self.command, 'check')
-
-class DomainCheck(Check):
+class Domain(Request):
     defaults = {
         'xmlns:domain': 'urn:ietf:params:xml:ns:domain-1.0'
     }
 
+    def __init__(self, data, op):
+        Request.__init__(self, data)
+        self.commandOp = self.sub(self.command, op)
+        self.domainCommand = self.sub(self.commandOp, 'domain:' + op, {'xmlns:domain': self.get('xmlns:domain')})
+class DomainCheck(Domain):
     def __init__(self, data):
-        Check.__init__(self, data)
-        self.domainCheck = self.sub(self.check, 'domain:check', {'xmlns:domain': self.get('xmlns:domain')})
+        Domain.__init__(self, data, 'check')
         for name in self.get('names').values():
-            self.sub(self.domainCheck, 'domain:name', {}, name)
+            self.sub(self.domainCommand, 'domain:name', {}, name)
+
+class DomainCreate(Domain):
+    def __init__(self, data):
+        Domain.__init__(self, data, 'create')
+        self.sub(self.domainCommand, 'domain:name', {}, self.get('name'))
+        self.sub(self.domainCommand, 'domain:period', {'unit': 'y'}, self.get('period', 1))
 
