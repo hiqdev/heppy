@@ -5,7 +5,7 @@ package:
     title:          Python EPP client and library
     keywords:       python, epp, client, library
     description:    |
-        [EPP](https://en.wikipedia.org/wiki/Extensible_Provisioning_Protocol) is Extensible Provisioning Protocol.
+        [EPP](https://en.wikipedia.org/wiki/Extensible_Provisioning_Protocol) is Extensible Provisioning Protocol used for registrar-registry communication to register and manage domains.
 
         This package provides:
         - library for building EPP requests
@@ -15,5 +15,5 @@ package:
         For the moment it is in early stage of development.
 
 require:
-    hiqdev/hidev-hiqdev: "*"
     hiqdev/hidev-python: "*"
+    hiqdev/hidev-vendor: "*"
