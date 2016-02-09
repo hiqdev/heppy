@@ -1,6 +1,6 @@
 package:
-    name:           reppy
     type:           project
+    name:           reppy
     headline:       rEPPy
     title:          Python EPP client and library
     keywords:       python, epp, client, library
@@ -15,5 +15,5 @@ package:
         For the moment it is in early stage of development.
 
 require:
-    hiqdev/hidev-python: "*"
+    hiqdev/hidev-python: "*@dev"
     hiqdev/hidev-vendor: "*"
