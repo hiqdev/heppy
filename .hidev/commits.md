@@ -4,6 +4,7 @@ hiqdev/reppy commits history
 ## Under development
 
 - Added basics
+    - 593ad47 2016-02-09 rehideved (sol@hiqdev.com)
     - a9a78dd 2016-02-08 fixed hidev config (sol@hiqdev.com)
     - e7b55e6 2015-11-17 organized immports (sol@hiqdev.com)
     - 3d02756 2015-11-17 + gitignore (sol@hiqdev.com)
