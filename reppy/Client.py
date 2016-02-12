@@ -19,3 +19,11 @@ class Client:
         self.write(data)
         return self.read()
 
+    @staticmethod
+    def try_connect(address):
+        try:
+            client = Client(address)
+            return True
+        except:
+            return False
+
