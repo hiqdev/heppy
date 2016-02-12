@@ -3,20 +3,23 @@
 from pprint import pprint
 
 from reppy import Args
-from reppy import Client
 from reppy import Request
 from reppy import Response
+
+from reppy.Error import Error
+from reppy.Client import Client
 
 data = Args.parse()
 
 try:
     request = Request.build(data['command'], data)
     xml = request.toprettyxml()
-    client = Client.Client(data['path'])
+    print xml
+    client = Client(data['path'])
     res = client.command(xml)
     print res
     response = Response.build(data['command'], res)
     pprint(response.data)
-except (KeyError):
-    exit(1)
+except Exception as e:
+    Error.die(3, e)
 

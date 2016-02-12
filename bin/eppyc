@@ -2,16 +2,11 @@
 
 import sys
 
+from reppy.Error import Error
 from reppy.Client import Client
 
-def error(code, type, message=None):
-    print 'Error: '+type
-    if message:
-        print message
-    exit(code)
-
 if len(sys.argv)<2:
-    error(1, 'usage: eppyc path')
+    Error.die(1, 'usage: eppyc path')
 path = sys.argv[1]
 
 data = ''
@@ -19,15 +14,16 @@ for line in sys.stdin:
     data += line
 
 if not data.strip():
-    error(2, 'no command given')
+    Error.die(2, 'no command given')
 
 try:
     client = Client(path)
     res = client.command(data)
 except Exception as e:
-    error(3, '{0}.{1}'.format(type(e).__module__, type(e).__name__), str(e))
+    Error.die(3, e)
 
 if res is None:
-    error(4, 'None')
+    Errro.die(4, 'None')
 else:
     print res
+
