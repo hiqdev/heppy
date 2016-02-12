@@ -67,6 +67,7 @@ class Domain(Request):
         Request.__init__(self, data)
         self.commandOp = self.sub(self.command, op)
         self.domainCommand = self.sub(self.commandOp, 'domain:' + op, {'xmlns:domain': self.get('xmlns:domain')})
+
 class DomainCheck(Domain):
     def __init__(self, data):
         Domain.__init__(self, data, 'check')
