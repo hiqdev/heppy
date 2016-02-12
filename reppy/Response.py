@@ -1,17 +1,11 @@
 import xml.etree.ElementTree as ET
 
+from reppy.Error import Error
 from pprint import pprint
 
 def build(name, data):
     type = globals()[name]
     return type(data)
-
-class Error(Exception):
-    def __init__(self, message, data = {}):
-        self.message = message
-        self.data = data
-    def __str__(self):
-        return self.message + ": " + repr(self.data)
 
 class Response:
     nsmap = {
@@ -36,15 +30,15 @@ class Response:
         self.trID       = self.find(self.response,  'epp:trID')
         self.resultMsg  = self.find(self.result,    'epp:msg')
         self.value      = self.find(self.result,    'epp:value')
-        self.xcp        = self.find(self.value,     'oxrs:xcp')
         self.data['resultCode']     = self.result.attrib['code']
         self.data['resultLang']     = self.resultMsg.attrib['lang']
         self.data['resultMessage']  = self.resultMsg.text
         if self.trID is not None:
             self.data['cltrid']     = self.find(self.trID, 'epp:clTRID').text
             self.data['svtrid']     = self.find(self.trID, 'epp:svTRID').text
-        if self.xcp is not None:
-            self.data['resultMessage']  = self.xcp.text
+        if self.value is not None:
+            self.xcp = self.find(self.value, 'oxrs:xcp')
+            self.data['resultMessage'] = self.xcp.text
         if not self.data['resultCode'] in self.okcodes:
             raise Error(self.data['resultMessage'], self.data)
         self.resData    = self.find(self.response, 'epp:resData')
@@ -71,4 +65,12 @@ class DomainCheck(Response):
             self.data['avail'][name.text] = name.attrib['avail']
             if reason is not None:
                 self.data['reason'][name.text] = reason.text
+
+class DomainCreate(Response):
+    def __init__(self, xml):
+        Response.__init__(self, xml)
+        self.creData                = self.find(self.resData, 'domain:creData')
+        self.data['name']           = self.find(self.creData, 'domain:name')
+        self.data['created_date']   = self.find(self.creData, 'domain:crDate')
+        self.data['expiration_date']= self.find(self.creData, 'domain:exDate')
 

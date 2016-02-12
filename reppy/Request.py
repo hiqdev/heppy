@@ -8,19 +8,25 @@ def build(name, data):
 class Request:
     xmlns = 'urn:ietf:params:xml:ns:epp-1.0'
 
-    def __init__(self, data):
+    def __init__(self, data, object, op):
         self.data       = data
+        self.object     = object
+        self.op         = op
         self.epp        = ET.Element('epp', {'xmlns': self.xmlns})
-        self.command    = self.sub(self.epp, 'command')
+        self.command    = None
+        if op != 'hello':
+            self.command = self.sub(self.epp, 'command')
 
     def sub(self, parent, tag, attrs = {}, text = None):
         res = ET.SubElement(parent, tag, attrs)
         if text is not None:
-            res.text = text
+            res.text = str(text)
         return res
 
     def tostring(self, encoding='UTF-8', method='xml'):
-        self.sub(self.command, 'clTRID', {}, self.get('cltrid'))
+        cltrid = self.get('cltrid', (self.object[0] + self.op[0]).upper() + '-0001')
+        if cltrid != 'NONE' and self.command is not None:
+            self.sub(self.command, 'clTRID', {}, cltrid)
         return ET.tostring(self.epp, encoding, method)
 
     def toprettyxml(self):
@@ -47,7 +53,7 @@ class Login(Request):
     }
 
     def __init__(self, data):
-        Request.__init__(self, data)
+        Request.__init__(self, data, 'general', 'login')
         self.login  = self.sub(self.command, 'login')
         self.clid   = self.sub(self.login, 'clID', {}, self.get('login'))
         self.pw     = self.sub(self.login, 'pw', {}, self.get('password'))
@@ -58,13 +64,21 @@ class Login(Request):
         for svc in self.get('svcs'):
             self.sub(self.svcs, 'objURI', {}, svc)
 
+class Hello(Request):
+    defaults = {
+    }
+
+    def __init__(self, data):
+        Request.__init__(self, data, 'general', 'hello')
+        self.commandOp = self.sub(self.epp, 'hello')
+
 class Domain(Request):
     defaults = {
         'xmlns:domain': 'urn:ietf:params:xml:ns:domain-1.0'
     }
 
     def __init__(self, data, op):
-        Request.__init__(self, data)
+        Request.__init__(self, data, 'domain', op)
         self.commandOp = self.sub(self.command, op)
         self.domainCommand = self.sub(self.commandOp, 'domain:' + op, {'xmlns:domain': self.get('xmlns:domain')})
 
@@ -79,4 +93,11 @@ class DomainCreate(Domain):
         Domain.__init__(self, data, 'create')
         self.sub(self.domainCommand, 'domain:name', {}, self.get('name'))
         self.sub(self.domainCommand, 'domain:period', {'unit': 'y'}, self.get('period', 1))
+        if self.get('registrant'):
+            self.sub(self.domainCommand, 'domain:registrant', {}, self.get('registrant'))
+        for type in ('admin', 'tech', 'billing'):
+            if self.get(type):
+                self.sub(self.domainCommand, 'domain:contact', {'type': type}, self.get(type))
+        self.authInfo = self.sub(self.domainCommand, 'domain:authInfo')
+        self.sub(self.authInfo, 'domain:pw', {}, self.get('password', ''))
 
