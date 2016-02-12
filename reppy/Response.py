@@ -17,6 +17,7 @@ class Response:
     nsmap = {
         'epp':      'urn:ietf:params:xml:ns:epp-1.0',
         'domain':   'urn:ietf:params:xml:ns:domain-1.0',
+        'oxrs':     'urn:afilias:params:xml:ns:oxrs-1.1',
     }
 
     okcodes = {
@@ -32,22 +33,31 @@ class Response:
         self.root       = ET.fromstring(xml)
         self.response   = self.find(self.root,      'epp:response')
         self.result     = self.find(self.response,  'epp:result')
-        self.trID       = self.find(self.response,  'epp:trID');
+        self.trID       = self.find(self.response,  'epp:trID')
         self.resultMsg  = self.find(self.result,    'epp:msg')
+        self.value      = self.find(self.result,    'epp:value')
+        self.xcp        = self.find(self.value,     'oxrs:xcp')
         self.data['resultCode']     = self.result.attrib['code']
         self.data['resultLang']     = self.resultMsg.attrib['lang']
-        self.data['resultMessage']  = self.resultMsg.text;
-        self.data['cltrid']         = self.find(self.trID, 'epp:clTRID').text;
-        self.data['svtrid']         = self.find(self.trID, 'epp:svTRID').text;
+        self.data['resultMessage']  = self.resultMsg.text
+        if self.trID is not None:
+            self.data['cltrid']     = self.find(self.trID, 'epp:clTRID').text
+            self.data['svtrid']     = self.find(self.trID, 'epp:svTRID').text
+        if self.xcp is not None:
+            self.data['resultMessage']  = self.xcp.text
         if not self.data['resultCode'] in self.okcodes:
             raise Error(self.data['resultMessage'], self.data)
-        self.resData    = self.find(self.response, 'epp:resData');
+        self.resData    = self.find(self.response, 'epp:resData')
 
     def find(self, el, name):
         return el.find(name, namespaces=self.nsmap)
 
     def findall(self, el, name):
         return el.findall(name, self.nsmap)
+
+class Login(Response):
+    def __init__(self, xml):
+        Response.__init__(self, xml)
 
 class DomainCheck(Response):
     def __init__(self, xml):
