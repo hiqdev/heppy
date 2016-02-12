@@ -10,6 +10,7 @@ import asyncore
 from pprint import pprint
 
 from reppy import Net
+from reppy.Client import Client
 
 SIZE = 4096
 
@@ -60,16 +61,25 @@ class AsyncServer(asyncore.dispatcher):
         self.handler = None
         asyncore.dispatcher.__init__(self)
         address = config['address']
-        family = socket.AF_INET
         if isinstance(address, basestring):
+            AsyncServer.check_connection(config)
+            if os.path.exists(address):
+                os.unlink(address)
             family = socket.AF_UNIX
-            #os.unlink(address)
         else:
+            family = socket.AF_INET
             address = tuple(address)
         self.create_socket(family, socket.SOCK_STREAM)
         self.bind(address)
         self.listen(5)
         return
+
+    @staticmethod
+    def check_connection(config):
+        address = config['address']
+        if Client.try_connect(address):
+            print('{0} already in use'.format(address))
+            exit(1)
 
     def handle_accept(self):
         socket, address = self.accept()
@@ -159,6 +169,8 @@ if len(sys.argv)<2:
 path = sys.argv[1]
 with open(path) as file:
     config = json.load(file)
+
+AsyncServer.check_connection(config['local'])
 
 epp    = REPP(config['epp'])
 server = AsyncServer(config['local'], epp)
