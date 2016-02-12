@@ -159,7 +159,7 @@ class Handler(asyncore.dispatcher):
         elif cmd.startswith('<?xml '):
             return self.epp.command(cmd)
         else:
-            return 'Wrong command: ' + cmd
+            return 'Error: wrong command: ' + cmd
 
     def handle_close(self):
         self.close()

@@ -4,23 +4,30 @@ import sys
 
 from reppy.Client import Client
 
+def error(code, type, message=None):
+    print 'Error: '+type
+    if message:
+        print message
+    exit(code)
+
 if len(sys.argv)<2:
-    print('usage: eppyc path')
-    exit(1)
+    error(1, 'usage: eppyc path')
 path = sys.argv[1]
 
 data = ''
 for line in sys.stdin:
     data += line
 
-if not data:
-    exit(2)
+if not data.strip():
+    error(2, 'no command given')
 
 try:
     client = Client(path)
     res = client.command(data)
-except:
-    res = None
-    exit(1)
+except Exception as e:
+    error(3, '{0}.{1}'.format(type(e).__module__, type(e).__name__), str(e))
 
-print res
+if res is None:
+    error(4, 'None')
+else:
+    print res
