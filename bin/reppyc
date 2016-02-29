@@ -1,5 +1,7 @@
 #!/usr/bin/env python
 
+import json
+
 from pprint import pprint
 
 from reppy import Args
@@ -11,11 +13,14 @@ from reppy.Client import Client
 
 data = Args.parse()
 
+with open(data['path']) as file:
+    config = json.load(file)
+
 try:
     request = Request.build(data['command'], data)
     xml = request.toprettyxml()
     print xml
-    client = Client(data['path'])
+    client = Client(config['local']['address'])
     res = client.command(xml)
     print res
     response = Response.build(data['command'], res)
