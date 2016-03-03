@@ -3,16 +3,11 @@
 import sys
 from pprint import pprint
 
-from reppy import Response
-
-if len(sys.argv)<2:
-    print('usage: testResponse command')
-    exit(1)
-command = sys.argv[1]
+from reppy.Response import Response
 
 xml = ''
 for line in sys.stdin:
     xml += line
 
-response = Response.build(command, xml)
+response = Response.parsexml(xml)
 pprint(response.data)

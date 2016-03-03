@@ -1,0 +1,21 @@
+#!/usr/bin/env python
+
+import json
+
+from pprint import pprint
+
+from reppy.Args import Args
+from reppy.Error import Error
+from reppy.Config import Config
+from reppy.Daemon import Daemon
+
+args = Args()
+config = Config(args.get('path'))
+config.merge(args)
+
+method = getattr(Daemon, args.get('command'), None)
+if callable(method):
+    method(config)
+else:
+    Error.die(1, 'wrong command', config)
+

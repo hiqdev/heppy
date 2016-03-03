@@ -1,8 +1,8 @@
 #!/usr/bin/env python
 
-from reppy import Args
-from reppy import Request
+from reppy.Args import Args
+from reppy.Request import Request
 
-data = Args.parse()
-request = Request.build(data['command'], data)
-print request.toprettyxml()
+args = Args()
+request = Request.buildFromArgs(args)
+print Request.prettifyxml(str(request))

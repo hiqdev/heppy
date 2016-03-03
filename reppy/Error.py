@@ -1,3 +1,4 @@
+import logging
 
 class Error(Exception):
     def __init__(self, message, data = {}):
@@ -16,5 +17,6 @@ class Error(Exception):
         print 'Error: ' + error
         if message:
             print message
+        logging.exception(message)
         exit(code)
 

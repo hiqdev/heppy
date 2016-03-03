@@ -15,7 +15,7 @@ class Client:
     def read(self):
         return Net.read(self.socket)
 
-    def command(self, data):
+    def request(self, data):
         self.write(data)
         return self.read()
 

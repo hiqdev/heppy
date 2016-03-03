@@ -1,11 +1,48 @@
 import xml.dom.minidom
 import xml.etree.ElementTree as ET
 
-def build(name, data):
-    type = globals()[name]
-    return type(data)
+class BaseRequest:
+    def __init__(self, data):
+        self.data = data
 
-class Request:
+    def get(self, name, default = None):
+        if name in self.data:
+            return self.data[name]
+        if name in self.defaults:
+            return self.defaults[name]
+        return default
+
+    def sub(self, parent, tag, attrs = {}, text = None):
+        res = ET.SubElement(parent, tag, attrs)
+        if text is not None:
+            res.text = str(text)
+        return res
+
+    @staticmethod
+    def build(name, data):
+        type = globals()[name]
+        return type(data)
+
+    @staticmethod
+    def buildFromArgs(args):
+        request = Request.build(args.get('command'), args)
+        extensions = args.get('extensions') or []
+        if extensions == [] and 'extension' in args:
+            extensions = [args.get('extension')]
+        for ext in extensions:
+            Request.build(ext, args).extend(request)
+        return request
+
+    @staticmethod
+    def prettifyxml(str):
+        dom = xml.dom.minidom.parseString(str)
+        return dom.toprettyxml(indent='    ')
+
+class greeting(BaseRequest):
+    def __str__(self):
+        return 'greeting'
+
+class Request(BaseRequest):
     xmlns = 'urn:ietf:params:xml:ns:epp-1.0'
 
     def __init__(self, data, object, op):
@@ -14,32 +51,30 @@ class Request:
         self.op         = op
         self.epp        = ET.Element('epp', {'xmlns': self.xmlns})
         self.command    = None
+        self.extension  = None
         if op != 'hello':
             self.command = self.sub(self.epp, 'command')
 
-    def sub(self, parent, tag, attrs = {}, text = None):
-        res = ET.SubElement(parent, tag, attrs)
-        if text is not None:
-            res.text = str(text)
-        return res
-
-    def tostring(self, encoding='UTF-8', method='xml'):
+    def __str__(self, encoding='UTF-8', method='xml'):
         cltrid = self.get('cltrid', (self.object[0] + self.op[0]).upper() + '-0001')
         if cltrid != 'NONE' and self.command is not None:
             self.sub(self.command, 'clTRID', {}, cltrid)
         return ET.tostring(self.epp, encoding, method)
 
-    def toprettyxml(self):
-        str = self.tostring()
-        dom = xml.dom.minidom.parseString(str)
-        return dom.toprettyxml(indent='    ')
+class Extension(BaseRequest):
+    def begin(self, request):
+        if (request.extension is None):
+            request.extension = self.sub(request.command, 'extension')
 
-    def get(self, name, default = None):
-        if name in self.data:
-            return self.data[name]
-        if name in self.defaults:
-            return self.defaults[name]
-        return default
+class FeeCheck(Extension):
+    def extend(self, request):
+        self.begin(request)
+        self.fee = self.sub(request.extension, 'fee:check', {'xmlns:fee': 'urn:ietf:params:xml:ns:fee-0.6'})
+        for name in self.get('names').values():
+            self.domain = self.sub(self.fee, 'fee:domain')
+            self.sub(self.domain, 'fee:name', {}, name)
+            self.sub(self.domain, 'fee:command', {}, 'create')
+            self.sub(self.domain, 'fee:period', {'unit': 'y'}, '1')
 
 class Login(Request):
     defaults = {
@@ -57,6 +92,8 @@ class Login(Request):
         self.login  = self.sub(self.command, 'login')
         self.clid   = self.sub(self.login, 'clID', {}, self.get('login'))
         self.pw     = self.sub(self.login, 'pw', {}, self.get('password'))
+        if ('newPassword' in data and data['newPassword']):
+            self.sub(self.login, 'newPW', {}, self.get('newPassword'))
         self.ops    = self.sub(self.login, 'options')
         self.ver    = self.sub(self.ops, 'version', {}, self.get('version'))
         self.lang   = self.sub(self.ops, 'lang', {}, self.get('lang'))
