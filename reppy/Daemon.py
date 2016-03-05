@@ -6,10 +6,9 @@ import xml.dom.minidom
 
 from pprint import pprint
 
-from reppy import Request
-
 from reppy.Error import Error
 from reppy.Client import Client
+from reppy.Request import Request
 from reppy.Response import Response
 
 class Daemon:
