@@ -2,7 +2,6 @@ import os
 import sys
 import time
 import socket
-import xml.dom.minidom
 
 from pprint import pprint
 
@@ -26,9 +25,9 @@ class Daemon:
             #'newPassword': config['epp']['newPassword'],
         })
         query = str(request)
-        print query
+        print Request.prettifyxml(query)
         reply = client.request(query)
-        print xml.dom.minidom.parseString(reply).toprettyxml(indent='    ')
+        print Request.prettifyxml(reply)
         error = None
         try:
             response = Response.parsexml(reply)
