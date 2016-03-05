@@ -20,15 +20,23 @@ class Response:
         '{urn:ietf:params:xml:ns:epp-1.0}extValue':     'elements',
         '{urn:ietf:params:xml:ns:epp-1.0}undef':        'nothing',
         '{urn:ietf:params:xml:ns:epp-1.0}reason':       'result_reason',
-        '{urn:afilias:params:xml:ns:oxrs-1.1}xcp':      'result_reason',
         '{urn:ietf:params:xml:ns:epp-1.0}msg':          'result_msg',
         '{urn:ietf:params:xml:ns:epp-1.0}trID':         'elements',
         '{urn:ietf:params:xml:ns:epp-1.0}clTRID':       'clTRID',
         '{urn:ietf:params:xml:ns:epp-1.0}svTRID':       'svTRID',
         '{urn:ietf:params:xml:ns:epp-1.0}resData':      'elements',
         '{urn:ietf:params:xml:ns:domain-1.0}chkData':   'domainCheck',
-        '{urn:ietf:params:xml:ns:fee-0.7}chkData':      'feeCheck',
         '{urn:ietf:params:xml:ns:domain-1.0}infData':   'domainInfo',
+
+        ### oxrs
+        '{urn:afilias:params:xml:ns:oxrs-1.1}xcp':      'result_reason',
+
+        ### fee extension
+        '{urn:ietf:params:xml:ns:fee-0.7}chkData':      'feeCheck',
+
+        ### rgp
+        '{urn:ietf:params:xml:ns:rgp-1.0}infData':      'elements',
+        '{urn:ietf:params:xml:ns:rgp-1.0}rgpStatus':    'rgp_status',
     }
 
     okcodes = {
@@ -138,3 +146,7 @@ class Response:
         self.data['updated_date']   = self.find(data, 'domain:upDate').text
         self.data['expiration_date']= self.find(data, 'domain:exDate').text
         self.data['password']       = self.find(self.find(data, 'domain:authInfo'), 'domain:pw').text
+
+    def parse_rgp_status(self, data):
+        status = data.attrib['s']
+        self.data[status] = data.text
