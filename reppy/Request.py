@@ -125,6 +125,11 @@ class DomainCheck(Domain):
         for name in self.get('names').values():
             self.sub(self.domainCommand, 'domain:name', {}, name)
 
+class DomainInfo(Domain):
+    def __init__(self, data):
+        Domain.__init__(self, data, 'info')
+        self.sub(self.domainCommand, 'domain:name', {'hosts': 'all'}, self.get('name'))
+
 class DomainCreate(Domain):
     def __init__(self, data):
         Domain.__init__(self, data, 'create')
@@ -137,4 +142,9 @@ class DomainCreate(Domain):
                 self.sub(self.domainCommand, 'domain:contact', {'type': type}, self.get(type))
         self.authInfo = self.sub(self.domainCommand, 'domain:authInfo')
         self.sub(self.authInfo, 'domain:pw', {}, self.get('password', ''))
+
+class DomainDelete(Domain):
+    def __init__(self, data):
+        Domain.__init__(self, data, 'delete')
+        self.sub(self.domainCommand, 'domain:name', {}, self.get('name'))
 
