@@ -76,6 +76,12 @@ class FeeCheck(Extension):
             self.sub(self.domain, 'fee:command', {}, 'create')
             self.sub(self.domain, 'fee:period', {'unit': 'y'}, '1')
 
+class Namestore(Extension):
+    def extend(self, request):
+        self.begin(request)
+        self.namestore = self.sub(request.extension, 'namestoreExt:namestoreExt', {'xmlns:namestoreExt': 'http://www.verisign-grs.com/epp/namestoreExt-1.1'})
+        self.sub(self.namestore, 'namestoreExt:subProduct', {}, self.get('subProduct'))
+
 class Login(Request):
     defaults = {
         'version': '1.0',
