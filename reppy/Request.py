@@ -2,6 +2,9 @@ import xml.dom.minidom
 import xml.etree.ElementTree as ET
 
 class BaseRequest:
+    defaults = {
+    }
+
     def __init__(self, data):
         self.data = data
 
@@ -35,6 +38,8 @@ class BaseRequest:
 
     @staticmethod
     def prettifyxml(str):
+        if str[0] != '<':
+            return str
         dom = xml.dom.minidom.parseString(str)
         return dom.toprettyxml(indent='    ')
 
@@ -70,7 +75,7 @@ class FeeCheck(Extension):
     def extend(self, request):
         self.begin(request)
         self.fee = self.sub(request.extension, 'fee:check', {'xmlns:fee': 'urn:ietf:params:xml:ns:fee-0.6'})
-        for name in self.get('names').values():
+        for name in self.get('names', {}).values():
             self.domain = self.sub(self.fee, 'fee:domain')
             self.sub(self.domain, 'fee:name', {}, name)
             self.sub(self.domain, 'fee:command', {}, 'create')
@@ -108,9 +113,6 @@ class Login(Request):
             self.sub(self.svcs, 'objURI', {}, svc)
 
 class Hello(Request):
-    defaults = {
-    }
-
     def __init__(self, data):
         Request.__init__(self, data, 'general', 'hello')
         self.commandOp = self.sub(self.epp, 'hello')
