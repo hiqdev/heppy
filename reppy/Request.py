@@ -1,6 +1,82 @@
 import xml.dom.minidom
 import xml.etree.ElementTree as ET
 
+from pprint import pprint
+from Worker import Worker
+
+class Request(Worker):
+    xmlns = 'urn:ietf:params:xml:ns:epp-1.0'
+
+    def __init__(self, data):
+        Worker.__init__(self, data)
+        self.data       = data
+        self.raw        = None
+        self.epp        = None
+        self.command    = None
+        self.extension  = None
+
+    def old_init(self):
+        self.epp        = ET.Element('epp', {'xmlns': self.xmlns})
+        if op != 'hello':
+            self.command = self.sub(self.epp, 'command')
+
+    def __str__(self, encoding='UTF-8', method='xml'):
+        if self.raw is None:
+            return ET.tostring(self.epp, encoding, method)
+        else:
+            return self.raw
+
+    def element(self, tag, attrs = {}, text = None):
+        res = ET.Element(tag, attrs)
+        if text is not None:
+            res.text = str(text)
+        return res
+
+    def sub(self, parent, tag, attrs = {}, text = None):
+        res = ET.SubElement(parent, tag, attrs)
+        if text is not None:
+            res.text = str(text)
+        return res
+
+    def fields(self, parent, fields):
+        name = parent
+        for field, attrs in fields.iteritems():
+            self.sub(parent, name + ':' + field, attrs, self.get(field))
+        return parent
+
+    @staticmethod
+    def build(command, data, extensions = []):
+        request = Request(data)
+        request.render(command)
+        for ext in extensions:
+            request.render(ext)
+        request.render('epp:clTRID')
+        return request
+
+    @staticmethod
+    def buildFromArgs(args):
+        extensions = args.get('extensions') or []
+        if extensions == [] and 'extension' in args:
+            extensions = [args.get('extension')]
+        return Request.build(args.get('command'), args, extensions)
+
+    def render(self, command):
+        ns = command.split(':')[0]
+        name = command.split(':')[1]
+        module = self.get_module(ns)
+        method = 'render_' + name
+        if not hasattr(module, method):
+            raise Exception('unknown command', ns + ':' + name)
+        getattr(module, method)(self)
+
+    @staticmethod
+    def prettifyxml(request):
+        string = str(request)
+        if string[0] != '<':
+            return string
+        dom = xml.dom.minidom.parseString(string)
+        return dom.toprettyxml(indent='    ')
+
 class BaseRequest:
     defaults = {
     }
@@ -15,56 +91,14 @@ class BaseRequest:
             return self.defaults[name]
         return default
 
-    def sub(self, parent, tag, attrs = {}, text = None):
-        res = ET.SubElement(parent, tag, attrs)
-        if text is not None:
-            res.text = str(text)
-        return res
-
     @staticmethod
     def build(name, data):
         type = globals()[name]
         return type(data)
 
-    @staticmethod
-    def buildFromArgs(args):
-        request = Request.build(args.get('command'), args)
-        extensions = args.get('extensions') or []
-        if extensions == [] and 'extension' in args:
-            extensions = [args.get('extension')]
-        for ext in extensions:
-            Request.build(ext, args).extend(request)
-        return request
-
-    @staticmethod
-    def prettifyxml(str):
-        if str[0] != '<':
-            return str
-        dom = xml.dom.minidom.parseString(str)
-        return dom.toprettyxml(indent='    ')
-
 class greeting(BaseRequest):
     def __str__(self):
         return 'greeting'
-
-class Request(BaseRequest):
-    xmlns = 'urn:ietf:params:xml:ns:epp-1.0'
-
-    def __init__(self, data, object, op):
-        self.data       = data
-        self.object     = object
-        self.op         = op
-        self.epp        = ET.Element('epp', {'xmlns': self.xmlns})
-        self.command    = None
-        self.extension  = None
-        if op != 'hello':
-            self.command = self.sub(self.epp, 'command')
-
-    def __str__(self, encoding='UTF-8', method='xml'):
-        cltrid = self.get('cltrid', (self.object[0] + self.op[0]).upper() + '-0001')
-        if cltrid != 'NONE' and self.command is not None:
-            self.sub(self.command, 'clTRID', {}, cltrid)
-        return ET.tostring(self.epp, encoding, method)
 
 class Extension(BaseRequest):
     def begin(self, request):

@@ -18,15 +18,35 @@ class epp(Module):
         'resData':      'descend',
     }
 
-    def parse_result(self, tag):
-        self.set('result.code', tag.attrib['code'])
-        self.parse_descend(tag)
+### RESPONSE parsing
 
-    def parse_msg(self, tag):
+    def parse_result(self, response, tag):
+        response.set('result.code', tag.attrib['code'])
+        self.parse_descend(response, tag)
+
+    def parse_msg(self, response, tag):
         if 'lang' in tag.attrib:
-            self.set('result.lang', tag.attrib['lang'])
-        self.set('result.msg', tag.text)
+            response.set('result.lang', tag.attrib['lang'])
+        response.set('result.msg', tag.text)
 
-    def parse_reason(self, tag):
-        self.set('result.reason', tag.text)
+    def parse_reason(self, response, tag):
+        response.set('result.reason', tag.text)
 
+### REQUEST rendering
+
+    def render_login(self, request):
+        action = self.render_command(request, 'login')
+        request.sub(action, 'clID', {}, request.get('clID', request.get('login')))
+        request.sub(action, 'pw',   {}, request.get('pw',   request.get('password')))
+        newPW = request.get('newPW', request.get('newPassword'))
+        if newPW is not None:
+            request.sub(action, 'newPW', {}, newPW)
+        options = request.sub(action, 'options')
+        request.sub(options, 'version', {}, request.get('version', '1.0'))
+        request.sub(options, 'lang',    {}, request.get('lang', 'en'))
+        svcs = request.sub(action, 'svcs')
+        for svc in request.get('svcs', [request.nsmap['epp']]):
+            request.sub(svcs, 'objURI', {}, svc)
+
+    def render_logout(self, request):
+        self.render_command(request, 'logout')

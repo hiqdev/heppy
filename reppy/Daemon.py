@@ -19,7 +19,7 @@ class Daemon:
             os.system(config['zdir'] + '/eppyd ' + config['path'] + ' &')
             time.sleep(2)
             client = Client(config['local']['address'])
-        request = Request.build('Login', {
+        request = Request.build('epp:login', {
             'login': config['epp']['login'],
             'password': config['epp']['password'],
             #'newPassword': config['epp']['newPassword'],

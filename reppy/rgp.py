@@ -5,7 +5,7 @@ class rgp(Module):
         'infData':      'descend',
     }
 
-    def parse_rgpStatus(self, tag):
+    def parse_rgpStatus(self, response, tag):
         status = tag.attrib['s']
-        self.set(status, tag.text)
+        response.set(status, tag.text)
 
