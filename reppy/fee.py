@@ -29,7 +29,7 @@ class fee(Module):
 ### REQUEST rendering
 
     def render_check(self, request):
-        extension = self.render_the_extension(request, 'check')
+        extension = self.render_extension(request, 'check')
         for name in request.get('names').itervalues():
             domain = request.sub(extension, 'fee:domain')
             request.sub(domain, 'fee:name', {}, name)

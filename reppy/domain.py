@@ -58,7 +58,7 @@ class domain(Module):
 ### REQUEST rendering
 
     def render_check(self, request):
-        action = self.render_action(request, 'check')
+        action = self.render_command(request, 'check')
         for name in request.get('names').itervalues():
             request.sub(action, 'domain:name', {}, name)
 
