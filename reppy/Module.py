@@ -30,33 +30,33 @@ class Module:
         if clTRID != 'NONE' and request.command is not None:
             request.sub(request.command, 'clTRID', {}, clTRID)
 
-    def render_command(self, request, command):
+    def render_root_command(self, request, command, attrs = {}):
         if request.command is None:
             epp = self.render_epp(request)
-            request.command = request.sub(epp, 'command')
+            request.command = request.sub(epp, 'command', attrs)
         return request.sub(request.command, command)
 
     def render_header(self, request, source, action):
         return request.sub(source, self.name + ':' + action, {'xmlns:' + self.name: self.xmlns})
 
-    def render_action(self, request, action):
-        command = self.render_command(request, action)
+    def render_command(self, request, action):
+        command = self.render_root_command(request, action)
         return self.render_header(request, command, action)
 
-    def render_named_command(self, request, command, fields = {'name': {}}):
-        action = self.render_action(request, command)
-        self.render_fields(request, action, fields)
+    def render_command_fields(self, request, command, fields = {'name': {}}):
+        action = self.render_command(request, command)
+        request.subfields(action, fields)
 
-    def render_extension(self, request):
+    def render_root_extension(self, request):
         if request.extension is None:
             request.extension = request.sub(request.command, 'extension')
         return request.extension
 
-    def render_the_extension(self, request, action):
-        extension = self.render_extension(request)
+    def render_extension(self, request, action):
+        extension = self.render_root_extension(request)
         return self.render_header(request, extension, action)
 
-    def render_named_extension(self, request, action, fields):
+    def render_extension_fields(self, request, action, fields):
         extension = self.render_the_extension(request, action)
-        self.render_fields(extension, extension, fields)
+        request.subfields(extension, fields)
 

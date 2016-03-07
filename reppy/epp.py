@@ -35,7 +35,7 @@ class epp(Module):
 ### REQUEST rendering
 
     def render_login(self, request):
-        action = self.render_command(request, 'login')
+        action = self.render_root_command(request, 'login')
         request.sub(action, 'clID', {}, request.get('clID', request.get('login')))
         request.sub(action, 'pw',   {}, request.get('pw',   request.get('password')))
         newPW = request.get('newPW', request.get('newPassword'))
@@ -49,4 +49,11 @@ class epp(Module):
             request.sub(svcs, 'objURI', {}, svc)
 
     def render_logout(self, request):
-        self.render_command(request, 'logout')
+        self.render_root_command(request, 'logout')
+
+    def render_poll(self, request):
+        attrs = {'op': request.get('op', 'req')}
+        msgID = request.get('msgID')
+        if msgID is not None:
+            attrs['msgID'] = msgID
+        self.render_root_command(request, 'poll', attrs)

@@ -63,13 +63,13 @@ class domain(Module):
             request.sub(action, 'domain:name', {}, name)
 
     def render_info(self, request):
-        self.render_named_command(request, 'info', {'name': {'hosts': 'all'}})
+        self.render_command_fields(request, 'info', {'name': {'hosts': 'all'}})
 
     def render_delete(self, request):
-        self.render_named_command(request, 'delete')
+        self.render_command_fields(request, 'delete')
 
     def render_renew(self, request):
-        self.render_named_command(request, 'renew', OrderedDict([
+        self.render_command_fields(request, 'renew', OrderedDict([
             ('name', {}),
             ('curExpDate', {}),
             ('period', {'unit': 'y'}),

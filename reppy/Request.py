@@ -38,8 +38,8 @@ class Request(Worker):
             res.text = str(text)
         return res
 
-    def fields(self, parent, fields):
-        name = parent
+    def subfields(self, parent, fields):
+        name = parent.tag.split(':')[0]
         for field, attrs in fields.iteritems():
             self.sub(parent, name + ':' + field, attrs, self.get(field))
         return parent
@@ -76,75 +76,6 @@ class Request(Worker):
             return string
         dom = xml.dom.minidom.parseString(string)
         return dom.toprettyxml(indent='    ')
-
-class BaseRequest:
-    defaults = {
-    }
-
-    def __init__(self, data):
-        self.data = data
-
-    def get(self, name, default = None):
-        if name in self.data:
-            return self.data[name]
-        if name in self.defaults:
-            return self.defaults[name]
-        return default
-
-    @staticmethod
-    def build(name, data):
-        type = globals()[name]
-        return type(data)
-
-class greeting(BaseRequest):
-    def __str__(self):
-        return 'greeting'
-
-class Extension(BaseRequest):
-    def begin(self, request):
-        if (request.extension is None):
-            request.extension = self.sub(request.command, 'extension')
-
-class FeeCheck(Extension):
-    def extend(self, request):
-        self.begin(request)
-        self.fee = self.sub(request.extension, 'fee:check', {'xmlns:fee': 'urn:ietf:params:xml:ns:fee-0.6'})
-        for name in self.get('names', {}).values():
-            self.domain = self.sub(self.fee, 'fee:domain')
-            self.sub(self.domain, 'fee:name', {}, name)
-            self.sub(self.domain, 'fee:command', {}, 'create')
-            self.sub(self.domain, 'fee:period', {'unit': 'y'}, '1')
-
-class Namestore(Extension):
-    def extend(self, request):
-        self.begin(request)
-        self.namestore = self.sub(request.extension, 'namestoreExt:namestoreExt', {'xmlns:namestoreExt': 'http://www.verisign-grs.com/epp/namestoreExt-1.1'})
-        self.sub(self.namestore, 'namestoreExt:subProduct', {}, self.get('subProduct'))
-
-class Login(Request):
-    defaults = {
-        'version': '1.0',
-        'lang': 'en',
-        'svcs': [
-            'urn:ietf:params:xml:ns:host-1.0',
-            'urn:ietf:params:xml:ns:domain-1.0',
-            'urn:ietf:params:xml:ns:contact-1.0',
-        ],
-    }
-
-    def __init__(self, data):
-        Request.__init__(self, data, 'general', 'login')
-        self.login  = self.sub(self.command, 'login')
-        self.clid   = self.sub(self.login, 'clID', {}, self.get('login'))
-        self.pw     = self.sub(self.login, 'pw', {}, self.get('password'))
-        if ('newPassword' in data and data['newPassword']):
-            self.sub(self.login, 'newPW', {}, self.get('newPassword'))
-        self.ops    = self.sub(self.login, 'options')
-        self.ver    = self.sub(self.ops, 'version', {}, self.get('version'))
-        self.lang   = self.sub(self.ops, 'lang', {}, self.get('lang'))
-        self.svcs   = self.sub(self.login, 'svcs')
-        for svc in self.get('svcs'):
-            self.sub(self.svcs, 'objURI', {}, svc)
 
 class Hello(Request):
     def __init__(self, data):
