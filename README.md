@@ -10,9 +10,10 @@ rEPPy
 [EPP](https://en.wikipedia.org/wiki/Extensible_Provisioning_Protocol) is Extensible Provisioning Protocol used for registrar-registry communication to register and manage domains.
 
 This package provides:
-- library for building EPP requests
+
+- library for building and parsing EPP requests and responses
 - EPP client implemented as a UNIX daemon
-- whole infrastructure for domain name registrar
+- whole infrastructure for implementing domain name registrar
 
 For the moment it is in early stage of development.
 
