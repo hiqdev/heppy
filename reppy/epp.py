@@ -51,6 +51,10 @@ class epp(Module):
     def render_logout(self, request):
         self.render_root_command(request, 'logout')
 
+    def render_hello(self, request):
+        epp = self.render_epp(request)
+        request.sub(epp, 'hello')
+
     def render_poll(self, request):
         attrs = {'op': request.get('op', 'req')}
         msgID = request.get('msgID')

@@ -44,8 +44,9 @@ class Module:
         return self.render_header(request, command, action)
 
     def render_command_fields(self, request, command, fields = {'name': {}}):
-        action = self.render_command(request, command)
-        request.subfields(action, fields)
+        command = self.render_command(request, command)
+        request.subfields(command, fields)
+        return command
 
     def render_root_extension(self, request):
         if request.extension is None:
