@@ -1,7 +1,6 @@
-from pprint import pprint
 from importlib import import_module
 
-class Worker:
+class Doc:
     nsmap = {
         'builtin':      'builtin',
         'epp':          'urn:ietf:params:xml:ns:epp-1.0',
@@ -36,13 +35,22 @@ class Worker:
         return module
 
     def build_module(self, ns, name):
-        lib = import_module('reppy.' + name)
+        lib = import_module('reppy.modules.' + name)
         type = getattr(lib, name)
         return type(ns)
+
+    def get(self, name, default = None):
+        return self.data.get(name, default)
 
     def set(self, name, value):
         self.data[name] = value
 
-    def get(self, name, default = None):
-        return self.data.get(name, default)
+    def addto(self, name, values):
+        if not name in self.data:
+            self.data[name] = {}
+        for k,v in values.iteritems():
+            self.data[name][k] = v
+
+    def addpair(self, name, value):
+        self.addto(name, {value: value})
 

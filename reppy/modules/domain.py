@@ -1,6 +1,6 @@
 from collections import OrderedDict
 
-from Module import Module
+from ..Module import Module
 
 class domain(Module):
     opmap = {
@@ -23,34 +23,23 @@ class domain(Module):
         'registrant':   'set',
     }
 
+### RESPONSE parsing
+
     def parse_cd(self, response, tag):
-        avails  = response.get('avails', {})
-        reasons = response.get('reasons', {})
         name    = response.find(tag, 'domain:name')
         reason  = response.find(tag, 'domain:reason')
-        avails[name.text] = name.attrib['avail']
+        response.addto('avails', {name.text.lower(): name.attrib['avail']})
         if reason is not None:
-            reasons[name.text] = reason.text
-        response.set('avails',  avails)
-        response.set('reasons', reasons)
+            response.addto('reasons', {name.text.lower(): reason.text})
 
     def parse_status(self, response, tag):
-        status = tag.attrib['s']
-        statuses = response.get('statuses', {})
-        statuses[status] = status
-        response.set('statuses', statuses)
+        response.addpair('statuses', tag.attrib['s'])
 
     def parse_hostObj(self, response, tag):
-        ns = tag.text.lower()
-        nss = response.get('nss', {})
-        nss[ns] = ns
-        response.set('nss', nss)
+        response.addpair('nss', tag.text.lower())
 
     def parse_host(self, response, tag):
-        host = tag.text.lower()
-        hosts = response.get('hosts', {})
-        hosts[host] = host
-        response.set('hosts', hosts)
+        response.addpair('hosts', tag.text.lower())
 
     def parse_contact(self, response, tag):
         response.set(tag.attrib['type'], tag.text)
@@ -76,7 +65,7 @@ class domain(Module):
             if request.get(type):
                 request.sub(command, 'domain:contact', {'type': type}, request.get(type))
         authInfo = request.sub(command, 'domain:authInfo')
-        request.sub(authInfo, 'domain:pw', {}, request.get('pw', request.get('password', '')))
+        request.sub(authInfo, 'domain:pw', {}, request.get('pw', ''))
 
     def render_delete(self, request):
         self.render_command_fields(request, 'delete')
@@ -87,3 +76,4 @@ class domain(Module):
             ('curExpDate', {}),
             ('period', {'unit': 'y'}),
         ]))
+

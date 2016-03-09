@@ -1,4 +1,4 @@
-from Module import Module
+from ..Module import Module
 
 class epp(Module):
     opmap = {

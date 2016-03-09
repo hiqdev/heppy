@@ -1,11 +1,10 @@
 import xml.etree.ElementTree as ET
-from importlib import import_module
 
 from pprint import pprint
 
-from Worker import Worker
+from Doc import Doc
 
-class Response(Worker):
+class Response(Doc):
     def __init__(self, root):
         self.data = {}
         self.root = root

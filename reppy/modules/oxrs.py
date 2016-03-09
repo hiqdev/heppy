@@ -1,4 +1,4 @@
-from Module import Module
+from ..Module import Module
 
 class oxrs(Module):
     def parse_xcp(self, response, tag):

@@ -1,12 +1,11 @@
 import xml.dom.minidom
 import xml.etree.ElementTree as ET
 
-from pprint import pprint
-from Worker import Worker
+from Doc import Doc
 
-class Request(Worker):
+class Request(Doc):
     def __init__(self, data):
-        Worker.__init__(self, data)
+        Doc.__init__(self, data)
         self.data       = data
         self.raw        = None
         self.epp        = None
