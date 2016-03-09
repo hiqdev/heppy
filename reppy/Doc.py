@@ -4,10 +4,13 @@ class Doc:
     nsmap = {
         'builtin':      'builtin',
         'epp':          'urn:ietf:params:xml:ns:epp-1.0',
+        'host':         'urn:ietf:params:xml:ns:host-1.0',
         'domain':       'urn:ietf:params:xml:ns:domain-1.0',
-        'oxrs':         'urn:afilias:params:xml:ns:oxrs-1.1',
+        'contact':      'urn:ietf:params:xml:ns:contact-1.0',
+        'secDNS':       'urn:ietf:params:xml:ns:secDNS-1.1',
         'fee':          'urn:ietf:params:xml:ns:fee-0.7',
         'rgp':          'urn:ietf:params:xml:ns:rgp-1.0',
+        'oxrs':         'urn:afilias:params:xml:ns:oxrs-1.1',
         'namestoreExt': 'http://www.verisign-grs.com/epp/namestoreExt-1.1',
     }
 

@@ -60,4 +60,5 @@ class Module:
     def render_extension_fields(self, request, action, fields):
         extension = self.render_extension(request, action)
         request.subfields(extension, fields)
+        return extension
 
