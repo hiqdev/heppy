@@ -5,8 +5,6 @@ from pprint import pprint
 from Worker import Worker
 
 class Request(Worker):
-    xmlns = 'urn:ietf:params:xml:ns:epp-1.0'
-
     def __init__(self, data):
         Worker.__init__(self, data)
         self.data       = data
