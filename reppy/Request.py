@@ -33,7 +33,8 @@ class Request(Doc):
     def subfields(self, parent, fields):
         name = parent.tag.split(':')[0]
         for field, attrs in fields.iteritems():
-            self.sub(parent, name + ':' + field, attrs, self.get(field))
+            if self.get(field):
+                self.sub(parent, name + ':' + field, attrs, self.get(field))
         return parent
 
     @staticmethod

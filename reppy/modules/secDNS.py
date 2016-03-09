@@ -11,9 +11,7 @@ class secDNS(Module):
 ### REQUEST rendering
 
     def render_create(self, request):
-        ext = self.render_extension(request, 'create')
-        if request.get('maxSigLife'):
-            request.sub(ext, 'secDNS:maxSigLife', {}, request.get('maxSigLife'))
+        ext = self.render_extension_fields(request, 'create', {'maxSigLife': {}})
         data = request.sub(ext, 'secDNS:dsData')
         request.subfields(data, OrderedDict([
             ('keyTag', {}),
