@@ -12,15 +12,25 @@ class secDNS(Module):
 
     def render_create(self, request):
         ext = self.render_extension(request, 'create')
-        self.render_allData(request, ext)
+        self.render_allData(request, ext, request)
 
-    def render_allData(self, request, parent):
-        if request.get('maxSigLife'):
-            request.sub(parent, 'secDNS:maxSigLife', {}, request.get('maxSigLife'))
-        if request.get('digest'):
-            self.render_dsData(request, parent, request)
+    def render_update(self, request):
+        ext = self.render_extension(request, 'update')
+        for k in ('add', 'rem', 'chg'):
+            if request.get(k):
+                command = request.sub(ext, 'secDNS:' + k)
+                self.render_allData(request, command, request.get(k))
+
+    def render_allData(self, request, parent, values):
+        if values.get('all')=='true':
+            request.sub(parent, 'secDNS:all', {}, 'true')
+            return
+        if values.get('maxSigLife'):
+            request.sub(parent, 'secDNS:maxSigLife', {}, values.get('maxSigLife'))
+        if values.get('digest'):
+            self.render_dsData(request, parent, values)
         else:
-            self.render_keyData(request, parent, request)
+            self.render_keyData(request, parent, values)
 
     def render_dsData(self, request, parent, values):
         data = request.sub(parent, 'secDNS:dsData')
@@ -31,7 +41,7 @@ class secDNS(Module):
         self.render_keyData(request, data, values)
 
     def render_keyData(self, request, parent, values):
-        if not request.get('pubKey'):
+        if not values.get('pubKey'):
             return
         data = request.sub(parent, 'secDNS:keyData')
         request.sub(data, 'secDNS:flags',       {}, values.get('flags'))

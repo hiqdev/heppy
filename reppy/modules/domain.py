@@ -77,3 +77,5 @@ class domain(Module):
             ('period', {'unit': 'y'}),
         ]))
 
+    def render_update(self, request):
+        command = self.render_command_fields(request, 'update')
