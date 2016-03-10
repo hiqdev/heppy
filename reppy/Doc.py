@@ -45,6 +45,10 @@ class Doc:
     def get(self, name, default = None):
         return self.data.get(name, default)
 
+    @staticmethod
+    def mget(data, map):
+        return {k:data.get(v or k) for k,v in map.iteritems()}
+
     def set(self, name, value):
         self.data[name] = value
 
