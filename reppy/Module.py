@@ -36,8 +36,8 @@ class Module:
     def render_root_command(self, request, command, attrs = {}):
         if request.command is None:
             epp = self.render_epp(request)
-            request.command = request.sub(epp, 'command', attrs)
-        return request.sub(request.command, command)
+            request.command = request.sub(epp, 'command')
+        return request.sub(request.command, command, attrs)
 
     def render_header(self, request, source, action):
         return request.sub(source, self.name + ':' + action, {'xmlns:' + self.name: self.xmlns})
