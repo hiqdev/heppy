@@ -18,28 +18,24 @@ class secDNS(Module):
         if request.get('maxSigLife'):
             request.sub(parent, 'secDNS:maxSigLife', {}, request.get('maxSigLife'))
         if request.get('digest'):
-            self.render_dsData(request, parent)
+            self.render_dsData(request, parent, request)
         else:
-            self.render_keyData(request, parent)
+            self.render_keyData(request, parent, request)
 
-    def render_dsData(self, request, parent):
+    def render_dsData(self, request, parent, values):
         data = request.sub(parent, 'secDNS:dsData')
-        request.subfields(data, OrderedDict([
-            ('keyTag', {}),
-            ('alg', 'digestAlg'),
-            ('digestType', {}),
-            ('digest', {}),
-        ]))
-        self.render_keyData(request, data)
+        request.sub(data, 'secDNS:keyTag',      {}, values.get('keyTag'))
+        request.sub(data, 'secDNS:alg',         {}, values.get('digestAlg'))
+        request.sub(data, 'secDNS:digestType',  {}, values.get('digestType'))
+        request.sub(data, 'secDNS:digest',      {}, values.get('digest'))
+        self.render_keyData(request, data, values)
 
-    def render_keyData(self, request, parent):
+    def render_keyData(self, request, parent, values):
         if not request.get('pubKey'):
             return
         data = request.sub(parent, 'secDNS:keyData')
-        request.subfields(data, OrderedDict([
-            ('flags', {}),
-            ('protocol', {}),
-            ('alg', 'keyAlg'),
-            ('pubKey', {}),
-        ]))
+        request.sub(data, 'secDNS:flags',       {}, values.get('flags'))
+        request.sub(data, 'secDNS:protocol',    {}, values.get('protocol'))
+        request.sub(data, 'secDNS:alg',         {}, values.get('keyAlg'))
+        request.sub(data, 'secDNS:pubKey',      {}, values.get('pubKey'))
 

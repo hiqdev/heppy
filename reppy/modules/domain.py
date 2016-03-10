@@ -47,9 +47,9 @@ class domain(Module):
 ### REQUEST rendering
 
     def render_check(self, request):
-        action = self.render_command(request, 'check')
+        command = self.render_command(request, 'check')
         for name in request.get('names').itervalues():
-            request.sub(action, 'domain:name', {}, name)
+            request.sub(command, 'domain:name', {}, name)
 
     def render_info(self, request):
         self.render_command_fields(request, 'info', {'name': {'hosts': 'all'}})

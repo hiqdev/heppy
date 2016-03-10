@@ -30,14 +30,10 @@ class Request(Doc):
             res.text = str(text)
         return res
 
-    def subfields(self, parent, fields):
+    def subfields(self, parent, fields, values = None):
         name = parent.tag.split(':')[0]
         for field, attrs in fields.iteritems():
-            if isinstance(attrs, basestring):
-                value = self.get(attrs)
-                attrs = {}
-            else:
-                value = self.get(field)
+            value = self.get(field) if values is None else values.get(field)
             if value:
                 self.sub(parent, name + ':' + field, attrs, value)
         return parent
