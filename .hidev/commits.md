@@ -1,8 +1,10 @@
 hiqdev/heppy commits history
 ----------------------------
 
-## Under development
+## 0.0.2 2016-03-11
 
+- Changed: renamed to `heppy`
+    - 12871b8 2016-03-11 renamed to heppy (sol@hiqdev.com)
     - fb64481 2016-03-11 renamed to heppy (sol@hiqdev.com)
 
 ## 0.0.1 2016-03-11

@@ -1,8 +1,9 @@
 hiqdev/heppy changelog
 ----------------------
 
-## Under development
+## 0.0.2 2016-03-11
 
+- Changed: renamed to `heppy`
 
 ## 0.0.1 2016-03-11
 
