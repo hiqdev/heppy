@@ -1,8 +1,8 @@
 package:
     type:           project
-    name:           reppy
+    name:           heppy
     title:          EPP client and library in Python
-    headline:       rEPPy
+    headline:       hEPPy
     keywords:       epp, client, library
     description:    |
         [EPP](https://en.wikipedia.org/wiki/Extensible_Provisioning_Protocol) is Extensible Provisioning Protocol used for registrar-registry communication to register and manage domains.

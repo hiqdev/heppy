@@ -2,12 +2,12 @@
 
 from pprint import pprint
 
-from reppy.Args import Args
-from reppy.Error import Error
-from reppy.Client import Client
-from reppy.Config import Config
-from reppy.Request import Request
-from reppy.Response import Response
+from heppy.Args import Args
+from heppy.Error import Error
+from heppy.Client import Client
+from heppy.Config import Config
+from heppy.Request import Request
+from heppy.Response import Response
 
 try:
     args = Args()

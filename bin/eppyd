@@ -10,8 +10,8 @@ import asyncore
 from datetime import datetime
 from pprint import pprint
 
-from reppy import Net
-from reppy.Client import Client
+from heppy import Net
+from heppy.Client import Client
 
 SIZE = 4096
 

@@ -5,10 +5,10 @@ import socket
 
 from pprint import pprint
 
-from reppy.Error import Error
-from reppy.Client import Client
-from reppy.Request import Request
-from reppy.Response import Response
+from heppy.Error import Error
+from heppy.Client import Client
+from heppy.Request import Request
+from heppy.Response import Response
 
 class Daemon:
     @staticmethod

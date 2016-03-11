@@ -38,7 +38,7 @@ class Doc:
         return module
 
     def build_module(self, ns, name):
-        lib = import_module('reppy.modules.' + name)
+        lib = import_module('heppy.modules.' + name)
         type = getattr(lib, name)
         return type(ns)
 

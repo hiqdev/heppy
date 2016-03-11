@@ -3,7 +3,7 @@
 import sys
 from pprint import pprint
 
-from reppy.Response import Response
+from heppy.Response import Response
 
 xml = ''
 for line in sys.stdin:

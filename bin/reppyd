@@ -4,10 +4,10 @@ import json
 
 from pprint import pprint
 
-from reppy.Args import Args
-from reppy.Error import Error
-from reppy.Config import Config
-from reppy.Daemon import Daemon
+from heppy.Args import Args
+from heppy.Error import Error
+from heppy.Config import Config
+from heppy.Daemon import Daemon
 
 args = Args()
 config = Config(args.get('path'))

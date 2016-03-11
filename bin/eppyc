@@ -2,8 +2,8 @@
 
 import sys
 
-from reppy.Error import Error
-from reppy.Client import Client
+from heppy.Error import Error
+from heppy.Client import Client
 
 if len(sys.argv)<2:
     Error.die(1, 'usage: eppyc path')
