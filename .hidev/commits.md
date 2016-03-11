@@ -3,7 +3,18 @@ hiqdev/reppy commits history
 
 ## Under development
 
+- Added secDNS extension
+    - 65582fe 2016-03-10 + secDNS:update (sol@hiqdev.com)
+    - 872f46a 2016-03-10 improved secDNS (sol@hiqdev.com)
+    - 5acfcab 2016-03-10 + Doc.mget (sol@hiqdev.com)
+    - ffd65fa 2016-03-10 fixed epp:poll (sol@hiqdev.com)
+    - 68a0279 2016-03-10 + secDNS:keyData (sol@hiqdev.com)
+    - 09550d8 2016-03-10 improved Request.subfields to get value from other name (sol@hiqdev.com)
+    - bc96776 2016-03-09 improved secDNS:create rendering (sol@hiqdev.com)
+    - 83183a2 2016-03-09 improved hello parsing (sol@hiqdev.com)
+    - 134eb23 2016-03-09 + secDNS extension module (sol@hiqdev.com)
 - Added basics
+    - 110c8ef 2016-03-09 reorganized modules into own dir (sol@hiqdev.com)
     - cc6b7e8 2016-03-08 cleaned away old junk, now everything in modules (sol@hiqdev.com)
     - 38a2641 2016-03-07 fixed typos (sol@hiqdev.com)
     - 7fd9709 2016-03-07 still improving (sol@hiqdev.com)

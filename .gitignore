@@ -13,7 +13,13 @@
 Thumbs.db
 nbproject
 
+# dist files
+dist
+
 # Byte-compiled / optimized / DLL files
 *$py.class
 *.py[cod]
 __pycache__/
+
+# PHARs
+composer.phar

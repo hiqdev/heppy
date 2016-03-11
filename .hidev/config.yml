@@ -1,9 +1,9 @@
 package:
     type:           project
     name:           reppy
-    title:          Python EPP client and library
+    title:          EPP client and library in Python
     headline:       rEPPy
-    keywords:       python, epp, client, library
+    keywords:       epp, client, library
     description:    |
         [EPP](https://en.wikipedia.org/wiki/Extensible_Provisioning_Protocol) is Extensible Provisioning Protocol used for registrar-registry communication to register and manage domains.
 
@@ -17,4 +17,5 @@ package:
 
 require:
     hiqdev/hidev-python: "*@dev"
+    hiqdev/hidev-pypi:   "*@dev"
     hiqdev/hidev-vendor: "*"
