@@ -8,7 +8,7 @@ setup(
     author = 'Andrii Vasyliev',
     author_email = 'sol@hiqdev.com',
     url = 'https://github.com/hiqdev/heppy',
-    download_url = 'https://github.com/hiqdev/heppy/tarball/0.0.1',
+    download_url = 'https://github.com/hiqdev/heppy/tarball/0.0.2',
     keywords = ['epp', 'client', 'library'],
     classifiers = [],
 )
