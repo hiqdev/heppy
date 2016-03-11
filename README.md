@@ -1,11 +1,11 @@
-rEPPy
+hEPPy
 =====
 
 **EPP client and library in Python**
 
-[![GitHub version](https://badge.fury.io/gh/hiqdev%2Freppy.svg)](https://badge.fury.io/gh/hiqdev%2Freppy)
-[![Scrutinizer Code Coverage](https://img.shields.io/scrutinizer/coverage/g/hiqdev/reppy.svg)](https://scrutinizer-ci.com/g/hiqdev/reppy/)
-[![Scrutinizer Code Quality](https://img.shields.io/scrutinizer/g/hiqdev/reppy.svg)](https://scrutinizer-ci.com/g/hiqdev/reppy/)
+[![GitHub version](https://badge.fury.io/gh/hiqdev%2Fheppy.svg)](https://badge.fury.io/gh/hiqdev%2Fheppy)
+[![Scrutinizer Code Coverage](https://img.shields.io/scrutinizer/coverage/g/hiqdev/heppy.svg)](https://scrutinizer-ci.com/g/hiqdev/heppy/)
+[![Scrutinizer Code Quality](https://img.shields.io/scrutinizer/g/hiqdev/heppy.svg)](https://scrutinizer-ci.com/g/hiqdev/heppy/)
 
 [EPP](https://en.wikipedia.org/wiki/Extensible_Provisioning_Protocol) is Extensible Provisioning Protocol used for registrar-registry communication to register and manage domains.
 

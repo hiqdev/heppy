@@ -1,5 +1,8 @@
-hiqdev/reppy changelog
+hiqdev/heppy changelog
 ----------------------
+
+## Under development
+
 
 ## 0.0.1 2016-03-11
 
