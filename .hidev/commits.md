@@ -1,8 +1,11 @@
 hiqdev/reppy commits history
 ----------------------------
 
-## Under development
+## 0.0.1 2016-03-11
 
+- Added PyPI packaging
+    - bb25600 2016-03-11 rehideved (sol@hiqdev.com)
+    - 89ff36e 2016-03-11 + setup.py, setup.cfg (sol@hiqdev.com)
 - Added secDNS extension
     - 65582fe 2016-03-10 + secDNS:update (sol@hiqdev.com)
     - 872f46a 2016-03-10 improved secDNS (sol@hiqdev.com)
