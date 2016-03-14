@@ -14,7 +14,6 @@ try:
     config = Config(args.get('path'))
     request = Request.buildFromArgs(args)
     query = str(request)
-    print query
     print Request.prettifyxml(query)
     reply = Client(config['local']['address']).request(query)
     print Request.prettifyxml(reply)
