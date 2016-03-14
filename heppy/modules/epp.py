@@ -50,8 +50,13 @@ class epp(Module):
         request.sub(options, 'version', {}, request.get('version', '1.0'))
         request.sub(options, 'lang',    {}, request.get('lang', 'en'))
         svcs = request.sub(action, 'svcs')
-        for svc in request.get('svcs', [request.nsmap['epp']]):
+        for svc in request.get('objURIs', {'0': request.nsmap['epp']}).itervalues():
             request.sub(svcs, 'objURI', {}, svc)
+        extURIs = request.get('extURIs', {})
+        if extURIs != {}:
+            exts = request.sub(svcs, 'svcExtension');
+            for ext in extURIs.itervalues():
+                request.sub(exts, 'extURI', {}, ext)
 
     def render_logout(self, request):
         self.render_root_command(request, 'logout')

@@ -24,14 +24,13 @@ class Doc:
 
     modules = {}
 
-    def __init__(self, root):
-        for name,ns in self.nsmap.iteritems():
-            self.modules[ns] = name
-
     def get_module(self, ns):
         if ns in self.nsmap:
             ns = self.nsmap[ns]
-        module = self.modules[ns]
+        if self.modules == {}:
+            for name,ns in self.nsmap.iteritems():
+                self.modules[ns] = name
+        module = self.modules.get(ns)
         if isinstance(module, basestring):
             module = self.build_module(ns, module)
             self.modules[ns] = module

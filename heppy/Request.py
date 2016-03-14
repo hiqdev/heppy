@@ -5,7 +5,6 @@ from Doc import Doc
 
 class Request(Doc):
     def __init__(self, data):
-        Doc.__init__(self, data)
         self.data       = data
         self.raw        = None
         self.epp        = None
@@ -39,19 +38,19 @@ class Request(Doc):
         return parent
 
     @staticmethod
-    def build(command, data, extensions = []):
+    def build(command, data, extensions = {}):
         request = Request(data)
         request.render(command)
-        for ext in extensions:
+        for ext in extensions.itervalues():
             request.render(ext)
         request.render('epp:clTRID')
         return request
 
     @staticmethod
     def buildFromArgs(args):
-        extensions = args.get('extensions') or []
-        if extensions == [] and 'extension' in args:
-            extensions = [args.get('extension')]
+        extensions = args.get('extensions') or {}
+        if extensions == {} and 'extension' in args:
+            extensions = {'0': args.get('extension')}
         return Request.build(args.get('command'), args, extensions)
 
     def render(self, command):

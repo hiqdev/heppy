@@ -15,7 +15,7 @@ config.merge(args)
 
 method = getattr(Daemon, args.get('command'), None)
 if callable(method):
-    method(config)
+    method(config, args)
 else:
     Error.die(1, 'wrong command', config)
 
