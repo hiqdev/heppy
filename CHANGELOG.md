@@ -1,6 +1,11 @@
 hiqdev/heppy changelog
 ----------------------
 
+## Under development
+
+- Fixed `secDNS` extension
+- Fixed `login` command, added `extURIs` and `objURIs`
+
 ## 0.0.2 2016-03-11
 
 - Changed: renamed to `heppy`

@@ -1,6 +1,19 @@
 hiqdev/heppy commits history
 ----------------------------
 
+## Under development
+
+- Fixed `secDNS` extension
+    - d91a4bd 2016-03-18 + secDNS domain info parsing (sol@hiqdev.com)
+    - fc0f10a 2016-03-18 + `Response.find_text` (sol@hiqdev.com)
+    - 6c90cde 2016-03-18 + `domain.render_auth_info` and hosts option in domain:info (sol@hiqdev.com)
+    - 05284bb 2016-03-18 + `Doc.has` (sol@hiqdev.com)
+- Fixed `login` command, added `extURIs` and `objURIs`
+    - 699989b 2016-03-17 fixed stupid error (sol@hiqdev.com)
+    - d00f4d6 2016-03-14 improved login: added extURI, objURI (sol@hiqdev.com)
+    - f7eb934 2016-03-14 * Client: added lazy connect and auto reconnect (sol@hiqdev.com)
+    - dc69850 2016-03-11 fixed `download_url` in setup.py (sol@hiqdev.com)
+
 ## 0.0.2 2016-03-11
 
 - Changed: renamed to `heppy`
