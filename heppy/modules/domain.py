@@ -52,7 +52,16 @@ class domain(Module):
             request.sub(command, 'domain:name', {}, name)
 
     def render_info(self, request):
-        self.render_command_fields(request, 'info', {'name': {'hosts': 'all'}})
+        hosts = request.get('hosts', 'all')
+        command = self.render_command_fields(request, 'info', {'name': {'hosts': hosts}})
+        if request.has('pw'):
+            self.render_auth_info(request, command)
+
+    def render_auth_info(self, request, command, pw = None):
+        if pw is None:
+            pw = request.get('pw', '')
+        authInfo = request.sub(command, 'domain:authInfo')
+        request.sub(authInfo, 'domain:pw', {}, pw)
 
     def render_create(self, request):
         command = self.render_command_fields(request, 'create', OrderedDict([
@@ -64,8 +73,7 @@ class domain(Module):
         for type in ('admin', 'tech', 'billing'):
             if request.get(type):
                 request.sub(command, 'domain:contact', {'type': type}, request.get(type))
-        authInfo = request.sub(command, 'domain:authInfo')
-        request.sub(authInfo, 'domain:pw', {}, request.get('pw', ''))
+        self.render_auth_info(request, command)
 
     def render_delete(self, request):
         self.render_command_fields(request, 'delete')
