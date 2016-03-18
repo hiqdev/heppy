@@ -13,6 +13,11 @@ class Response(Doc):
     def find(self, tag, name):
         return tag.find(name, namespaces=self.nsmap)
 
+    def find_text(self, parent, name):
+        tag = self.find(parent, name)
+        if tag is not None:
+            return tag.text
+
     def findall(self, tag, name):
         return tag.findall(name, self.nsmap)
 
