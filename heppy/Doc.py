@@ -44,6 +44,9 @@ class Doc:
     def get(self, name, default = None):
         return self.data.get(name, default)
 
+    def has(self, name):
+        return name in self.data
+
     @staticmethod
     def mget(data, map):
         return {k:data.get(v or k) for k,v in map.iteritems()}
