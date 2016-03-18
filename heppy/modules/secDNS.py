@@ -4,9 +4,23 @@ from ..Module import Module
 
 class secDNS(Module):
     opmap = {
+        'infData':      'descend',
+        'maxSigLife':   'set',
     }
 
 ### RESPONSE parsing
+
+    def parse_dsData(self, response, tag):
+        response.set('keyTag',      response.find_text(tag, 'secDNS:keyTag'))
+        response.set('digestAlg',   response.find_text(tag, 'secDNS:alg'))
+        response.set('digestType',  response.find_text(tag, 'secDNS:digestType'))
+        response.set('digest',      response.find_text(tag, 'secDNS:digest'))
+
+    def parse_keyData(self, response, tag):
+        response.set('flags',       response.find_text(tag, 'secDNS:flags'))
+        response.set('protocol',    response.find_text(tag, 'secDNS:protocol'))
+        response.set('keyAlg',      response.find_text(tag, 'secDNS:alg'))
+        response.set('pubKey',      response.find_text(tag, 'secDNS:pubKey'))
 
 ### REQUEST rendering
 
