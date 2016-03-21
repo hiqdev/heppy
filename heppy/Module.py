@@ -1,4 +1,6 @@
 
+from pprint import pprint
+
 class Module:
     opmap = {}
 
@@ -20,6 +22,15 @@ class Module:
     def parse_descend(self, response, tag):
         for child in tag:
             response.parse(child)
+
+    def parse_status(self, response, tag):
+        response.addpair('statuses', tag.attrib['s'])
+
+    def parse_cd_tag(self, response, tag):
+        name = tag[0]
+        response.addto('avails', {name.text.lower(): name.attrib['avail']})
+        if len(tag)>1:
+            response.addto('reasons', {name.text.lower(): tag[1].text})
 
 ### REQUEST rendering
 
@@ -49,6 +60,12 @@ class Module:
     def render_command_fields(self, request, command, fields = {'name': {}}):
         command = self.render_command(request, command)
         request.subfields(command, fields)
+        return command
+
+    def render_check_command(self, request, mod, field):
+        command = self.render_command(request, 'check')
+        for name in request.get(field + 's').itervalues():
+            request.sub(command, mod+':'+field, {}, name)
         return command
 
     def render_root_extension(self, request):

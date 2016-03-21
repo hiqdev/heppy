@@ -4,7 +4,6 @@ from ..Module import Module
 
 class domain(Module):
     opmap = {
-        'greeting':     'descend',
         'infData':      'descend',
         'chkData':      'descend',
         'creData':      'descend',
@@ -26,14 +25,7 @@ class domain(Module):
 ### RESPONSE parsing
 
     def parse_cd(self, response, tag):
-        name    = response.find(tag, 'domain:name')
-        reason  = response.find(tag, 'domain:reason')
-        response.addto('avails', {name.text.lower(): name.attrib['avail']})
-        if reason is not None:
-            response.addto('reasons', {name.text.lower(): reason.text})
-
-    def parse_status(self, response, tag):
-        response.addpair('statuses', tag.attrib['s'])
+        return self.parse_cd_tag(response, tag)
 
     def parse_hostObj(self, response, tag):
         response.addpair('nss', tag.text.lower())
