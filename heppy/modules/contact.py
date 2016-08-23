@@ -25,6 +25,7 @@ class contact(Module):
         'upID':         'set',
         'crDate':       'set',
         'upDate':       'set',
+        'trDate':       'set',
         'pw':           'set',
     }
 
@@ -42,4 +43,30 @@ class contact(Module):
         command = self.render_command_fields(request, 'info', {'id': {}})
         if request.has('pw'):
             self.render_auth_info(request, command)
+
+    def render_create(self, request):
+        command = self.render_command_fields(request, 'create', {'id': {}})
+        postalInfo = request.sub(command, 'contact:postalInfo', {'type': 'int'})
+        request.sub(postalInfo, 'contact:name', {}, request.get('name'))
+        request.sub(postalInfo, 'contact:org',  {}, request.get('org'))
+        self.render_addr(request, postalInfo)
+        request.sub(command, 'contact:voice',   {}, request.get('voice'))
+        request.sub(command, 'contact:email',   {}, request.get('email'))
+        if request.has('pw'):
+            self.render_auth_info(request, command)
+
+    def render_addr(self, request, command):
+        addr = request.sub(command, 'contact:addr')
+        request.sub(addr, 'contact:street', {}, request.get('street1'))
+        request.sub(addr, 'contact:city',   {}, request.get('city'))
+        if request.has('sp'):
+            request.sub(addr, 'contact:sp', {}, request.get('sp'))
+        request.sub(addr, 'contact:pc',     {}, request.get('pc'))
+        request.sub(addr, 'contact:cc',     {}, request.get('cc'))
+
+    def render_auth_info(self, request, command, pw = None):
+        if pw is None:
+            pw = request.get('pw', '')
+        authInfo = request.sub(command, 'contact:authInfo')
+        request.sub(authInfo, 'contact:pw', {}, pw)
 
