@@ -18,4 +18,4 @@ package:
 require:
     hiqdev/hidev-python: "*@dev"
     hiqdev/hidev-pypi:   "*@dev"
-    hiqdev/hidev-vendor: "*"
+    hiqdev/hidev-hiqdev: "*"
