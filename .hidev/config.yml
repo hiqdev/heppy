@@ -15,7 +15,6 @@ package:
 
         For the moment it is in early stage of development.
 
-require:
+plugins:
     hiqdev/hidev-python: "*@dev"
-    hiqdev/hidev-pypi:   "*@dev"
     hiqdev/hidev-hiqdev: "*"
