@@ -16,5 +16,5 @@ class idnLang(Module):
 
     def render_tag(self, request):
         extension = self.render_extension(request, 'tag')
-        extension.text = request.get('idnLang:tag')
+        extension.text = request.get('idnLang').get('tag')
 

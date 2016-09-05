@@ -15,5 +15,6 @@ class namestoreExt(Module):
 ### REQUEST rendering
 
     def render_subProduct(self, request):
-        self.render_extension_fields(request, 'namestoreExt', {'subProduct': {}})
+        extension = self.render_extension(request, 'namestoreExt')
+        request.subfields(extension, {'subProduct': {}}, request.get('namestoreExt'))
 
