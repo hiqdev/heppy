@@ -3,6 +3,7 @@
 # This is message queue subscribing version based on RabbitMQ and pika.
 
 import json
+import signal
 
 from pprint import pprint
 
@@ -12,13 +13,20 @@ from heppy.Error import Error
 from heppy.Config import Config
 from heppy.Daemon import Daemon
 from heppy.RabbitMQ import RPCServer
+from heppy.SignalHandler import SignalHandler
 
 args = Args()
 config = Config(args.get('path'))
 
+def hello():
+    print "\nHELLO\n"
+
+handler = SignalHandler(hello)
+
 def response(query):
-    print  "query is: " + query
-    return "reply is: " + query
+    with handler.block_signals():
+        print  "query is: " + query
+        return "reply is: " + query
 
 server = RPCServer(config)
 server.consume(response)
