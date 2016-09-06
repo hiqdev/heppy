@@ -22,7 +22,7 @@ class RPCServer:
         print(" [x] Awaiting RPC requests")
         self.channel.start_consuming()
 
-    def on_request(ch, method, props, body):
+    def on_request(self, ch, method, props, body):
         reply = self.response(body)
 
         ch.basic_publish(
@@ -37,6 +37,7 @@ class RPCServer:
 
 class RPCClient:
     def __init__(self, config):
+        self.config = config
         self.connection = pika.BlockingConnection(pika.ConnectionParameters(
             host=self.config['RabbitMQ']['host'],
         ))

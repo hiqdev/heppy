@@ -1,0 +1,26 @@
+#!/usr/bin/env python
+
+# This is message queue subscribing version based on RabbitMQ and pika.
+
+import json
+
+from pprint import pprint
+
+from heppy.EPP import REPP
+from heppy.Args import Args
+from heppy.Error import Error
+from heppy.Config import Config
+from heppy.Daemon import Daemon
+from heppy.RabbitMQ import RPCServer
+
+args = Args()
+config = Config(args.get('path'))
+
+def response(query):
+    print  "query is: " + query
+    return "reply is: " + query
+
+server = RPCServer(config)
+server.consume(response)
+
+print 'FINISHED'
