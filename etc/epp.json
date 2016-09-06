@@ -1,0 +1,15 @@
+{
+    "queue": "comnet",
+    "epp": {
+        "host":         "epp.verisign-grs.com",
+        "port":         700,
+        "login":        "LOGIN",
+        "password":     "PASSWORD",
+        "certfile":     "ssl/all.pem",
+        "keyfile":      "ssl/key.pem",
+        "ca_certs":     "ssl/intermediate.pem"
+    },
+    "RabbitMQ": {
+        "host":         "localhost"
+    }
+}
