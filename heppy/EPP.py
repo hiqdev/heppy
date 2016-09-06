@@ -15,11 +15,14 @@ class REPP:
         self.epp = EPP(self.config)
         self.greeting = self.epp.greeting
 
-    def command(self, xml):
-        res = self.epp.command(xml)
+    def get_greeting(self):
+        return self.greeting
+
+    def request(self, xml):
+        res = self.epp.request(xml)
         if not res:
             self.connect()
-            res = self.epp.command(xml)
+            res = self.epp.request(xml)
         return res
 
 class EPP:
@@ -34,7 +37,10 @@ class EPP:
         self.greeting = self.read()
         self.config['start_time'] = datetime.now().isoformat(' ')
 
-    def command(self, xml):
+    def get_greeting(self):
+        return self.greeting
+
+    def request(self, xml):
         self.write(xml)
         return self.read()
 
@@ -43,5 +49,4 @@ class EPP:
 
     def read(self):
         return Net.read(self.ssl)
-
 

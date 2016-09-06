@@ -33,6 +33,9 @@ class Client:
         self.write(data)
         return self.read()
 
+    def get_greeting(self):
+        return self.request('greeting')
+
     @staticmethod
     def try_connect(address):
         try:
