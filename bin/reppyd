@@ -1,0 +1,24 @@
+#!/usr/bin/env python
+
+import json
+
+from pprint import pprint
+
+from heppy.Args import Args
+from heppy.Error import Error
+from heppy.Config import Config
+from heppy.Daemon import Daemon
+
+args = Args()
+config = Config(args.get('path'))
+config.merge(args)
+daemon = Daemon(config)
+daemon.is_external = True
+
+method = getattr(daemon, args.get('command'), None)
+pprint(method)
+if callable(method):
+    method(args)
+else:
+    Error.die(1, 'wrong command', config)
+

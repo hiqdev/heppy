@@ -1,5 +1,8 @@
 #!/usr/bin/env python
 
+# This is socket listening version based on asyncore.dispatcher.
+# Requires login command to be sent with first request.
+
 import os
 import sys
 import json
@@ -118,7 +121,7 @@ class Handler(asyncore.dispatcher):
             self.wait(sec)
             return 'waited {0} seconds'.format(sec)
         elif cmd.startswith('<?xml '):
-            return self.epp.command(cmd)
+            return self.epp.request(cmd)
         else:
             return 'Error: wrong command: ' + cmd
 

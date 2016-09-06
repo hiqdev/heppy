@@ -8,18 +8,19 @@ from heppy.Client import Client
 from heppy.Config import Config
 from heppy.Request import Request
 from heppy.Response import Response
+from heppy.RabbitMQ import RPCClient
 
-try:
-    args = Args()
-    config = Config(args.get('path'))
-    request = Request.buildFromArgs(args)
-    query = str(request)
-    print query
-    print Request.prettifyxml(query)
-    reply = Client(config['local']['address']).request(query)
-    print Request.prettifyxml(reply)
-    response = Response.parsexml(reply)
-    pprint(response.data)
-except Exception as e:
-    Error.die(3, e)
+args = Args()
+config = Config(args.get('path'))
+request = Request.buildFromArgs(args)
+query = str(request)
+print Request.prettifyxml(query)
+
+client = RPCClient(config)
+reply = client.request(query)
+print reply
+
+# print Request.prettifyxml(reply)
+# response = Response.parsexml(reply)
+# pprint(response.data)
 

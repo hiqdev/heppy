@@ -1,0 +1,25 @@
+#!/usr/bin/env python
+
+from pprint import pprint
+
+from heppy.Args import Args
+from heppy.Error import Error
+from heppy.Client import Client
+from heppy.Config import Config
+from heppy.Request import Request
+from heppy.Response import Response
+
+try:
+    args = Args()
+    config = Config(args.get('path'))
+    request = Request.buildFromArgs(args)
+    query = str(request)
+    print query
+    print Request.prettifyxml(query)
+    reply = Client(config['local']['address']).request(query)
+    print Request.prettifyxml(reply)
+    response = Response.parsexml(reply)
+    pprint(response.data)
+except Exception as e:
+    Error.die(3, e)
+
