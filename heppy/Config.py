@@ -1,3 +1,7 @@
+#!/usr/bin/env python
+
+import os
+import sys
 import json
 import collections
 
@@ -19,10 +23,22 @@ def merge_dict(d1, d2):
             d1[k] = v2
 
 class Config(dict):
-    def __init__(self, path):
-        with open(path) as file:
+    def __init__(self, filename):
+        with open(self.find(filename)) as file:
             self.merge(json.load(file))
 
     def merge(self, data):
         merge_dict(self, data)
 
+    def find(self, filename):
+        if os.path.isfile(filename):
+            return filename
+
+        command = sys.argv[0]
+        if '/' != command[0]:
+            command = os.path.normpath(os.path.join(os.getcwd(), command))
+        path = os.path.join(os.path.dirname(os.path.dirname(command)), 'etc', filename)
+        if os.path.isfile(path):
+            return path
+
+        return os.path.join('/etc/heppy', filename)
