@@ -1,5 +1,6 @@
 import re
 import sys
+import copy
 
 class Args(dict):
     def __init__(self):
@@ -7,7 +8,7 @@ class Args(dict):
             print('usage: {0} path command -o1=v1 ..'.format(sys.argv[0]))
             exit(1)
 
-        args = sys.argv
+        args = copy.deepcopy(sys.argv)
         self['zcmd']    = args.pop(0)
         self['path']    = args.pop(0)
         self['command'] = args.pop(0)
