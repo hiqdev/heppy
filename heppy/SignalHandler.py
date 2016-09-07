@@ -7,6 +7,9 @@ from pprint import pprint
 
 class SignalHandler:
     def __init__(self, callbacks):
+        """Defines callbacks.
+        callbacks -- hash: signal name => callback
+        """
         self.working = False
         self.received = False
         self.callbacks = {}

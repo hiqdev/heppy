@@ -2,8 +2,7 @@
 
 # This is message queue subscribing version based on RabbitMQ and pika.
 
-import json
-import signal
+import os
 
 from pprint import pprint
 
@@ -21,12 +20,18 @@ config = Config(args.get('path'))
 def hello():
     print "\nHELLO\n"
 
-handler = SignalHandler(hello)
+handler = SignalHandler({
+    'SIGINT':  quit,
+    'SIGTERM': quit,
+    'SIGHUP':  hello,
+    'SIGUSR1': hello,
+    'SIGUSR2': hello,
+})
 
 def response(query):
     with handler.block_signals():
-        print  "query is: " + query
-        return "reply is: " + query
+        print  "query[{}]: {}".format(os.getpid(), query)
+        return "reply[{}]: {}".format(os.getpid(), query)
 
 server = RPCServer(config)
 server.consume(response)
