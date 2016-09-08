@@ -1,4 +1,6 @@
-language: python
+language: php
+php:
+    - 5.6
 python:
     - 2.7
     - 3.4
