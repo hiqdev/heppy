@@ -37,4 +37,4 @@ class SignalHandler:
             self.working = False
             if self.received:
                 self.run_callback()
-                
+
