@@ -1,7 +1,6 @@
 #!/usr/bin/env python
 
 import os
-import sys
 import time
 import socket
 
@@ -19,6 +18,17 @@ class Daemon:
         self.config = config
         self.is_external = False
         self.client = None
+        self.handler = SignalHandler({
+            'SIGINT':  self.quit,
+            'SIGTERM': self.quit,
+            'SIGHUP':  self.hello,
+            'SIGUSR1': self.hello,
+            'SIGUSR2': self.hello,
+        })
+
+    def quit(self):
+        global quit
+        quit()
 
     def start(self,args = {}):
         self.connect()
@@ -68,6 +78,11 @@ class Daemon:
             time.sleep(2)
             self.client = Client(self.config['local']['address'])
 
-    def stop(args = {}):
-        Error.die(3, 'failed stop', config)
+    def stop(self, args = {}):
+        Error.die(3, 'stop not implemented', config)
+
+    def request(self, query):
+        with self.handler.block_signals():
+            reply = self.client.request(query)
+        return reply
 
