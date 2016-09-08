@@ -5,6 +5,8 @@ StopWhenUnneeded=true
 [Service]
 ExecStart=/home/sol/prj/hiqdev/heppy/bin/testServer epp.json start
 Restart=always
+User=heppy
+Group=heppy
 
 [Install]
 WantedBy=heppy-comnet.target
