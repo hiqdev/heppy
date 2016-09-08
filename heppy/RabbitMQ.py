@@ -6,7 +6,6 @@ import uuid
 class RPCServer:
     def __init__(self, config):
         self.config = config
-        print self.config['RabbitMQ']['host']
         self.connection = pika.BlockingConnection(pika.ConnectionParameters(
             host=self.config['RabbitMQ']['host'],
         ))
