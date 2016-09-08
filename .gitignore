@@ -24,3 +24,6 @@ composer.phar
 
 # dist files
 dist
+
+# pip
+heppy.egg-info
