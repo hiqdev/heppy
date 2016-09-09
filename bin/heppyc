@@ -18,9 +18,7 @@ print Request.prettifyxml(query)
 
 client = RPCClient(config)
 reply = client.request(query)
-print reply
-
-# print Request.prettifyxml(reply)
-# response = Response.parsexml(reply)
-# pprint(response.data)
+print Request.prettifyxml(reply)
+response = Response.parsexml(reply)
+pprint(response.data)
 

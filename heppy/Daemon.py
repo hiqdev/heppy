@@ -12,6 +12,7 @@ from heppy.Login import Login
 from heppy.Client import Client
 from heppy.Request import Request
 from heppy.Response import Response
+from heppy.SignalHandler import SignalHandler
 
 class Daemon:
     def __init__(self, config):
@@ -25,10 +26,14 @@ class Daemon:
             'SIGUSR1': self.hello,
             'SIGUSR2': self.hello,
         })
+        self.login_query = None
 
     def quit(self):
         global quit
         quit()
+
+    def hello(self):
+        print "\nHELLO\n"
 
     def start(self,args = {}):
         self.connect()
@@ -43,14 +48,10 @@ class Daemon:
             self.connect_internal()
 
     def login(self, args = {}):
-        greeting = self.client.get_greeting()
-        greetobj = Response.parsexml(greeting)
-        pprint(greetobj.data)
         try:
-            request = Login.build(self.config, greeting, args)
-            query = str(request)
+            query = self.get_login_query(args)
             print Request.prettifyxml(query)
-            reply = self.client.request(query)
+            reply = self.request(query)
             print Request.prettifyxml(reply)
         except Error as e:
             Error.die(2, 'failed perform login request')
@@ -66,8 +67,17 @@ class Daemon:
             Error.die(2, 'bad login response', data)
         print 'LOGIN OK'
 
+    def get_login_query(self, args = {}):
+        if self.login_query is None:
+            greeting = self.client.get_greeting()
+            greetobj = Response.parsexml(greeting)
+            pprint(greetobj.data)
+            request = Login.build(self.config, greeting, args)
+            self.login_query = str(request)
+        return self.login_query
+
     def connect_internal(self):
-        self.client = REPP(self.config['epp'])
+        self.client = REPP(self.config)
 
     def connect_external(self):
         try:
@@ -84,5 +94,14 @@ class Daemon:
     def request(self, query):
         with self.handler.block_signals():
             reply = self.client.request(query)
+        return reply
+
+    def smart_request(self, query):
+        reply = self.request(query)
+        response = Response.parsexml(reply)
+        pprint(response.data)
+        if response.data['result.code'] == '2002':
+            self.login()
+            reply = self.request(query)
         return reply
 

@@ -22,4 +22,4 @@ daemon = Daemon(config)
 daemon.start(args)
 
 server = RPCServer(config)
-server.consume(daemon.request)
+server.consume(daemon.smart_request)
