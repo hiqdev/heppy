@@ -41,4 +41,9 @@ class Config(dict):
         if os.path.isfile(path):
             return path
 
-        return os.path.join('/etc/heppy', filename)
+        ext = os.path.splitext(filename)[1]
+
+        if not ext:
+            return self.find(filename + '.json')
+        else:
+            return os.path.join('/etc/heppy', filename)
