@@ -29,11 +29,13 @@ class EPP:
     def __init__(self, config):
         self.config = config
         self.socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        self.socket.connect((self.config['host'], self.config['port']))
+        self.socket.connect((self.config['epp']['host'], self.config['epp']['port']))
+        a = config.find(self.config['epp']['keyfile'])
         self.ssl = ssl.wrap_socket(self.socket,
-            keyfile  = self.config['keyfile'],
-            certfile = self.config['certfile'],
-            ca_certs = self.config['ca_certs'])
+            keyfile  = self.config.find(self.config['epp']['keyfile']),
+            certfile = self.config.find(self.config['epp']['certfile']),
+            ca_certs = self.config.find(self.config['epp']['ca_certs']),
+        )
         self.greeting = self.read()
         self.config['start_time'] = datetime.now().isoformat(' ')
 
