@@ -15,7 +15,7 @@ class Args(dict):
         self['zdir'], self['zbin'] = self['zcmd'].rsplit('/', 1)
 
         for raw in args:
-            m = re.match(r'^-(\S+)=(.*)$', raw)
+            m = re.match(r'^-(\S+?)=(.*)$', raw)
             if m:
                 name = m.group(1)
                 if name.find('.')>0:
