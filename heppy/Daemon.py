@@ -84,7 +84,7 @@ class Daemon:
             self.client = Client(self.config['local']['address'])
             self.client.connect()
         except socket.error as e:
-            os.system(self.config['zdir'] + '/eppyd ' + self.config['path'] + ' &')
+            os.system(self.config['zdir'] + '/eppyd ' + self.config.path + ' &')
             time.sleep(2)
             self.client = Client(self.config['local']['address'])
 

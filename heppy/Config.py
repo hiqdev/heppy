@@ -24,7 +24,8 @@ def merge_dict(d1, d2):
 
 class Config(dict):
     def __init__(self, filename):
-        with open(self.find(filename)) as file:
+        self.path = self.find(filename)
+        with open(self.path) as file:
             self.merge(json.load(file))
 
     def merge(self, data):
