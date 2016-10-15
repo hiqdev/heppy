@@ -1,14 +1,7 @@
 #!/usr/bin/python -u
 
-# This is message queue subscribing version based on RabbitMQ and pika.
+# Message queue subscribing version based on RabbitMQ and pika.
 
-import json
-
-from subprocess import Popen
-
-from pprint import pprint
-
-from heppy.EPP import REPP
 from heppy.Args import Args
 from heppy.Error import Error
 from heppy.Config import Config
@@ -17,6 +10,7 @@ from heppy.RabbitMQ import RPCServer
 
 args = Args()
 config = Config(args.get('path'))
+config.merge(args)
 
 daemon = Daemon(config)
 daemon.start(args)

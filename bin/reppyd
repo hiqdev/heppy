@@ -1,8 +1,6 @@
-#!/usr/bin/env python
+#!/usr/bin/python -u
 
-import json
-
-from pprint import pprint
+# Unix socket listening version.
 
 from heppy.Args import Args
 from heppy.Error import Error
@@ -17,7 +15,6 @@ daemon = Daemon(config)
 daemon.is_external = True
 
 method = getattr(daemon, args.get('command'), None)
-pprint(method)
 if callable(method):
     method(args)
 else:
