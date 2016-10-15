@@ -12,6 +12,7 @@ from heppy.Daemon import Daemon
 args = Args()
 config = Config(args.get('path'))
 config.merge(args)
+
 daemon = Daemon(config)
 daemon.is_external = True
 
