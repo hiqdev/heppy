@@ -14,6 +14,7 @@ from pprint import pprint
 from heppy import Net
 from heppy.EPP import REPP
 from heppy.Client import Client
+from heppy.Config import Config
 
 SIZE = 4096
 
@@ -132,13 +133,11 @@ class Handler(asyncore.dispatcher):
 if len(sys.argv)<2:
     print('usage: eppyd config.json')
     exit(1)
-path = sys.argv[1]
-with open(path) as file:
-    config = json.load(file)
+config = Config(sys.argv[1])
 
 AsyncServer.check_connection(config['local'])
 
-epp    = REPP(config['epp'])
+epp    = REPP(config)
 server = AsyncServer(config['local'], epp)
 
 asyncore.loop()
