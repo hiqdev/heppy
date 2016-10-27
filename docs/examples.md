@@ -20,4 +20,5 @@ Info:
 
 ```sh
 ./bin/reppyc comnet domain:info -extensions.0=namestoreExt:subProduct -subProduct=COM -name=some.com
-Namestore
+```
+
