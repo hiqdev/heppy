@@ -17,3 +17,5 @@ install:
     - './hidev.phar travis/install'
 script:
     - './hidev.phar travis/script'
+after_script:
+    - './hidev.phar travis/after_script'

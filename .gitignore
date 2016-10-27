@@ -13,6 +13,9 @@
 Thumbs.db
 nbproject
 
+# test coverage
+.coverage
+
 # Byte-compiled / optimized / DLL files
 *$py.class
 *.py[cod]
