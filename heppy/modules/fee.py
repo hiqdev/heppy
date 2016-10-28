@@ -37,6 +37,13 @@ class fee(Module):
             request.sub(domain, 'fee:period', {'unit': 'y'}, '1')
 
     def render_create(self, request):
-        extension = self.render_extension(request, 'create')
-        request.sub(extension, 'fee:currency', {}, request.get('fee_currency', 'USD'))
-        request.sub(extension, 'fee:fee',      {}, request.get('fee_fee'))
+        return self.render_action(request, 'create')
+
+    def render_renew(self, request):
+        return self.render_action(request, 'renew')
+
+    def render_action(self, request, action):
+        extension = self.render_extension(request, action)
+        data = request.get('fee', {})
+        request.sub(extension, 'fee:currency', {}, data.get('currency', 'USD'))
+        request.sub(extension, 'fee:fee',      {}, data.get('fee'))
