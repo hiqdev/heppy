@@ -5,8 +5,6 @@ import sys
 import json
 import collections
 
-from pprint import pprint
-
 # http://stackoverflow.com/questions/10703858
 def merge_dict(d1, d2):
     """
@@ -24,14 +22,15 @@ def merge_dict(d1, d2):
 
 class Config(dict):
     def __init__(self, filename):
-        self.path = self.find(filename)
+        self.path = self.findFile(filename)
         with open(self.path) as file:
             self.merge(json.load(file))
 
     def merge(self, data):
         merge_dict(self, data)
 
-    def find(self, filename):
+    @classmethod
+    def findFile(cls, filename):
         if os.path.isfile(filename):
             return filename
 
@@ -42,9 +41,13 @@ class Config(dict):
         if os.path.isfile(path):
             return path
 
+        if ':' in filename:
+            return cls.findFile(filename.split(':', 1)[0])
+
         ext = os.path.splitext(filename)[1]
 
-        if not ext:
-            return self.find(filename + '.json')
+        if ext != '.json':
+            return cls.findFile(filename + '.json')
         else:
             return os.path.join('/etc/heppy', filename)
+
