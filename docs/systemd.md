@@ -1,4 +1,4 @@
-# Systemd usage
+# systemd usage
 
 ## Target files
 
