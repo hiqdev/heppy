@@ -1,0 +1,12 @@
+[Unit]
+Description=hEPPy %i
+StopWhenUnneeded=true
+
+[Service]
+ExecStart=/home/sol/prj/hiqdev/heppy/bin/testServer %i start
+Restart=always
+User=heppy
+Group=heppy
+
+[Install]
+WantedBy=heppy.target
