@@ -19,7 +19,7 @@ For the moment it is in early stage of development.
 
 ## Configuration
 
-## `etc/epp.verisign-grs.com.json`
+### etc/epp.verisign-grs.com.json
 
 ```json
 {

@@ -1,4 +1,4 @@
-## `etc/epp.verisign-grs.com.json`
+### etc/epp.verisign-grs.com.json
 
 ```json
 {
