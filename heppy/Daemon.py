@@ -77,7 +77,7 @@ class Daemon:
         return self.login_query
 
     def connect_internal(self):
-        self.client = REPP(self.config)
+        self.client = REPP(self.config['epp'])
 
     def connect_external(self):
         try:
