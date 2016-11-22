@@ -31,7 +31,7 @@ class EPP:
         self.config = config
         self.socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         if ('bind' in self.config):
-            self.socket.bind((self.config['bind'], self.config['port']))
+            self.socket.bind((self.config['bind'], 0))
         self.socket.connect((self.config['host'], self.config['port']))
         self.ssl = ssl.wrap_socket(self.socket,
             keyfile  = Config.findFile(self.config['keyfile']),
