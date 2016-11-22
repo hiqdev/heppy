@@ -7,7 +7,7 @@ class RPCServer:
     def __init__(self, config):
         self.config = config
         self.connection = pika.BlockingConnection(pika.ConnectionParameters(
-            host=self.config['RabbitMQ']['host'],
+            host=self.config['host'],
         ))
 
         self.channel = self.connection.channel()
@@ -38,7 +38,7 @@ class RPCClient:
     def __init__(self, config):
         self.config = config
         self.connection = pika.BlockingConnection(pika.ConnectionParameters(
-            host=self.config['RabbitMQ']['host'],
+            host=self.config['host'],
         ))
 
         self.channel = self.connection.channel()

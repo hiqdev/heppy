@@ -15,5 +15,5 @@ config.merge(args)
 daemon = Daemon(config)
 daemon.start(args)
 
-server = RPCServer(config)
+server = RPCServer(config['RabbitMQ'])
 server.consume(daemon.smart_request)
