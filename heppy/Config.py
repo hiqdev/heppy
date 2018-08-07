@@ -3,6 +3,7 @@
 import os
 import sys
 import json
+import fcntl
 import collections
 
 # http://stackoverflow.com/questions/10703858
@@ -21,10 +22,49 @@ def merge_dict(d1, d2):
             d1[k] = v2
 
 class Config(dict):
-    def __init__(self, filename):
-        self.path = self.findFile(filename)
-        with open(self.path) as file:
-            self.merge(json.load(file))
+    def __init__(self, filename, mustExist = True):
+        #self.path = self.findFile(filename)
+        self.path = filename
+        self.file = None
+        self.load(mustExist)
+
+    def load(self, mustExist = True):
+        try:
+            with open(self.path) as file:
+                jstr = file.read()
+                #print self.path + ' ' + jstr
+                if jstr:
+                    self.merge(json.loads(jstr))
+        except Exception as e:
+            if mustExist:
+                raise e
+
+    def lock(self):
+        self._open()
+        try:
+            fcntl.lockf(self.file, fcntl.LOCK_EX | fcntl.LOCK_NB)
+            pass
+        except:
+            return False
+        return True
+
+    def _open(self):
+        if not self.file:
+            self.file = open(self.path, 'w', 0)
+        return self.file
+
+    def exists(self):
+        return os.path.isfile(self.path)
+
+    def save(self):
+        self.lock()
+        self.file.write(json.dumps(self, indent=4))
+        fcntl.lockf(self.file, fcntl.LOCK_UN)
+        self._close()
+
+    def _close(self):
+        self.file.close()
+        self.file = None
 
     def merge(self, data):
         merge_dict(self, data)
