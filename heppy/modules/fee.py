@@ -30,10 +30,11 @@ class fee(Module):
 
     def render_check(self, request):
         extension = self.render_extension(request, 'check')
+        command = request.get('fee', {}).get('command', 'create')
         for name in request.get('names').itervalues():
             domain = request.sub(extension, 'fee:domain')
             request.sub(domain, 'fee:name', {}, name)
-            request.sub(domain, 'fee:command', {}, 'create')
+            request.sub(domain, 'fee:command', {}, command)
             request.sub(domain, 'fee:period', {'unit': 'y'}, '1')
 
     def render_create(self, request):
