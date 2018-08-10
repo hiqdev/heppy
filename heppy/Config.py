@@ -23,8 +23,9 @@ def merge_dict(d1, d2):
 
 class Config(dict):
     def __init__(self, filename, mustExist = True):
-        #self.path = self.findFile(filename)
-        self.path = filename
+        self.abs_path = os.path.abspath(filename)
+        self.bin_path = os.path.abspath(sys.argv[0])
+        self.path = self.find_path(filename)
         self.file = None
         self.load(mustExist)
 
@@ -69,25 +70,20 @@ class Config(dict):
     def merge(self, data):
         merge_dict(self, data)
 
-    @classmethod
-    def findFile(cls, filename):
+    def get_path(self, name):
+        filename = self.get(name, '')
+        return self.find_path(filename)
+
+    def find_path(self, filename):
         if os.path.isfile(filename):
             return filename
 
-        command = sys.argv[0]
-        if '/' != command[0]:
-            command = os.path.normpath(os.path.join(os.getcwd(), command))
-        path = os.path.join(os.path.dirname(os.path.dirname(command)), 'etc', filename)
-        if os.path.isfile(path):
-            return path
-
-        if ':' in filename:
-            return cls.findFile(filename.split(':', 1)[0])
+        if '/' != filename[0]:
+            filename = os.path.join(os.path.dirname(self.abs_path), filename)
 
         ext = os.path.splitext(filename)[1]
 
         if ext != '.json':
-            return cls.findFile(filename + '.json')
-        else:
-            return os.path.join('/etc/heppy', filename)
+            return self.find_path(filename + '.json')
 
+        return filename
