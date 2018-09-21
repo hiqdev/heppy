@@ -70,6 +70,9 @@ class Config(dict):
     def merge(self, data):
         merge_dict(self, data)
 
+    def get_dir(self):
+        return os.path.dirname(self.path)
+
     def get_path(self, name):
         filename = self.get(name, '')
         return self.find_path(filename)
@@ -78,7 +81,7 @@ class Config(dict):
         if os.path.isfile(filename):
             return filename
 
-        if '/' != filename[0]:
+        if filename and '/' != filename[0]:
             filename = os.path.join(os.path.dirname(self.abs_path), filename)
 
         ext = os.path.splitext(filename)[1]
