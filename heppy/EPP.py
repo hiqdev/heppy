@@ -34,12 +34,20 @@ class EPP:
             self.socket.bind((self.config['bind'], 0))
         self.socket.connect((self.config['host'], self.config['port']))
         self.ssl = ssl.wrap_socket(self.socket,
-            keyfile  = Config.findFile(self.config['keyfile']),
-            certfile = Config.findFile(self.config['certfile']),
-            ca_certs = Config.findFile(self.config['ca_certs']),
+            keyfile  = self.get_path('keyfile'),
+            certfile = self.get_path('certfile'),
+            ca_certs = self.get_path('ca_certs'),
         )
         self.greeting = self.read()
         self.config['start_time'] = datetime.now().isoformat(' ')
+
+    def get_path(self, name):
+        return self.find_path(self.config[name])
+
+    def find_path(self, filename):
+        if os.path.isfile(filename):
+            return filename
+        return self.config['dir'] + '/' + filename
 
     def get_greeting(self):
         return self.greeting
