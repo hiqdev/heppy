@@ -2,6 +2,8 @@
 
 # Message queue RPC version based on RabbitMQ and pika.
 
+import json
+
 from pprint import pprint
 
 from heppy.Args import Args
@@ -14,9 +16,15 @@ from heppy.RabbitMQ import RPCClient
 
 args = Args()
 config = Config(args.get('path'))
-request = Request.buildFromArgs(args)
-query = str(request)
-print Request.prettifyxml(query)
+
+is_json = args.pop('json', False)
+if is_json:
+    query = json.dumps(args)
+    print query
+else:
+    request = Request.buildFromDict(args)
+    query = str(request)
+    print Request.prettifyxml(query)
 
 rabbit_config = config.get('RabbitMQ', {})
 client = RPCClient(
@@ -25,7 +33,11 @@ client = RPCClient(
 )
 
 reply = client.request(query)
-print Request.prettifyxml(reply)
-response = Response.parsexml(reply)
-pprint(response.data)
+if is_json:
+    print reply
+    pprint(json.loads(reply))
+else:
+    print Request.prettifyxml(reply)
+    response = Response.parsexml(reply)
+    pprint(response.data)
 
