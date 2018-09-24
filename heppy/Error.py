@@ -17,6 +17,6 @@ class Error(Exception):
         print 'Error: ' + error
         if message:
             print message
-        logging.exception(message)
+        #logging.exception(message)
         exit(code)
 
