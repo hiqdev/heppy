@@ -51,12 +51,15 @@ class Systemd:
         return os.system(command)
 
     def setup(self):
-        with open(self.service_path(), 'r+') as file:
-            old = file.read()
-            new = self.service_config()
-            if old != new:
-                file.seek(0)
-                file.truncate()
+        path = self.service_path()
+        new  = self.service_config()
+        try:
+            with open(path, 'r') as file:
+                old = file.read()
+        except Exception as e:
+            old = ''
+        if old != new:
+            with open(path, 'w') as file:
                 file.write(new)
 
     def service_path(self):
