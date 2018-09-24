@@ -14,6 +14,7 @@ class Args(dict):
         self['command'] = args.pop(0)
         self['zdir'], self['zbin'] = self['zcmd'].rsplit('/', 1)
 
+        no=0
         for raw in args:
             m = re.match(r'^-(\S+?)=(.*)$', raw)
             if m:
@@ -25,4 +26,8 @@ class Args(dict):
                     self[f][s] = m.group(2)
                 else:
                     self[name] = m.group(2)
+            else:
+                self[no] = raw
+                no += 1
+
 
