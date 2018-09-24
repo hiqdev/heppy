@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 
+import os
 import ssl
 import socket
 from datetime import datetime
