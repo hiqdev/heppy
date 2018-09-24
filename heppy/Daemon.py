@@ -114,9 +114,6 @@ class Daemon:
             time.sleep(2)
             self.client = Client(self.config['local']['address'])
 
-    def stop(self, args = {}):
-        Error.die(3, 'stop not implemented', config)
-
     def request(self, query):
         with self.handler.block_signals():
             reply = self.client.request(query)
