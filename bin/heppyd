@@ -13,7 +13,10 @@ config = Config(args.get('path'))
 config.merge(args)
 
 daemon = Daemon(config)
-daemon.start(args)
+command = args.get('command')
+method = getattr(daemon, command, None)
 
-server = RPCServer(config['RabbitMQ'])
-server.consume(daemon.smart_request)
+if callable(method):
+    method(args)
+else:
+    print 'Wrong command: ' + command

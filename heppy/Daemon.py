@@ -11,7 +11,9 @@ from heppy.Error import Error
 from heppy.Login import Login
 from heppy.Client import Client
 from heppy.Request import Request
+from heppy.Systemd import Systemd
 from heppy.Response import Response
+from heppy.RabbitMQ import RPCServer
 from heppy.SignalHandler import SignalHandler
 
 class Daemon:
@@ -35,9 +37,31 @@ class Daemon:
     def hello(self):
         print "\nHELLO\n"
 
-    def start(self,args = {}):
+    def start(self, args = {}):
         self.connect()
         self.login(args)
+
+        rabbit_config = self.config.get('RabbitMQ', {})
+        server = RPCServer(
+            rabbit_config.get('host', 'localhost'),
+            rabbit_config.get('queue', self.config['name'])
+        )
+
+        server.consume(self.smart_request)
+
+    def systemd(self, args = {}):
+        if not 0 in args:
+            Error.die(3, 'no systemd command given')
+
+        command = args.pop(0)
+        config_path = self.config.abs_path
+        bin_path = os.path.abspath(args['zcmd'])
+        Systemd(
+            'heppyd-' + self.config['name'],
+            self.config['workersNum'],
+            "%s %s start" % (bin_path, config_path),
+            os.path.dirname(config_path)
+        ).call(command, args)
 
     def connect(self):
         if self.client is not None:
