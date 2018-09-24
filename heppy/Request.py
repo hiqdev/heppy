@@ -47,7 +47,7 @@ class Request(Doc):
         return request
 
     @staticmethod
-    def buildFromArgs(args):
+    def buildFromDict(args):
         extensions = args.get('extensions') or {}
         if extensions == {} and 'extension' in args:
             extensions = {'0': args.get('extension')}
