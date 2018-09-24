@@ -57,10 +57,10 @@ class Daemon:
         config_path = self.config.abs_path
         bin_path = os.path.abspath(args['zcmd'])
         Systemd(
-            'heppyd-' + self.config['name'],
-            self.config['workersNum'],
-            "%s %s start" % (bin_path, config_path),
-            os.path.dirname(config_path)
+            name='heppy-' + self.config['name'],
+            num=self.config['clientsNum'],
+            exec_start="%s %s start" % (bin_path, config_path),
+            work_dir=os.path.dirname(config_path)
         ).call(command, args)
 
     def connect(self):
