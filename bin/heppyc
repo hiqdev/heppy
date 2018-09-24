@@ -18,7 +18,12 @@ request = Request.buildFromArgs(args)
 query = str(request)
 print Request.prettifyxml(query)
 
-client = RPCClient(config['RabbitMQ'])
+rabbit_config = config.get('RabbitMQ', {})
+client = RPCClient(
+    rabbit_config.get('host', 'localhost'),
+    rabbit_config.get('queue', config['name'])
+)
+
 reply = client.request(query)
 print Request.prettifyxml(reply)
 response = Response.parsexml(reply)

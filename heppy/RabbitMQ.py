@@ -4,19 +4,20 @@ import pika
 import uuid
 
 class RPCServer:
-    def __init__(self, config):
-        self.config = config
+    def __init__(self, host, queue):
+        self.host = host
+        self.queue = queue
         self.connection = pika.BlockingConnection(pika.ConnectionParameters(
-            host=self.config['host'],
+            host=self.host
         ))
 
         self.channel = self.connection.channel()
-        self.channel.queue_declare(queue=self.config['queue'])
+        self.channel.queue_declare(queue=self.queue)
         self.channel.basic_qos(prefetch_count=1)
 
     def consume(self, response):
         self.response = response
-        self.channel.basic_consume(self.on_request, self.config['queue'])
+        self.channel.basic_consume(self.on_request, self.queue)
 
         print(" [x] Awaiting RPC requests")
         self.channel.start_consuming()
@@ -35,10 +36,11 @@ class RPCServer:
         ch.basic_ack(delivery_tag = method.delivery_tag)
 
 class RPCClient:
-    def __init__(self, config):
-        self.config = config
+    def __init__(self, host, queue):
+        self.host = host
+        self.queue = queue
         self.connection = pika.BlockingConnection(pika.ConnectionParameters(
-            host=self.config['host'],
+            host=self.host
         ))
 
         self.channel = self.connection.channel()
@@ -60,7 +62,7 @@ class RPCClient:
         self.reply = None
         self.corr_id = str(uuid.uuid4())
         self.channel.basic_publish(exchange='',
-            routing_key=self.config['queue'],
+            routing_key=self.queue,
             properties=pika.BasicProperties(
                 reply_to = self.reply_queue,
                 correlation_id = self.corr_id,
