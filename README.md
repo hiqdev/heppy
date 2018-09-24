@@ -59,6 +59,11 @@ Register domain:
 ./bin/heppyc epp.verisign-grs.com domain:create '-name=xn----0tbbnc0a.com' -pw=23_sA:d34 -period=1 -extensions.1=idnLang:tag -idnLang.tag=RUS -extensions.0=namestoreExt:subProduct -namestoreExt.subProduct=COM
 ```
 
+## TODO
+
+Send hello command every X minutes.
+Kill client every X hours.
+
 ## License
 
 This project is released under the terms of the BSD-3-Clause [license](LICENSE).
