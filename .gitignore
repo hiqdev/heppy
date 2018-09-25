@@ -17,6 +17,9 @@ nbproject
 # test coverage
 .coverage
 
+# testing
+tests/modules/test_request.py
+
 # Byte-compiled / optimized / DLL files
 *$py.class
 *.py[cod]
