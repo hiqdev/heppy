@@ -59,9 +59,14 @@ class domain(Module):
         command = self.render_command_fields(request, 'create', OrderedDict([
             ('name', {}),
             ('period', {'unit': 'y'}),
+            ('registrant', {}),
         ]))
-        if request.get('registrant'):
-            request.sub(command, 'domain:registrant', {}, request.get('registrant'))
+
+        if request.get('nss'):
+            ns = request.sub(command, 'domain:ns')
+            for host in request.get('nss').itervalues():
+                request.sub(ns, 'domain:hostObj', text=host)
+
         for type in ('admin', 'tech', 'billing'):
             if request.get(type):
                 request.sub(command, 'domain:contact', {'type': type}, request.get(type))
