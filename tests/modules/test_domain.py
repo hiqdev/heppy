@@ -2,22 +2,13 @@
 
 import unittest
 from heppy.Request import Request
+from TestCase import TestCase
 
-
-class TestDomain(unittest.TestCase):
+class TestDomain(TestCase):
 
     def test_domain_check(self):
-        request = Request.buildFromDict({
-            'command':  'domain:check',
-            'names': {
-                0: 'example1.com',
-                1: 'example2.com'
-            },
-            'clTRID':   'XXXX-11',
-        })
-
-        self.assertEqual(
-'''<?xml version="1.0" ?>
+        self.assertRequest('''
+<?xml version="1.0" ?>
 <epp xmlns="urn:ietf:params:xml:ns:epp-1.0">
     <command>
         <check>
@@ -28,7 +19,14 @@ class TestDomain(unittest.TestCase):
         </check>
         <clTRID>XXXX-11</clTRID>
     </command>
-</epp>''', Request.prettifyxml(str(request)).strip())
+</epp>''', {
+            'command':  'domain:check',
+            'names': {
+                0: 'example1.com',
+                1: 'example2.com',
+            },
+            'clTRID':   'XXXX-11',
+        })
 
     def test_domain_info(self):
         request = Request.buildFromDict({
