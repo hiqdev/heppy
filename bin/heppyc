@@ -29,7 +29,7 @@ else:
 rabbit_config = config.get('RabbitMQ', {})
 client = RPCClient(
     rabbit_config.get('host', 'localhost'),
-    rabbit_config.get('queue', config['name'])
+    rabbit_config.get('queue', 'heppy-' + config['name'])
 )
 
 reply = client.request(query)

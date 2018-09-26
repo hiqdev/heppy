@@ -45,7 +45,7 @@ class Daemon:
         rabbit_config = self.config.get('RabbitMQ', {})
         server = RPCServer(
             rabbit_config.get('host', 'localhost'),
-            rabbit_config.get('queue', self.config['name'])
+            rabbit_config.get('queue', 'heppy-' + self.config['name'])
         )
 
         server.consume(self.smart_request)
