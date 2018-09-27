@@ -3,6 +3,7 @@
 import unittest
 from heppy.Request import Request
 
+
 class TestCase(unittest.TestCase):
     def assertRequest(self, query, data):
         request = Request.buildFromDict(data)
