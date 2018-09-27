@@ -1,6 +1,8 @@
 #!/usr/bin/env python
 
+import unittest
 from TestCase import TestCase
+
 
 class TestDomain(TestCase):
     def test_hello(self):
@@ -11,6 +13,7 @@ class TestDomain(TestCase):
 </epp>''', {
             'command':  'epp:hello',
         })
+
 
 if __name__ == '__main__':
     unittest.main()

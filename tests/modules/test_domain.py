@@ -1,8 +1,8 @@
 #!/usr/bin/env python
 
 import unittest
-from heppy.Request import Request
 from TestCase import TestCase
+
 
 class TestDomain(TestCase):
 
@@ -29,15 +29,7 @@ class TestDomain(TestCase):
         })
 
     def test_domain_info(self):
-        request = Request.buildFromDict({
-            'command':  'domain:info',
-            'name':     'example.com',
-            'pw':       '2fooBAR',
-            'clTRID':   'XXXX-11',
-        })
-
-        self.assertEqual(
-'''<?xml version="1.0" ?>
+        self.assertRequest('''<?xml version="1.0" ?>
 <epp xmlns="urn:ietf:params:xml:ns:epp-1.0">
     <command>
         <info>
@@ -50,16 +42,15 @@ class TestDomain(TestCase):
         </info>
         <clTRID>XXXX-11</clTRID>
     </command>
-</epp>''', Request.prettifyxml(str(request)).strip())
-
-    def test_domain_create_min(self):
-        request = Request.buildFromDict({
-            'command':  'domain:create',
+</epp>''', {
+            'command':  'domain:info',
             'name':     'example.com',
+            'pw':       '2fooBAR',
             'clTRID':   'XXXX-11',
         })
 
-        self.assertEqual(
+    def test_domain_create_min(self):
+        self.assertRequest(
 '''<?xml version="1.0" ?>
 <epp xmlns="urn:ietf:params:xml:ns:epp-1.0">
     <command>
@@ -73,26 +64,14 @@ class TestDomain(TestCase):
         </create>
         <clTRID>XXXX-11</clTRID>
     </command>
-</epp>''', Request.prettifyxml(str(request)).strip())
-
-    def test_domain_create(self):
-        request = Request.buildFromDict({
-            'command':      'domain:create',
-            'name':         'example.com',
-            'period':       2,
-            'registrant':   'jd1234',
-            'nss': {
-                0: 'ns1.example.net',
-                1: 'ns2.example.net'
-            },
-            'admin':        'sh8013',
-            'tech':         'sh8014',
-            'billing':      'sh8015',
-            'pw':           '2fooBAR',
-            'clTRID':       'XXXX-11',
+</epp>''', {
+            'command':  'domain:create',
+            'name':     'example.com',
+            'clTRID':   'XXXX-11',
         })
 
-        self.assertEqual(
+    def test_domain_create(self):
+        self.assertRequest(
 '''<?xml version="1.0" ?>
 <epp xmlns="urn:ietf:params:xml:ns:epp-1.0">
     <command>
@@ -115,16 +94,24 @@ class TestDomain(TestCase):
         </create>
         <clTRID>XXXX-11</clTRID>
     </command>
-</epp>''', Request.prettifyxml(str(request)).strip())
-
-    def test_domain_delete(self):
-        request = Request.buildFromDict({
-            'command':  'domain:delete',
-            'name':     'example.com',
-            'clTRID':   'XXXX-11',
+</epp>''', {
+            'command':      'domain:create',
+            'name':         'example.com',
+            'period':       2,
+            'registrant':   'jd1234',
+            'nss': {
+                0: 'ns1.example.net',
+                1: 'ns2.example.net'
+            },
+            'admin':        'sh8013',
+            'tech':         'sh8014',
+            'billing':      'sh8015',
+            'pw':           '2fooBAR',
+            'clTRID':       'XXXX-11',
         })
 
-        self.assertEqual(
+    def test_domain_delete(self):
+        self.assertRequest(
 '''<?xml version="1.0" ?>
 <epp xmlns="urn:ietf:params:xml:ns:epp-1.0">
     <command>
@@ -135,18 +122,14 @@ class TestDomain(TestCase):
         </delete>
         <clTRID>XXXX-11</clTRID>
     </command>
-</epp>''', Request.prettifyxml(str(request)).strip())
-
-    def test_domain_renew(self):
-        request = Request.buildFromDict({
-            'command':      'domain:renew',
-            'name':         'example.com',
-            'curExpDate':   '2020-04-03',
-            'period':       5,
-            'clTRID':       'XXXX-11',
+</epp>''', {
+            'command':  'domain:delete',
+            'name':     'example.com',
+            'clTRID':   'XXXX-11',
         })
 
-        self.assertEqual(
+    def test_domain_renew(self):
+        self.assertRequest(
 '''<?xml version="1.0" ?>
 <epp xmlns="urn:ietf:params:xml:ns:epp-1.0">
     <command>
@@ -159,15 +142,16 @@ class TestDomain(TestCase):
         </renew>
         <clTRID>XXXX-11</clTRID>
     </command>
-</epp>''', Request.prettifyxml(str(request)).strip())
-
-    def test_domain_update(self):
-        request = Request.buildFromDict({
-            'command':  'domain:update',
-            'name':     'example.com',
+</epp>''', {
+            'command':      'domain:renew',
+            'name':         'example.com',
+            'curExpDate':   '2020-04-03',
+            'period':       5,
+            'clTRID':       'XXXX-11',
         })
 
-        self.assertEqual(
+    def test_domain_update(self):
+        self.assertRequest(
 '''<?xml version="1.0" ?>
 <epp xmlns="urn:ietf:params:xml:ns:epp-1.0">
     <command>
@@ -178,8 +162,11 @@ class TestDomain(TestCase):
         </update>
         <clTRID>AA-00</clTRID>
     </command>
-</epp>''', Request.prettifyxml(str(request)).strip())
+</epp>''', {
+            'command':  'domain:update',
+            'name':     'example.com',
+        })
 
 
 if __name__ == '__main__':
-    unittest.main()
+    unittest.main(verbosity=2)
