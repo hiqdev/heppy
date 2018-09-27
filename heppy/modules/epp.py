@@ -26,16 +26,16 @@ class epp(Module):
 ### RESPONSE parsing
 
     def parse_result(self, response, tag):
-        response.set('result.code', tag.attrib['code'])
+        response.set('result_code', tag.attrib['code'])
         self.parse_descend(response, tag)
 
     def parse_msg(self, response, tag):
         if 'lang' in tag.attrib:
-            response.set('result.lang', tag.attrib['lang'])
-        response.set('result.msg', tag.text)
+            response.set('result_lang', tag.attrib['lang'])
+        response.set('result_msg', tag.text)
 
     def parse_reason(self, response, tag):
-        response.set('result.reason', tag.text)
+        response.set('result_reason', tag.text)
 
 ### REQUEST rendering
 

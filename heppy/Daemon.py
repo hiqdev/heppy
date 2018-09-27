@@ -88,7 +88,7 @@ class Daemon:
         except Error as e:
             error = e.message
             data = e.data
-        if error is not None and data['resultCode']!='2002':
+        if error is not None and data['result_code'] != '2002':
             Error.die(2, 'bad login response', data)
         print 'LOGIN OK'
 
@@ -129,7 +129,7 @@ class Daemon:
             reply = self.request(query)
             pprint(reply)
             response = Response.parsexml(reply)
-            if response.data['result.code'] == '2002':
+            if response.data['result_code'] == '2002':
                 response = None
                 self.login()
                 reply = self.request(query)
