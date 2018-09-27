@@ -44,7 +44,7 @@ class Module:
         if clTRID != 'NONE' and request.command is not None:
             request.sub(request.command, 'clTRID', {}, clTRID)
 
-    def render_root_command(self, request, command, attrs = {}):
+    def render_root_command(self, request, command, attrs={}):
         if request.command is None:
             epp = self.render_epp(request)
             request.command = request.sub(epp, 'command')
@@ -53,12 +53,12 @@ class Module:
     def render_header(self, request, source, action):
         return request.sub(source, self.name + ':' + action, {'xmlns:' + self.name: self.xmlns})
 
-    def render_command(self, request, action):
-        command = self.render_root_command(request, action)
+    def render_command(self, request, action, attrs={}):
+        command = self.render_root_command(request, action, attrs)
         return self.render_header(request, command, action)
 
-    def render_command_fields(self, request, command, fields = {'name': {}}):
-        command = self.render_command(request, command)
+    def render_command_fields(self, request, command, fields={'name': {}}, attrs={}):
+        command = self.render_command(request, command, attrs)
         request.subfields(command, fields)
         return command
 

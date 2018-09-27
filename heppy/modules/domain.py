@@ -49,11 +49,21 @@ class domain(Module):
         if request.has('pw'):
             self.render_auth_info(request, command)
 
-    def render_auth_info(self, request, command, pw = None):
+    def render_auth_info(self, request, command, pw=None, attrs={}):
         if pw is None:
             pw = request.get('pw', '')
         authInfo = request.sub(command, 'domain:authInfo')
-        request.sub(authInfo, 'domain:pw', {}, pw)
+        request.sub(authInfo, 'domain:pw', attrs, pw)
+
+    def render_transfer(self, request):
+        attrs = {'op': request.get('op') or 'request'}
+        command = self.render_command_fields(request, 'transfer', OrderedDict([
+            ('name', {}),
+            ('period', {'unit': 'y'}),
+        ]), attrs)
+        if request.has('pw') or attrs.get('op') == 'request':
+            roid = {'roid': request.get('roid')} if request.has('roid') else {}
+            self.render_auth_info(request, command, attrs=roid)
 
     def render_create(self, request):
         command = self.render_command_fields(request, 'create', OrderedDict([
@@ -67,9 +77,9 @@ class domain(Module):
             for host in request.get('ns').itervalues():
                 request.sub(ns, 'domain:hostObj', text=host)
 
-        for type in ('admin', 'tech', 'billing'):
-            if request.get(type):
-                request.sub(command, 'domain:contact', {'type': type}, request.get(type))
+        for contactType in ('admin', 'tech', 'billing'):
+            if request.has(contactType):
+                request.sub(command, 'domain:contact', {'type': contactType}, request.get(contactType))
         self.render_auth_info(request, command)
 
     def render_delete(self, request):
