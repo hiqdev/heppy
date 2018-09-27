@@ -95,10 +95,26 @@ class domain(Module):
             if 'status' in addData:
                 self.render_status(request, addElement, addData['status'])
 
-    def render_auth_info(self, request, command, pw=None, attrs={}):
+        if request.has('rem'):
+            remElement = request.sub(command, 'domain:rem')
+            remData = request.data['rem']
+            if 'ns' in remData:
+                self.render_ns(request, remElement, remData['ns'])
+            if request.has_contacts(remData):
+                self.render_contacts(request, remElement, remData)
+            if 'status' in remData:
+                self.render_status(request, remElement, remData['status'])
+
+        if request.has('chg'):
+            chgElement = request.sub(command, 'domain:chg')
+            chgData = request.data['chg']
+            request.sub(chgElement, 'domain:registrant', text=chgData['registrant'])
+            self.render_auth_info(request, chgElement, chgData.get('pw'))
+
+    def render_auth_info(self, request, parent, pw=None, attrs={}):
         if pw is None:
             pw = request.get('pw', '')
-        authInfo = request.sub(command, 'domain:authInfo')
+        authInfo = request.sub(parent, 'domain:authInfo')
         request.sub(authInfo, 'domain:pw', attrs, pw)
 
     def render_ns(self, request, parent, hosts):
