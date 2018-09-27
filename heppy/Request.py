@@ -17,19 +17,19 @@ class Request(Doc):
         else:
             return self.raw
 
-    def element(self, tag, attrs = {}, text = None):
+    def element(self, tag, attrs={}, text=None):
         res = ET.Element(tag, attrs)
         if text is not None:
             res.text = str(text)
         return res
 
-    def sub(self, parent, tag, attrs = {}, text = None):
+    def sub(self, parent, tag, attrs={}, text=None):
         res = ET.SubElement(parent, tag, attrs)
         if text is not None:
             res.text = str(text)
         return res
 
-    def subfields(self, parent, fields, values = None):
+    def subfields(self, parent, fields, values=None):
         name = parent.tag.split(':')[0]
         for field, attrs in fields.iteritems():
             value = self.get(field) if values is None else values.get(field)
@@ -38,7 +38,7 @@ class Request(Doc):
         return parent
 
     @staticmethod
-    def build(command, data, extensions = {}):
+    def build(command, data, extensions={}):
         request = Request(data)
         request.render(command)
         for ext in extensions.itervalues():
@@ -54,12 +54,12 @@ class Request(Doc):
         return Request.build(args.get('command'), args, extensions)
 
     def render(self, command):
-        ns = command.split(':')[0]
-        name = command.split(':')[1]
-        module = self.get_module(ns)
-        method = 'render_' + name
+        moduleName = command.split(':')[0]
+        commandName = command.split(':')[1]
+        module = self.get_module(moduleName)
+        method = 'render_' + commandName
         if not hasattr(module, method):
-            raise Exception('unknown command', ns + ':' + name)
+            raise Exception('unknown command',  command)
         getattr(module, method)(self)
 
     @staticmethod
