@@ -28,6 +28,23 @@ class TestDomain(TestCase):
             'clTRID':   'XXXX-11',
         })
 
+    def test_domain_info_min(self):
+        self.assertRequest('''<?xml version="1.0" ?>
+<epp xmlns="urn:ietf:params:xml:ns:epp-1.0">
+    <command>
+        <info>
+            <domain:info xmlns:domain="urn:ietf:params:xml:ns:domain-1.0">
+                <domain:name hosts="all">example.com</domain:name>
+            </domain:info>
+        </info>
+        <clTRID>XXXX-11</clTRID>
+    </command>
+</epp>''', {
+            'command': 'domain:info',
+            'name': 'example.com',
+            'clTRID': 'XXXX-11',
+        })
+
     def test_domain_info(self):
         self.assertRequest('''<?xml version="1.0" ?>
 <epp xmlns="urn:ietf:params:xml:ns:epp-1.0">
