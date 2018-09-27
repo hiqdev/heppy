@@ -49,12 +49,6 @@ class domain(Module):
         if request.has('pw'):
             self.render_auth_info(request, command)
 
-    def render_auth_info(self, request, command, pw=None, attrs={}):
-        if pw is None:
-            pw = request.get('pw', '')
-        authInfo = request.sub(command, 'domain:authInfo')
-        request.sub(authInfo, 'domain:pw', attrs, pw)
-
     def render_transfer(self, request):
         attrs = {'op': request.get('op') or 'request'}
         command = self.render_command_fields(request, 'transfer', OrderedDict([
@@ -72,14 +66,10 @@ class domain(Module):
             ('registrant', {}),
         ]))
 
-        if request.get('ns'):
-            ns = request.sub(command, 'domain:ns')
-            for host in request.get('ns').itervalues():
-                request.sub(ns, 'domain:hostObj', text=host)
-
-        for contactType in ('admin', 'tech', 'billing'):
-            if request.has(contactType):
-                request.sub(command, 'domain:contact', {'type': contactType}, request.get(contactType))
+        if request.has('ns'):
+            self.render_ns(request, command, request.get('ns'))
+        if request.has_contacts():
+            self.render_contacts(request, command)
         self.render_auth_info(request, command)
 
     def render_delete(self, request):
@@ -94,3 +84,33 @@ class domain(Module):
 
     def render_update(self, request):
         command = self.render_command_fields(request, 'update')
+
+        if request.has('add'):
+            addElement = request.sub(command, 'domain:add')
+            addData = request.data['add']
+            if 'ns' in addData:
+                self.render_ns(request, addElement, addData['ns'])
+            if request.has_contacts(addData):
+                self.render_contacts(request, addElement, addData)
+            if 'status' in addData:
+                self.render_status(request, addElement, addData['status'])
+
+    def render_auth_info(self, request, command, pw=None, attrs={}):
+        if pw is None:
+            pw = request.get('pw', '')
+        authInfo = request.sub(command, 'domain:authInfo')
+        request.sub(authInfo, 'domain:pw', attrs, pw)
+
+    def render_ns(self, request, parent, hosts):
+        ns = request.sub(parent, 'domain:ns')
+        for host in hosts.itervalues():
+            request.sub(ns, 'domain:hostObj', text=host)
+
+    def render_contacts(self, request, parent, storage=None):
+        storage = storage or request.data
+        for contactType in set(request.contactTypes) & set(storage.keys()):
+            request.sub(parent, 'domain:contact', {'type': contactType}, storage[contactType])
+
+    def render_status(self, request, parent, statusData):
+        for status, description in statusData.iteritems():
+            request.sub(parent, 'domain:status', {'s': status}, description)
