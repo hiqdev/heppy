@@ -62,9 +62,9 @@ class domain(Module):
             ('registrant', {}),
         ]))
 
-        if request.get('nss'):
+        if request.get('ns'):
             ns = request.sub(command, 'domain:ns')
-            for host in request.get('nss').itervalues():
+            for host in request.get('ns').itervalues():
                 request.sub(ns, 'domain:hostObj', text=host)
 
         for type in ('admin', 'tech', 'billing'):

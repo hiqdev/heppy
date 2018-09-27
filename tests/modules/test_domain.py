@@ -99,7 +99,7 @@ class TestDomain(TestCase):
             'name':         'example.com',
             'period':       2,
             'registrant':   'jd1234',
-            'nss': {
+            'ns': {
                 0: 'ns1.example.net',
                 1: 'ns2.example.net'
             },
