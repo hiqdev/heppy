@@ -34,10 +34,10 @@ class domain(Module):
         return self.parse_cd_tag(response, tag)
 
     def parse_hostObj(self, response, tag):
-        response.addpair('nss', tag.text.lower())
+        response.add_list('nss', tag.text.lower())
 
     def parse_host(self, response, tag):
-        response.addpair('hosts', tag.text.lower())
+        response.add_list('hosts', tag.text.lower())
 
     def parse_contact(self, response, tag):
         response.set(tag.attrib['type'], tag.text)
