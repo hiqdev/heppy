@@ -200,7 +200,7 @@ class TestDomain(TestCase):
             'name':         'example.com',
             'period':       2,
             'registrant':   'jd1234',
-            'ns': {
+            'nss': {
                 0: 'ns1.example.net',
                 1: 'ns2.example.net'
             },
@@ -291,7 +291,7 @@ class TestDomain(TestCase):
             'command':  'domain:update',
             'name':     'example.com',
             'add': {
-                'ns': {
+                'nss': {
                     0: 'ns1.example.net',
                     1: 'ns2.example.net'
                 },
@@ -332,7 +332,7 @@ class TestDomain(TestCase):
             'command':  'domain:update',
             'name':     'example.com',
             'rem': {
-                'ns': {
+                'nss': {
                     0: 'ns1.example.net',
                     1: 'ns2.example.net'
                 },
@@ -417,7 +417,7 @@ class TestDomain(TestCase):
             'command':  'domain:update',
             'name':     'example.com',
             'add': {
-                'ns': {
+                'nss': {
                     0: 'ns1.example.net',
                     1: 'ns2.example.net'
                 },
@@ -430,7 +430,7 @@ class TestDomain(TestCase):
                 }
             },
             'rem': {
-                'ns': {
+                'nss': {
                     0: 'ns1.example.net',
                     1: 'ns2.example.net'
                 },

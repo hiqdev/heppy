@@ -66,8 +66,8 @@ class domain(Module):
             ('registrant', {}),
         ]))
 
-        if request.has('ns'):
-            self.render_ns(request, command, request.get('ns'))
+        if request.has('nss'):
+            self.render_nss(request, command, request.get('nss'))
         if request.has_contacts():
             self.render_contacts(request, command)
         self.render_auth_info(request, command)
@@ -102,8 +102,8 @@ class domain(Module):
             self.render_auth_info(request, chgElement, chgData.get('pw'))
 
     def render_update_section(self, request, element, data):
-        if 'ns' in data:
-            self.render_ns(request, element, data['ns'])
+        if 'nss' in data:
+            self.render_nss(request, element, data['nss'])
         if request.has_contacts(data):
             self.render_contacts(request, element, data)
         if 'status' in data:
@@ -115,10 +115,10 @@ class domain(Module):
         authInfo = request.sub(parent, 'domain:authInfo')
         request.sub(authInfo, 'domain:pw', attrs, pw)
 
-    def render_ns(self, request, parent, hosts):
-        ns = request.sub(parent, 'domain:ns')
+    def render_nss(self, request, parent, hosts):
+        nsElement = request.sub(parent, 'domain:ns')
         for host in hosts.itervalues():
-            request.sub(ns, 'domain:hostObj', text=host)
+            request.sub(nsElement, 'domain:hostObj', text=host)
 
     def render_contacts(self, request, parent, storage=None):
         storage = storage or request.data
