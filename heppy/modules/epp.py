@@ -41,22 +41,25 @@ class epp(Module):
 
     def render_login(self, request):
         action = self.render_root_command(request, 'login')
-        request.sub(action, 'clID', {}, request.get('clID', request.get('login')))
-        request.sub(action, 'pw',   {}, request.get('pw',   request.get('password')))
+
+        request.sub(action, 'clID', text=request.get('clID', request.get('login')))
+        request.sub(action, 'pw', text=request.get('pw', request.get('password')))
         newPW = request.get('newPW', request.get('newPassword'))
         if newPW is not None:
-            request.sub(action, 'newPW', {}, newPW)
+            request.sub(action, 'newPW', text=newPW)
+
         options = request.sub(action, 'options')
-        request.sub(options, 'version', {}, request.get('version', '1.0'))
-        request.sub(options, 'lang',    {}, request.get('lang', 'en'))
+        request.sub(options, 'version', text=request.get('version', '1.0'))
+        request.sub(options, 'lang', text=request.get('lang', 'en'))
+
         svcs = request.sub(action, 'svcs')
-        for svc in request.get('objURIs', {'0': request.nsmap['epp']}).itervalues():
-            request.sub(svcs, 'objURI', {}, svc)
-        extURIs = request.get('extURIs', {})
-        if extURIs != {}:
-            exts = request.sub(svcs, 'svcExtension');
-            for ext in extURIs.itervalues():
-                request.sub(exts, 'extURI', {}, ext)
+        for svc in request.get('objURIs', [request.nsmap['epp']]):
+            request.sub(svcs, 'objURI', text=svc)
+        extURIs = request.get('extURIs', [])
+        if extURIs:
+            exts = request.sub(svcs, 'svcExtension')
+            for ext in extURIs:
+                request.sub(exts, 'extURI', text=ext)
 
     def render_logout(self, request):
         self.render_root_command(request, 'logout')
