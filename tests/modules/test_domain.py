@@ -298,10 +298,10 @@ class TestDomain(TestCase):
                 'admin':    'sh8013',
                 'tech':     'sh8014',
                 'billing':  'sh8015',
-                'statuses': [
-                    ('clientHold', 'Payment overdue.'),
-                    ('clientUpdateProhibited', '')
-                ]
+                'statuses': {
+                    'clientHold': 'Payment overdue.',
+                    'clientUpdateProhibited': ''
+                }
             },
             'clTRID':   'XXXX-11',
         })
@@ -339,10 +339,10 @@ class TestDomain(TestCase):
                 'admin':    'sh8013',
                 'tech':     'sh8014',
                 'billing':  'sh8015',
-                'statuses': [
-                    ('clientHold', 'Payment overdue.'),
-                    ('clientUpdateProhibited', '')
-                ]
+                'statuses': {
+                    'clientHold': 'Payment overdue.',
+                    'clientUpdateProhibited': ''
+                }
             },
             'clTRID':   'XXXX-11',
         })
@@ -424,10 +424,10 @@ class TestDomain(TestCase):
                 'admin':    'sh8013',
                 'tech':     'sh8014',
                 'billing':  'sh8015',
-                'statuses': [
-                    ('clientHold', 'Payment overdue.'),
-                    ('clientUpdateProhibited', '')
-                ]
+                'statuses': {
+                    'clientHold': 'Payment overdue.',
+                    'clientUpdateProhibited': ''
+                }
             },
             'rem': {
                 'nss': [
@@ -437,10 +437,10 @@ class TestDomain(TestCase):
                 'admin':    'sh8013',
                 'tech':     'sh8014',
                 'billing':  'sh8015',
-                'statuses': [
-                    ('clientHold', 'Payment overdue.'),
-                    ('clientUpdateProhibited', '')
-                ]
+                'statuses': {
+                    'clientHold': 'Payment overdue.',
+                    'clientUpdateProhibited': ''
+                }
             },
             'chg': {
                 'registrant':   'jd1234',

@@ -46,7 +46,7 @@ class domain(Module):
 
     def render_check(self, request):
         command = self.render_command(request, 'check')
-        for name in self.get_iterable(request.get('names')):
+        for name in request.get('names'):
             request.sub(command, 'domain:name', {}, name)
 
     def render_info(self, request):
@@ -121,7 +121,7 @@ class domain(Module):
 
     def render_nss(self, request, parent, hosts):
         nsElement = request.sub(parent, 'domain:ns')
-        for host in self.get_iterable(hosts):
+        for host in hosts:
             request.sub(nsElement, 'domain:hostObj', text=host)
 
     def render_contacts(self, request, parent, storage=None):
@@ -130,8 +130,8 @@ class domain(Module):
             request.sub(parent, 'domain:contact', {'type': contactType}, storage[contactType])
 
     def render_statuses(self, request, parent, statusData):
-        for status in self.get_iterable(statusData):
-            request.sub(parent, 'domain:status', {'s': status[0]}, status[1])
+        for status, description in statusData.iteritems():
+            request.sub(parent, 'domain:status', {'s': status}, description)
 
     def has_contacts(self, storage):
         return any(contactType in storage for contactType in self.CONTACT_TYPES)

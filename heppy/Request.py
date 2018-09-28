@@ -70,4 +70,3 @@ class Request(Doc):
             return string
         dom = xml.dom.minidom.parseString(string)
         return dom.toprettyxml(indent='    ')
-
