@@ -106,8 +106,8 @@ class domain(Module):
             self.render_nss(request, element, data['nss'])
         if request.has_contacts(data):
             self.render_contacts(request, element, data)
-        if 'status' in data:
-            self.render_status(request, element, data['status'])
+        if 'statuses' in data:
+            self.render_statuses(request, element, data['statuses'])
 
     def render_auth_info(self, request, parent, pw=None, attrs={}):
         if pw is None:
@@ -125,6 +125,6 @@ class domain(Module):
         for contactType in set(request.contactTypes) & set(storage.keys()):
             request.sub(parent, 'domain:contact', {'type': contactType}, storage[contactType])
 
-    def render_status(self, request, parent, statusData):
+    def render_statuses(self, request, parent, statusData):
         for status, description in statusData.iteritems():
             request.sub(parent, 'domain:status', {'s': status}, description)

@@ -298,7 +298,7 @@ class TestDomain(TestCase):
                 'admin':    'sh8013',
                 'tech':     'sh8014',
                 'billing':  'sh8015',
-                'status': {
+                'statuses': {
                     'clientHold':               'Payment overdue.',
                     'clientUpdateProhibited':   ''
                 }
@@ -339,7 +339,7 @@ class TestDomain(TestCase):
                 'admin':    'sh8013',
                 'tech':     'sh8014',
                 'billing':  'sh8015',
-                'status': {
+                'statuses': {
                     'clientHold':               'Payment overdue.',
                     'clientUpdateProhibited':   ''
                 }
@@ -424,7 +424,7 @@ class TestDomain(TestCase):
                 'admin':    'sh8013',
                 'tech':     'sh8014',
                 'billing':  'sh8015',
-                'status': {
+                'statuses': {
                     'clientHold':               'Payment overdue.',
                     'clientUpdateProhibited':   ''
                 }
@@ -437,7 +437,7 @@ class TestDomain(TestCase):
                 'admin':    'sh8013',
                 'tech':     'sh8014',
                 'billing':  'sh8015',
-                'status': {
+                'statuses': {
                     'clientHold':               'Payment overdue.',
                     'clientUpdateProhibited':   ''
                 }
