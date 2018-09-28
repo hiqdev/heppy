@@ -92,14 +92,10 @@ class domain(Module):
         command = self.render_command_fields(request, 'update')
 
         if request.has('add'):
-            addElement = request.sub(command, 'domain:add')
-            addData = request.data['add']
-            self.render_update_section(request, addElement, addData)
+            self.render_update_section(request, command, 'add')
 
         if request.has('rem'):
-            remElement = request.sub(command, 'domain:rem')
-            remData = request.data['rem']
-            self.render_update_section(request, remElement, remData)
+            self.render_update_section(request, command, 'rem')
 
         if request.has('chg'):
             chgElement = request.sub(command, 'domain:chg')
@@ -107,7 +103,9 @@ class domain(Module):
             request.sub(chgElement, 'domain:registrant', text=chgData['registrant'])
             self.render_auth_info(request, chgElement, chgData.get('pw'))
 
-    def render_update_section(self, request, element, data):
+    def render_update_section(self, request, command, operation):
+        element = request.sub(command, 'domain:' + operation)
+        data = request.data.get(operation)
         if 'nss' in data:
             self.render_nss(request, element, data['nss'])
         if self.has_contacts(data):
