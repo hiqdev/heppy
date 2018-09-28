@@ -34,12 +34,12 @@ class Systemd:
         self.unsafe_all('status')
 
     def runcmd_all(self, command):
-        for i in range(self.num):
-            self.runcmd('systemctl %s %s' % (command, self.service_name(i)))
+        for name in self.service_names():
+            self.runcmd('systemctl %s %s' % (command, name))
 
     def unsafe_all(self, command):
-        for i in range(self.num):
-            self.unsafe('systemctl %s %s' % (command, self.service_name(i)))
+        for name in self.service_names():
+            self.unsafe('systemctl %s %s' % (command, name))
 
     def runcmd(self, command):
         ret = self.unsafe(command)
@@ -64,6 +64,13 @@ class Systemd:
 
     def service_path(self):
         return '/etc/systemd/system/' + self.service_name()
+
+    def service_names(self):
+        if not hasattr(self, 'names'):
+            self.names = []
+            for i in range(self.num):
+                self.names.append(self.service_name(i))
+        return self.names
 
     def service_name(self, no = ''):
         return '%s@%s.service' % (self.name, no)
