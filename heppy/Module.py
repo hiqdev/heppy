@@ -24,7 +24,7 @@ class Module:
             response.parse(child)
 
     def parse_status(self, response, tag):
-        response.addpair('statuses', tag.attrib['s'])
+        response.addto('statuses', {tag.attrib['s']: tag.text})
 
     def parse_cd_tag(self, response, tag):
         name = tag[0]
