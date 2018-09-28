@@ -82,3 +82,9 @@ class Module:
         request.subfields(extension, fields)
         return extension
 
+### Helpers
+
+    def get_iterable(self, data):
+        if type(data) == dict:
+            data = data.itervalues()
+        return data

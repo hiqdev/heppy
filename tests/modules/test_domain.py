@@ -20,10 +20,10 @@ class TestDomain(TestCase):
     </command>
 </epp>''', {
             'command':  'domain:check',
-            'names': {
-                0: 'example1.com',
-                1: 'example2.com',
-            },
+            'names': [
+                'example1.com',
+                'example2.com',
+            ],
             'clTRID':   'XXXX-11',
         })
 
@@ -200,10 +200,10 @@ class TestDomain(TestCase):
             'name':         'example.com',
             'period':       2,
             'registrant':   'jd1234',
-            'nss': {
-                0: 'ns1.example.net',
-                1: 'ns2.example.net'
-            },
+            'nss': [
+                'ns1.example.net',
+                'ns2.example.net'
+            ],
             'admin':        'sh8013',
             'tech':         'sh8014',
             'billing':      'sh8015',
@@ -291,17 +291,17 @@ class TestDomain(TestCase):
             'command':  'domain:update',
             'name':     'example.com',
             'add': {
-                'nss': {
-                    0: 'ns1.example.net',
-                    1: 'ns2.example.net'
-                },
+                'nss': [
+                    'ns1.example.net',
+                    'ns2.example.net'
+                ],
                 'admin':    'sh8013',
                 'tech':     'sh8014',
                 'billing':  'sh8015',
-                'statuses': {
-                    'clientHold':               'Payment overdue.',
-                    'clientUpdateProhibited':   ''
-                }
+                'statuses': [
+                    ('clientHold', 'Payment overdue.'),
+                    ('clientUpdateProhibited', '')
+                ]
             },
             'clTRID':   'XXXX-11',
         })
@@ -332,17 +332,17 @@ class TestDomain(TestCase):
             'command':  'domain:update',
             'name':     'example.com',
             'rem': {
-                'nss': {
-                    0: 'ns1.example.net',
-                    1: 'ns2.example.net'
-                },
+                'nss': [
+                    'ns1.example.net',
+                    'ns2.example.net'
+                ],
                 'admin':    'sh8013',
                 'tech':     'sh8014',
                 'billing':  'sh8015',
-                'statuses': {
-                    'clientHold':               'Payment overdue.',
-                    'clientUpdateProhibited':   ''
-                }
+                'statuses': [
+                    ('clientHold', 'Payment overdue.'),
+                    ('clientUpdateProhibited', '')
+                ]
             },
             'clTRID':   'XXXX-11',
         })
@@ -417,30 +417,30 @@ class TestDomain(TestCase):
             'command':  'domain:update',
             'name':     'example.com',
             'add': {
-                'nss': {
-                    0: 'ns1.example.net',
-                    1: 'ns2.example.net'
-                },
+                'nss': [
+                    'ns1.example.net',
+                    'ns2.example.net'
+                ],
                 'admin':    'sh8013',
                 'tech':     'sh8014',
                 'billing':  'sh8015',
-                'statuses': {
-                    'clientHold':               'Payment overdue.',
-                    'clientUpdateProhibited':   ''
-                }
+                'statuses': [
+                    ('clientHold', 'Payment overdue.'),
+                    ('clientUpdateProhibited', '')
+                ]
             },
             'rem': {
-                'nss': {
-                    0: 'ns1.example.net',
-                    1: 'ns2.example.net'
-                },
+                'nss': [
+                    'ns1.example.net',
+                    'ns2.example.net'
+                ],
                 'admin':    'sh8013',
                 'tech':     'sh8014',
                 'billing':  'sh8015',
-                'statuses': {
-                    'clientHold':               'Payment overdue.',
-                    'clientUpdateProhibited':   ''
-                }
+                'statuses': [
+                    ('clientHold', 'Payment overdue.'),
+                    ('clientUpdateProhibited', '')
+                ]
             },
             'chg': {
                 'registrant':   'jd1234',
@@ -448,6 +448,7 @@ class TestDomain(TestCase):
             },
             'clTRID':   'XXXX-11',
         })
+
 
 if __name__ == '__main__':
     unittest.main(verbosity=2)
