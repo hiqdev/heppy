@@ -340,8 +340,8 @@ class TestDomain(TestCase):
                 'tech':     'sh8014',
                 'billing':  'sh8015',
                 'status': {
-                    'clientHold': 'Payment overdue.',
-                    'clientUpdateProhibited': ''
+                    'clientHold':               'Payment overdue.',
+                    'clientUpdateProhibited':   ''
                 }
             },
             'clTRID':   'XXXX-11',
@@ -365,13 +365,13 @@ class TestDomain(TestCase):
         <clTRID>XXXX-11</clTRID>
     </command>
 </epp>''', {
-            'command': 'domain:update',
-            'name': 'example.com',
+            'command':  'domain:update',
+            'name':     'example.com',
             'chg': {
-                'registrant': 'sh8013',
-                'pw': '2fooBAR'
+                'registrant':   'sh8013',
+                'pw':           '2fooBAR'
             },
-            'clTRID': 'XXXX-11',
+            'clTRID':   'XXXX-11',
         })
 
     def test_domain_update(self):
@@ -414,19 +414,19 @@ class TestDomain(TestCase):
         <clTRID>XXXX-11</clTRID>
     </command>
 </epp>''', {
-            'command': 'domain:update',
-            'name': 'example.com',
+            'command':  'domain:update',
+            'name':     'example.com',
             'add': {
                 'ns': {
                     0: 'ns1.example.net',
                     1: 'ns2.example.net'
                 },
-                'admin': 'sh8013',
-                'tech': 'sh8014',
-                'billing': 'sh8015',
+                'admin':    'sh8013',
+                'tech':     'sh8014',
+                'billing':  'sh8015',
                 'status': {
-                    'clientHold': 'Payment overdue.',
-                    'clientUpdateProhibited': ''
+                    'clientHold':               'Payment overdue.',
+                    'clientUpdateProhibited':   ''
                 }
             },
             'rem': {
@@ -434,19 +434,19 @@ class TestDomain(TestCase):
                     0: 'ns1.example.net',
                     1: 'ns2.example.net'
                 },
-                'admin': 'sh8013',
-                'tech': 'sh8014',
-                'billing': 'sh8015',
+                'admin':    'sh8013',
+                'tech':     'sh8014',
+                'billing':  'sh8015',
                 'status': {
-                    'clientHold': 'Payment overdue.',
-                    'clientUpdateProhibited': ''
+                    'clientHold':               'Payment overdue.',
+                    'clientUpdateProhibited':   ''
                 }
             },
             'chg': {
-                'registrant': 'sh8013',
-                'pw': '2fooBAR'
+                'registrant':   'sh8013',
+                'pw':           '2fooBAR'
             },
-            'clTRID': 'XXXX-11',
+            'clTRID':   'XXXX-11',
         })
 
 if __name__ == '__main__':
