@@ -355,7 +355,7 @@ class TestDomain(TestCase):
             <domain:update xmlns:domain="urn:ietf:params:xml:ns:domain-1.0">
                 <domain:name>example.com</domain:name>
                 <domain:chg>
-                    <domain:registrant>sh8013</domain:registrant>
+                    <domain:registrant>jd1234</domain:registrant>
                     <domain:authInfo>
                         <domain:pw>2fooBAR</domain:pw>
                     </domain:authInfo>
@@ -368,7 +368,7 @@ class TestDomain(TestCase):
             'command':  'domain:update',
             'name':     'example.com',
             'chg': {
-                'registrant':   'sh8013',
+                'registrant':   'jd1234',
                 'pw':           '2fooBAR'
             },
             'clTRID':   'XXXX-11',
@@ -404,7 +404,7 @@ class TestDomain(TestCase):
                     <domain:status s="clientUpdateProhibited"/>
                 </domain:rem>
                 <domain:chg>
-                    <domain:registrant>sh8013</domain:registrant>
+                    <domain:registrant>jd1234</domain:registrant>
                     <domain:authInfo>
                         <domain:pw>2fooBAR</domain:pw>
                     </domain:authInfo>
@@ -443,7 +443,7 @@ class TestDomain(TestCase):
                 }
             },
             'chg': {
-                'registrant':   'sh8013',
+                'registrant':   'jd1234',
                 'pw':           '2fooBAR'
             },
             'clTRID':   'XXXX-11',
