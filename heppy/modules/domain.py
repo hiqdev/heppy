@@ -22,6 +22,12 @@ class domain(Module):
         'registrant':   'set',
     }
 
+    CONTACT_TYPES = (
+        'admin',
+        'tech',
+        'billing'
+    )
+
 ### RESPONSE parsing
 
     def parse_cd(self, response, tag):
@@ -68,7 +74,7 @@ class domain(Module):
 
         if request.has('nss'):
             self.render_nss(request, command, request.get('nss'))
-        if request.has_contacts():
+        if self.has_contacts(request.data):
             self.render_contacts(request, command)
         self.render_auth_info(request, command)
 
@@ -104,7 +110,7 @@ class domain(Module):
     def render_update_section(self, request, element, data):
         if 'nss' in data:
             self.render_nss(request, element, data['nss'])
-        if request.has_contacts(data):
+        if self.has_contacts(data):
             self.render_contacts(request, element, data)
         if 'statuses' in data:
             self.render_statuses(request, element, data['statuses'])
@@ -122,9 +128,12 @@ class domain(Module):
 
     def render_contacts(self, request, parent, storage=None):
         storage = storage or request.data
-        for contactType in set(request.contactTypes) & set(storage.keys()):
+        for contactType in set(self.CONTACT_TYPES) & set(storage.keys()):
             request.sub(parent, 'domain:contact', {'type': contactType}, storage[contactType])
 
     def render_statuses(self, request, parent, statusData):
         for status, description in statusData.iteritems():
             request.sub(parent, 'domain:status', {'s': status}, description)
+
+    def has_contacts(self, storage):
+        return any(contactType in storage for contactType in self.CONTACT_TYPES)
