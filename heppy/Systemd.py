@@ -33,6 +33,10 @@ class Systemd:
     def status(self):
         self.unsafe_all('status')
 
+    def tail(self):
+        names = ' -u '.join(self.service_names())
+        self.unsafe('journalctl -f -u %s' % names)
+
     def runcmd_all(self, command):
         for name in self.service_names():
             self.runcmd('systemctl %s %s' % (command, name))
