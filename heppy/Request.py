@@ -5,12 +5,6 @@ from Doc import Doc
 
 class Request(Doc):
 
-    contactTypes = (
-        'admin',
-        'tech',
-        'billing'
-    )
-
     def __init__(self, data):
         self.data       = data
         self.raw        = None
@@ -43,10 +37,6 @@ class Request(Doc):
             if value:
                 self.sub(parent, name + ':' + field, attrs, value)
         return parent
-
-    def has_contacts(self, storage={}):
-        return any(contactType in self.data or contactType in storage
-                   for contactType in self.contactTypes)
 
     @staticmethod
     def build(command, data, extensions={}):
