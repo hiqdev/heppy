@@ -55,12 +55,14 @@ class Doc:
     def set(self, name, value):
         self.data[name] = value
 
+    ### TODO rename to add_hash
     def addto(self, name, values):
         if not name in self.data:
             self.data[name] = {}
         for k,v in values.iteritems():
             self.data[name][k] = v
 
+    ### TODO consider removing
     def addpair(self, name, value):
         self.addto(name, {value: value})
 
