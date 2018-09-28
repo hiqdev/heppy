@@ -88,28 +88,26 @@ class domain(Module):
         if request.has('add'):
             addElement = request.sub(command, 'domain:add')
             addData = request.data['add']
-            if 'ns' in addData:
-                self.render_ns(request, addElement, addData['ns'])
-            if request.has_contacts(addData):
-                self.render_contacts(request, addElement, addData)
-            if 'status' in addData:
-                self.render_status(request, addElement, addData['status'])
+            self.render_update_section(request, addElement, addData)
 
         if request.has('rem'):
             remElement = request.sub(command, 'domain:rem')
             remData = request.data['rem']
-            if 'ns' in remData:
-                self.render_ns(request, remElement, remData['ns'])
-            if request.has_contacts(remData):
-                self.render_contacts(request, remElement, remData)
-            if 'status' in remData:
-                self.render_status(request, remElement, remData['status'])
+            self.render_update_section(request, remElement, remData)
 
         if request.has('chg'):
             chgElement = request.sub(command, 'domain:chg')
             chgData = request.data['chg']
             request.sub(chgElement, 'domain:registrant', text=chgData['registrant'])
             self.render_auth_info(request, chgElement, chgData.get('pw'))
+
+    def render_update_section(self, request, element, data):
+        if 'ns' in data:
+            self.render_ns(request, element, data['ns'])
+        if request.has_contacts(data):
+            self.render_contacts(request, element, data)
+        if 'status' in data:
+            self.render_status(request, element, data['status'])
 
     def render_auth_info(self, request, parent, pw=None, attrs={}):
         if pw is None:
