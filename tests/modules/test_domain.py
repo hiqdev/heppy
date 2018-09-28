@@ -6,7 +6,7 @@ from TestCase import TestCase
 
 class TestDomain(TestCase):
 
-    def test_domain_check(self):
+    def test_request_check(self):
         self.assertRequest('''<?xml version="1.0" ?>
 <epp xmlns="urn:ietf:params:xml:ns:epp-1.0">
     <command>
@@ -27,7 +27,7 @@ class TestDomain(TestCase):
             'clTRID':   'XXXX-11',
         })
 
-    def test_domain_info_min(self):
+    def test_request_info_min(self):
         self.assertRequest('''<?xml version="1.0" ?>
 <epp xmlns="urn:ietf:params:xml:ns:epp-1.0">
     <command>
@@ -44,7 +44,7 @@ class TestDomain(TestCase):
             'clTRID':   'XXXX-11',
         })
 
-    def test_domain_info(self):
+    def test_request_info(self):
         self.assertRequest('''<?xml version="1.0" ?>
 <epp xmlns="urn:ietf:params:xml:ns:epp-1.0">
     <command>
@@ -65,7 +65,7 @@ class TestDomain(TestCase):
             'clTRID':   'XXXX-11',
         })
 
-    def test_domain_transfer_query_min(self):
+    def test_request_transfer_query_min(self):
         self.assertRequest('''<?xml version="1.0" ?>
 <epp xmlns="urn:ietf:params:xml:ns:epp-1.0">
     <command>
@@ -83,7 +83,7 @@ class TestDomain(TestCase):
             'clTRID':   'XXXX-11',
         })
 
-    def test_domain_transfer_query(self):
+    def test_request_transfer_query(self):
         self.assertRequest('''<?xml version="1.0" ?>
 <epp xmlns="urn:ietf:params:xml:ns:epp-1.0">
     <command>
@@ -106,7 +106,7 @@ class TestDomain(TestCase):
             'clTRID':   'XXXX-11',
         })
 
-    def test_domain_transfer_request_min(self):
+    def test_request_transfer_request_min(self):
         self.assertRequest('''<?xml version="1.0" ?>
 <epp xmlns="urn:ietf:params:xml:ns:epp-1.0">
     <command>
@@ -127,7 +127,7 @@ class TestDomain(TestCase):
             'clTRID':   'XXXX-11',
         })
 
-    def test_domain_transfer_request(self):
+    def test_request_transfer_request(self):
         self.assertRequest('''<?xml version="1.0" ?>
 <epp xmlns="urn:ietf:params:xml:ns:epp-1.0">
     <command>
@@ -152,7 +152,7 @@ class TestDomain(TestCase):
             'clTRID':   'XXXX-11',
         })
 
-    def test_domain_create_min(self):
+    def test_request_create_min(self):
         self.assertRequest('''<?xml version="1.0" ?>
 <epp xmlns="urn:ietf:params:xml:ns:epp-1.0">
     <command>
@@ -172,7 +172,7 @@ class TestDomain(TestCase):
             'clTRID':   'XXXX-11',
         })
 
-    def test_domain_create(self):
+    def test_request_create(self):
         self.assertRequest('''<?xml version="1.0" ?>
 <epp xmlns="urn:ietf:params:xml:ns:epp-1.0">
     <command>
@@ -211,7 +211,7 @@ class TestDomain(TestCase):
             'clTRID':       'XXXX-11',
         })
 
-    def test_domain_delete(self):
+    def test_request_delete(self):
         self.assertRequest('''<?xml version="1.0" ?>
 <epp xmlns="urn:ietf:params:xml:ns:epp-1.0">
     <command>
@@ -228,7 +228,7 @@ class TestDomain(TestCase):
             'clTRID':   'XXXX-11',
         })
 
-    def test_domain_renew(self):
+    def test_request_renew(self):
         self.assertRequest('''<?xml version="1.0" ?>
 <epp xmlns="urn:ietf:params:xml:ns:epp-1.0">
     <command>
@@ -249,7 +249,7 @@ class TestDomain(TestCase):
             'clTRID':       'XXXX-11',
         })
 
-    def test_domain_update_min(self):
+    def test_request_update_min(self):
         self.assertRequest('''<?xml version="1.0" ?>
 <epp xmlns="urn:ietf:params:xml:ns:epp-1.0">
     <command>
@@ -265,7 +265,7 @@ class TestDomain(TestCase):
             'name':     'example.com',
         })
 
-    def test_domain_update_add(self):
+    def test_request_update_add(self):
         self.assertRequest('''<?xml version="1.0" ?>
 <epp xmlns="urn:ietf:params:xml:ns:epp-1.0">
     <command>
@@ -306,7 +306,7 @@ class TestDomain(TestCase):
             'clTRID':   'XXXX-11',
         })
 
-    def test_domain_update_rem(self):
+    def test_request_update_rem(self):
         self.assertRequest('''<?xml version="1.0" ?>
 <epp xmlns="urn:ietf:params:xml:ns:epp-1.0">
     <command>
@@ -347,7 +347,7 @@ class TestDomain(TestCase):
             'clTRID':   'XXXX-11',
         })
 
-    def test_domain_update_chg(self):
+    def test_request_update_chg(self):
         self.assertRequest('''<?xml version="1.0" ?>
 <epp xmlns="urn:ietf:params:xml:ns:epp-1.0">
     <command>
@@ -374,7 +374,7 @@ class TestDomain(TestCase):
             'clTRID':   'XXXX-11',
         })
 
-    def test_domain_update(self):
+    def test_request_update(self):
         self.assertRequest('''<?xml version="1.0" ?>
 <epp xmlns="urn:ietf:params:xml:ns:epp-1.0">
     <command>
