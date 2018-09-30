@@ -4,6 +4,12 @@ Start EPP client:
 ./bin/heppyd epp.verisign-grs.com start
 ```
 
+Start with systemd:
+
+```sh
+./bin/heppyd verisign/epp.json systemd up
+```
+
 Register domain:
 
 ```sh
