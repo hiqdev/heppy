@@ -6,7 +6,7 @@ from TestCase import TestCase
 
 class TestDomainCreate(TestCase):
 
-    def test_request_create_min(self):
+    def test_render_create_request_min(self):
         self.assertRequest('''<?xml version="1.0" ?>
 <epp xmlns="urn:ietf:params:xml:ns:epp-1.0">
     <command>
@@ -26,7 +26,7 @@ class TestDomainCreate(TestCase):
             'clTRID':   'XXXX-11',
         })
 
-    def test_request_create(self):
+    def test_render_create_request(self):
         self.assertRequest('''<?xml version="1.0" ?>
 <epp xmlns="urn:ietf:params:xml:ns:epp-1.0">
     <command>

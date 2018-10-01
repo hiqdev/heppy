@@ -6,7 +6,7 @@ from TestCase import TestCase
 
 class TestDomainInfo(TestCase):
 
-    def test_request_info_min(self):
+    def test_render_info_request_min(self):
         self.assertRequest('''<?xml version="1.0" ?>
 <epp xmlns="urn:ietf:params:xml:ns:epp-1.0">
     <command>
@@ -23,7 +23,7 @@ class TestDomainInfo(TestCase):
             'clTRID':   'XXXX-11',
         })
 
-    def test_request_info(self):
+    def test_render_info_request(self):
         self.assertRequest('''<?xml version="1.0" ?>
 <epp xmlns="urn:ietf:params:xml:ns:epp-1.0">
     <command>
@@ -44,7 +44,7 @@ class TestDomainInfo(TestCase):
             'clTRID':   'XXXX-11',
         })
 
-    def test_response_info(self):
+    def test_render_info_response(self):
         self.assertResponse({
             'result_code':  '1000',
             'result_lang':  'en-US',

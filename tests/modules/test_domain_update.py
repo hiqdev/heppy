@@ -6,7 +6,7 @@ from TestCase import TestCase
 
 class TestDomainUpdate(TestCase):
 
-    def test_request_update_min(self):
+    def test_render_update_request_min(self):
         self.assertRequest('''<?xml version="1.0" ?>
 <epp xmlns="urn:ietf:params:xml:ns:epp-1.0">
     <command>
@@ -22,7 +22,7 @@ class TestDomainUpdate(TestCase):
             'name':     'example.com',
         })
 
-    def test_request_update_add(self):
+    def test_render_update_add_request(self):
         self.assertRequest('''<?xml version="1.0" ?>
 <epp xmlns="urn:ietf:params:xml:ns:epp-1.0">
     <command>
@@ -63,7 +63,7 @@ class TestDomainUpdate(TestCase):
             'clTRID':   'XXXX-11',
         })
 
-    def test_request_update_rem(self):
+    def test_render_update_rem_request(self):
         self.assertRequest('''<?xml version="1.0" ?>
 <epp xmlns="urn:ietf:params:xml:ns:epp-1.0">
     <command>
@@ -104,7 +104,7 @@ class TestDomainUpdate(TestCase):
             'clTRID':   'XXXX-11',
         })
 
-    def test_request_update_chg(self):
+    def test_render_update_chg_request(self):
         self.assertRequest('''<?xml version="1.0" ?>
 <epp xmlns="urn:ietf:params:xml:ns:epp-1.0">
     <command>
@@ -131,7 +131,7 @@ class TestDomainUpdate(TestCase):
             'clTRID':   'XXXX-11',
         })
 
-    def test_request_update(self):
+    def test_render_update_request(self):
         self.assertRequest('''<?xml version="1.0" ?>
 <epp xmlns="urn:ietf:params:xml:ns:epp-1.0">
     <command>
