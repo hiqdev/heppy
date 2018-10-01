@@ -128,5 +128,5 @@ class Daemon:
         return reply
 
     def smart_request(self, query):
-        return SmartRequest(query, self.request, self.relogin).perform()
+        return SmartRequest(query).perform(self.request, self.relogin)
 

@@ -16,12 +16,12 @@ class Login:
         greeting = Response.parsexml(greeting)
         if not args.get('objURIs'):
             args['objURIs'] = greeting.get('objURIs')
-            for uri in list(args['objURIs']):
+            for uri in args['objURIs']:
                 if not uri in Request.modules:
-                    del args['objURIs'][uri]
+                    args['objURIs'].remove(uri)
         if not args.get('extURIs'):
             args['extURIs'] = greeting.get('extURIs')
-            for uri in list(args['extURIs']):
+            for uri in args['extURIs']:
                 if not uri in Request.modules:
-                    del args['extURIs'][uri]
+                    args['extURIs'].remove(uri)
         return Request.build('epp:login', args)
