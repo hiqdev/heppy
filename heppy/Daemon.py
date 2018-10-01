@@ -43,12 +43,16 @@ class Daemon:
         self.login(args)
 
         rabbit_config = self.config.get('RabbitMQ', {})
-        server = RPCServer(
+        self.server = RPCServer(
             rabbit_config.get('host', 'localhost'),
             rabbit_config.get('queue', 'heppy-' + self.config['name'])
         )
+        self.server.connection.add_timeout(5, self.on_timeout)
+        self.server.consume(self.smart_request)
 
-        server.consume(self.smart_request)
+    def on_timeout(self):
+        self.server.connection.add_timeout(5, self.on_timeout)
+        print "\nTIMEOUT\n"
 
     def systemd(self, args = {}):
         if not 0 in args:
