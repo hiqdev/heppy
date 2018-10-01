@@ -14,6 +14,7 @@ from heppy.Request import Request
 from heppy.Systemd import Systemd
 from heppy.Response import Response
 from heppy.RabbitMQ import RPCServer
+from heppy.SmartRequest import SmartRequest
 from heppy.SignalHandler import SignalHandler
 
 class Daemon:
