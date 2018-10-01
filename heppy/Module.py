@@ -16,6 +16,9 @@ class Module:
     def parse_set(self, response, tag):
         response.set(tag.tag.split('}')[1], tag.text)
 
+    def parse_add_list(self, response, tag):
+        response.add_list(tag.tag.split('}')[1] + 's', tag.text)
+
     def parse_addpair(self, response, tag):
         response.addpair(tag.tag.split('}')[1] + 's', tag.text)
 
