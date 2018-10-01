@@ -1,7 +1,6 @@
 #!/usr/bin/env python
 
 import os
-import json
 import time
 import socket
 
@@ -128,29 +127,5 @@ class Daemon:
         return reply
 
     def smart_request(self, query):
-        is_json = query.startswith('{')
-        try:
-            pass
-            if is_json:
-                query = self.json2xml(query)
-            reply = self.request(query)
-            pprint(reply)
-            response = Response.parsexml(reply)
-            if response.data['result_code'] == '2002':
-                response = None
-                self.login()
-                reply = self.request(query)
-            if is_json:
-                if not response:
-                    response = Response.parsexml(reply)
-                reply = json.dumps(response.data)
-        except Exception as e:
-            if is_json:
-                reply = json.dumps({'_error': str(e)})
-            else:
-                reply = str(e)
-        return reply
+        return SmartRequest(query, self.request, self.relogin).perform()
 
-    def json2xml(self, query):
-        request = Request.buildFromDict(json.loads(query))
-        return str(request)
