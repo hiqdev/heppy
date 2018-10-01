@@ -6,7 +6,7 @@ from TestCase import TestCase
 
 class TestEppHello(TestCase):
 
-    def test_request_hello(self):
+    def test_render_hello_request(self):
         self.assertRequest('''<?xml version="1.0" ?>
 <epp xmlns="urn:ietf:params:xml:ns:epp-1.0">
     <hello/>

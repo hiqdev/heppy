@@ -6,7 +6,7 @@ from TestCase import TestCase
 
 class TestEppLogin(TestCase):
 
-    def test_request_login_min(self):
+    def test_render_login_request_min(self):
         self.assertRequest('''<?xml version="1.0" ?>
 <epp xmlns="urn:ietf:params:xml:ns:epp-1.0">
     <command>
@@ -36,7 +36,7 @@ class TestEppLogin(TestCase):
             ],
         })
 
-    def test_request_login(self):
+    def test_render_login_request(self):
         self.assertRequest('''<?xml version="1.0" ?>
 <epp xmlns="urn:ietf:params:xml:ns:epp-1.0">
     <command>
@@ -78,7 +78,7 @@ class TestEppLogin(TestCase):
             ]
         })
 
-    def test_request_login_alt(self):
+    def test_render_login_request_alt(self):
         self.assertRequest('''<?xml version="1.0" ?>
 <epp xmlns="urn:ietf:params:xml:ns:epp-1.0">
     <command>
