@@ -11,11 +11,11 @@ class TestEppLogout(TestCase):
 <epp xmlns="urn:ietf:params:xml:ns:epp-1.0">
     <command>
         <logout/>
-        <clTRID>ClientX</clTRID>
+        <clTRID>XXXX-11</clTRID>
     </command>
 </epp>''', {
             'command':  'epp:logout',
-            'clTRID':   'ClientX',
+            'clTRID':   'XXXX-11',
         })
 
 

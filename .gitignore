@@ -18,7 +18,7 @@ nbproject
 .coverage
 
 # testing
-tests/modules/test_request.py
+tests/modules/hidden_test.py
 
 # Byte-compiled / optimized / DLL files
 *$py.class
