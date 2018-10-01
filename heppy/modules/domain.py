@@ -47,7 +47,7 @@ class domain(Module):
     def render_check(self, request):
         command = self.render_command(request, 'check')
         for name in request.get('names'):
-            request.sub(command, 'domain:name', {}, name)
+            request.sub(command, 'domain:name', text=name)
 
     def render_info(self, request):
         hosts = request.get('hosts', 'all')
@@ -126,7 +126,7 @@ class domain(Module):
 
     def render_contacts(self, request, parent, storage=None):
         storage = storage or request.data
-        for contactType in set(self.CONTACT_TYPES) & set(storage.keys()):
+        for contactType in (set(self.CONTACT_TYPES) & set(storage.keys())):
             request.sub(parent, 'domain:contact', {'type': contactType}, storage[contactType])
 
     def render_statuses(self, request, parent, statusData):

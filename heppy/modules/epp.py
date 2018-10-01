@@ -39,20 +39,24 @@ class epp(Module):
 
 ### REQUEST rendering
 
-    def render_login(self, request):
-        action = self.render_root_command(request, 'login')
+    def render_hello(self, request):
+        epp = self.render_epp(request)
+        request.sub(epp, 'hello')
 
-        request.sub(action, 'clID', text=request.get('clID', request.get('login')))
-        request.sub(action, 'pw', text=request.get('pw', request.get('password')))
+    def render_login(self, request):
+        command = self.render_root_command(request, 'login')
+
+        request.sub(command, 'clID', text=request.get('clID', request.get('login')))
+        request.sub(command, 'pw', text=request.get('pw', request.get('password')))
         newPW = request.get('newPW', request.get('newPassword'))
         if newPW is not None:
-            request.sub(action, 'newPW', text=newPW)
+            request.sub(command, 'newPW', text=newPW)
 
-        options = request.sub(action, 'options')
+        options = request.sub(command, 'options')
         request.sub(options, 'version', text=request.get('version', '1.0'))
         request.sub(options, 'lang', text=request.get('lang', 'en'))
 
-        svcs = request.sub(action, 'svcs')
+        svcs = request.sub(command, 'svcs')
         for svc in request.get('objURIs', [request.nsmap['epp']]):
             request.sub(svcs, 'objURI', text=svc)
         extURIs = request.get('extURIs', [])
@@ -64,9 +68,10 @@ class epp(Module):
     def render_logout(self, request):
         self.render_root_command(request, 'logout')
 
-    def render_hello(self, request):
-        epp = self.render_epp(request)
-        request.sub(epp, 'hello')
+    def render_check(self, request):
+        command = self.render_command(request, 'check')
+        for name in request.get('names'):
+            request.sub(command, 'obj:name', text=name)
 
     def render_poll(self, request):
         attrs = {'op': request.get('op', 'req')}
@@ -74,3 +79,4 @@ class epp(Module):
         if msgID is not None:
             attrs['msgID'] = msgID
         self.render_root_command(request, 'poll', attrs)
+
