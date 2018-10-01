@@ -7,8 +7,7 @@ from TestCase import TestCase
 class TestEppLogin(TestCase):
 
     def test_request_login_min(self):
-        self.assertRequest('''
-<?xml version="1.0" ?>
+        self.assertRequest('''<?xml version="1.0" ?>
 <epp xmlns="urn:ietf:params:xml:ns:epp-1.0">
     <command>
         <login>
@@ -38,8 +37,7 @@ class TestEppLogin(TestCase):
         })
 
     def test_request_login(self):
-        self.assertRequest('''
-<?xml version="1.0" ?>
+        self.assertRequest('''<?xml version="1.0" ?>
 <epp xmlns="urn:ietf:params:xml:ns:epp-1.0">
     <command>
         <login>
@@ -69,6 +67,48 @@ class TestEppLogin(TestCase):
             'newPW':    'bar-FOO2',
             'version':  4.2,
             'lang':     'ua',
+            'objURIs': [
+                'urn:ietf:params:xml:ns:obj1',
+                'urn:ietf:params:xml:ns:obj2',
+                'urn:ietf:params:xml:ns:obj3'
+            ],
+            'extURIs': [
+                'http://custom/obj1ext-1.0',
+                'http://custom/obj1ext-2.0'
+            ]
+        })
+
+    def test_request_login_alt(self):
+        self.assertRequest('''<?xml version="1.0" ?>
+<epp xmlns="urn:ietf:params:xml:ns:epp-1.0">
+    <command>
+        <login>
+            <clID>ClientX</clID>
+            <pw>2fooBar</pw>
+            <newPW>bar-FOO2</newPW>
+            <options>
+                <version>4.2</version>
+                <lang>ua</lang>
+            </options>
+            <svcs>
+                <objURI>urn:ietf:params:xml:ns:obj1</objURI>
+                <objURI>urn:ietf:params:xml:ns:obj2</objURI>
+                <objURI>urn:ietf:params:xml:ns:obj3</objURI>
+                <svcExtension>
+                    <extURI>http://custom/obj1ext-1.0</extURI>
+                    <extURI>http://custom/obj1ext-2.0</extURI>
+                </svcExtension>
+            </svcs>
+        </login>
+        <clTRID>AA-00</clTRID>
+    </command>
+</epp>''', {
+            'command':      'epp:login',
+            'login':        'ClientX',
+            'password':     '2fooBar',
+            'newPassword':  'bar-FOO2',
+            'version':      4.2,
+            'lang':         'ua',
             'objURIs': [
                 'urn:ietf:params:xml:ns:obj1',
                 'urn:ietf:params:xml:ns:obj2',
