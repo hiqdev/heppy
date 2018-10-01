@@ -76,7 +76,10 @@ class Daemon:
         else:
             self.connect_internal()
 
-    def login(self, args = {}):
+    def relogin(self):
+        return self.login({})
+
+    def login(self, args):
         try:
             query = self.get_login_query(args)
             print Request.prettifyxml(query)
