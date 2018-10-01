@@ -10,11 +10,9 @@ from Response import Response
 
 class SmartRequest():
 
-    def __init__(self, input, request, relogin):
+    def __init__(self, input):
         self.input      = input
-        self.request    = request
-        self.relogin    = relogin
-        self.query        = None
+        self.query      = None
         self.type       = None
         
     def get_query(self):
@@ -58,15 +56,15 @@ class SmartRequest():
     def query_from_dict(self, data):
         return str(Request.buildFromDict(data))
 
-    def perform(self):
+    def perform(self, request, relogin):
         try:
             query = self.get_query()
-            reply = self.request(query)
+            reply = request(query)
             response = Response.parsexml(reply)
             if response.data.get('result_code', '0') == '2002':
                 response = None
-                self.relogin()
-                reply = self.request(query)
+                relogin()
+                reply = request(query)
             return self.prepare_response(reply, response)
         except Exception as e:
             return self.prepare_error(e)
