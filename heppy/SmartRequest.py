@@ -92,29 +92,6 @@ class SmartRequest():
     def parse_response(self, xml, response):
         return response.data
 
-    def __OLD__perform(self):
-        is_json = input.startswith('{')
-        try:
-            if is_json:
-                input = self.json2xml(input)
-            reply = self.request(input)
-            pprint(reply)
-            response = Response.parsexml(reply)
-            if response.data['result_code'] == '2002':
-                response = None
-                self.login()
-                reply = self.request(input)
-            if is_json:
-                if not response:
-                    response = Response.parsexml(reply)
-                reply = json.dumps(response.data)
-        except Exception as e:
-            if is_json:
-                reply = json.dumps({'_error': str(e)})
-            else:
-                reply = str(e)
-        return reply
-
 class Type(Enum):
     XML = 1
     JSON = 2
