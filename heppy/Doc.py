@@ -29,7 +29,7 @@ class Doc:
         if ns in self.nsmap:
             ns = self.nsmap[ns]
         if self.modules == {}:
-            for name,nsi in self.nsmap.iteritems():
+            for name, nsi in self.nsmap.iteritems():
                 self.modules[nsi] = name
         module = self.modules.get(ns)
         if isinstance(module, basestring):
