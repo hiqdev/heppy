@@ -64,9 +64,6 @@ class contact(Module):
         if request.has('pw'):
             self.render_auth_info(request, command)
 
-        if request.has('disclosure'):
-            request.add_subtag(command, 'contact:fax', text=request.get('fax'))
-
     def render_addr(self, request, command):
         addr = request.add_subtag(command, 'contact:addr')
 
