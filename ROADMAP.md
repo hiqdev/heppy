@@ -64,6 +64,20 @@ First **basic** commands then remaining!
 
 First **basic** extensions then remaining!
 
-- extensions:
-    - fee
+- **namestoreExt**
+- **idnLang**
+- **fee**
+- **secDNS**
+- changePoll
+- coa
+- coa
+- launch
+- lowbalance-poll
+- registry
+- relatedDomain
+- rgp
+- rgp-poll
+- sync
+- verificationCode
+- whoisInf
 
