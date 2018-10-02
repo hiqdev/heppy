@@ -81,8 +81,8 @@ class epp(Module):
             attrs['msgID'] = msgID
         self.render_root_command(request, 'poll', attrs)
 
-    def render_typical_command(self, request, commandName):
-        command = self.render_root_command(request, commandName)
-        objs = request.sub(command, 'obj:' + commandName, {'xmlns:obj': 'urn:ietf:params:xml:ns:obj'})
+    def render_typical_command(self, request, command_name):
+        command = self.render_root_command(request, command_name)
+        objs = request.sub(command, 'obj:' + command_name, {'xmlns:obj': 'urn:ietf:params:xml:ns:obj'})
         for name in request.get('names'):
             request.sub(objs, 'obj:name', text=name)
