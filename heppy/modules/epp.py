@@ -69,10 +69,10 @@ class epp(Module):
         self.render_root_command(request, 'logout')
 
     def render_check(self, request):
-        command = self.render_root_command(request, 'check')
-        obj_check = request.sub(command, 'obj:check', {'xmlns:obj': 'urn:ietf:params:xml:ns:obj'})
-        for name in request.get('names'):
-            request.sub(obj_check, 'obj:name', text=name)
+        self.render_typical_command(request, 'check')
+
+    def render_info(self, request):
+        self.render_typical_command(request, 'info')
 
     def render_poll(self, request):
         attrs = {'op': request.get('op', 'req')}
@@ -81,3 +81,8 @@ class epp(Module):
             attrs['msgID'] = msgID
         self.render_root_command(request, 'poll', attrs)
 
+    def render_typical_command(self, request, commandName):
+        command = self.render_root_command(request, commandName)
+        objs = request.sub(command, 'obj:' + commandName, {'xmlns:obj': 'urn:ietf:params:xml:ns:obj'})
+        for name in request.get('names'):
+            request.sub(objs, 'obj:name', text=name)
