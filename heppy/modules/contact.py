@@ -46,41 +46,41 @@ class contact(Module):
 
     def render_create(self, request):
         command = self.render_command_fields(request, 'create', {'id': {}})
-        postalInfo = request.sub(command, 'contact:postalInfo', {'type': 'int'})
-        request.sub(postalInfo, 'contact:name', text=request.get('name'))
+        postalInfo = request.add_subtag(command, 'contact:postalInfo', {'type': 'int'})
+        request.add_subtag(postalInfo, 'contact:name', text=request.get('name'))
 
         if request.has('org'):
-            request.sub(postalInfo, 'contact:org', text=request.get('org'))
+            request.add_subtag(postalInfo, 'contact:org', text=request.get('org'))
 
         self.render_addr(request, postalInfo)
 
         if request.has('voice'):
-            request.sub(command, 'contact:voice', text=request.get('voice'))
+            request.add_subtag(command, 'contact:voice', text=request.get('voice'))
 
         if request.has('fax'):
-            request.sub(command, 'contact:fax', text=request.get('fax'))
+            request.add_subtag(command, 'contact:fax', text=request.get('fax'))
 
-        request.sub(command, 'contact:email', text=request.get('email'))
+        request.add_subtag(command, 'contact:email', text=request.get('email'))
         if request.has('pw'):
             self.render_auth_info(request, command)
 
         if request.has('disclosure'):
-            request.sub(command, 'contact:fax', text=request.get('fax'))
+            request.add_subtag(command, 'contact:fax', text=request.get('fax'))
 
     def render_addr(self, request, command):
-        addr = request.sub(command, 'contact:addr')
+        addr = request.add_subtag(command, 'contact:addr')
 
         if request.has('street1'):
-            request.sub(addr, 'contact:street', text=request.get('street1'))
+            request.add_subtag(addr, 'contact:street', text=request.get('street1'))
         if request.has('street2'):
-            request.sub(addr, 'contact:street', text=request.get('street2'))
+            request.add_subtag(addr, 'contact:street', text=request.get('street2'))
         if request.has('street3'):
-            request.sub(addr, 'contact:street', text=request.get('street3'))
+            request.add_subtag(addr, 'contact:street', text=request.get('street3'))
 
-        request.sub(addr, 'contact:city', text=request.get('city'))
+        request.add_subtag(addr, 'contact:city', text=request.get('city'))
 
         if request.has('sp'):
-            request.sub(addr, 'contact:sp', text=request.get('sp'))
+            request.add_subtag(addr, 'contact:sp', text=request.get('sp'))
         if request.has('pc'):
-            request.sub(addr, 'contact:pc', text=request.get('pc'))
-        request.sub(addr, 'contact:cc', text=request.get('cc'))
+            request.add_subtag(addr, 'contact:pc', text=request.get('pc'))
+        request.add_subtag(addr, 'contact:cc', text=request.get('cc'))

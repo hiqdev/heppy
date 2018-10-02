@@ -41,29 +41,29 @@ class epp(Module):
 
     def render_hello(self, request):
         epp = self.render_epp(request)
-        request.sub(epp, 'hello')
+        request.add_subtag(epp, 'hello')
 
     def render_login(self, request):
         command = self.render_root_command(request, 'login')
 
-        request.sub(command, 'clID', text=request.get('clID', request.get('login')))
-        request.sub(command, 'pw', text=request.get('pw', request.get('password')))
+        request.add_subtag(command, 'clID', text=request.get('clID', request.get('login')))
+        request.add_subtag(command, 'pw', text=request.get('pw', request.get('password')))
         newPW = request.get('newPW', request.get('newPassword'))
         if newPW is not None:
-            request.sub(command, 'newPW', text=newPW)
+            request.add_subtag(command, 'newPW', text=newPW)
 
-        options = request.sub(command, 'options')
-        request.sub(options, 'version', text=request.get('version', '1.0'))
-        request.sub(options, 'lang', text=request.get('lang', 'en'))
+        options = request.add_subtag(command, 'options')
+        request.add_subtag(options, 'version', text=request.get('version', '1.0'))
+        request.add_subtag(options, 'lang', text=request.get('lang', 'en'))
 
-        svcs = request.sub(command, 'svcs')
+        svcs = request.add_subtag(command, 'svcs')
         for svc in request.get('objURIs', [request.nsmap['epp']]):
-            request.sub(svcs, 'objURI', text=svc)
+            request.add_subtag(svcs, 'objURI', text=svc)
         extURIs = request.get('extURIs', [])
         if extURIs:
-            exts = request.sub(svcs, 'svcExtension')
+            exts = request.add_subtag(svcs, 'svcExtension')
             for ext in extURIs:
-                request.sub(exts, 'extURI', text=ext)
+                request.add_subtag(exts, 'extURI', text=ext)
 
     def render_logout(self, request):
         self.render_root_command(request, 'logout')
@@ -83,6 +83,6 @@ class epp(Module):
 
     def render_typical_command(self, request, command_name):
         command = self.render_root_command(request, command_name)
-        objs = request.sub(command, 'obj:' + command_name, {'xmlns:obj': 'urn:ietf:params:xml:ns:obj'})
+        objs = request.add_subtag(command, 'obj:' + command_name, {'xmlns:obj': 'urn:ietf:params:xml:ns:obj'})
         for name in request.get('names'):
-            request.sub(objs, 'obj:name', text=name)
+            request.add_subtag(objs, 'obj:name', text=name)

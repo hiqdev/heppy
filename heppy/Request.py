@@ -18,24 +18,24 @@ class Request(Doc):
         else:
             return self.raw
 
-    def element(self, tag, attrs={}, text=None):
+    def add_tag(self, tag, attrs={}, text=None):
         res = ET.Element(tag, attrs)
         if text is not None:
             res.text = str(text)
         return res
 
-    def sub(self, parent, tag, attrs={}, text=None):
+    def add_subtag(self, parent, tag, attrs={}, text=None):
         res = ET.SubElement(parent, tag, attrs)
         if text is not None:
             res.text = str(text)
         return res
 
-    def subfields(self, parent, fields, values=None):
+    def add_subtags(self, parent, fields, values=None):
         name = parent.tag.split(':')[0]
         for field, attrs in fields.iteritems():
             value = self.get(field) if values is None else values.get(field)
             if value:
-                self.sub(parent, name + ':' + field, attrs, value)
+                self.add_subtag(parent, name + ':' + field, attrs, value)
         return parent
 
     @staticmethod

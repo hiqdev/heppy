@@ -32,10 +32,10 @@ class fee(Module):
         extension = self.render_extension(request, 'check')
         command = request.get('fee', {}).get('command', 'create')
         for name in request.get('names').itervalues():
-            domain = request.sub(extension, 'fee:domain')
-            request.sub(domain, 'fee:name', {}, name)
-            request.sub(domain, 'fee:command', {}, command)
-            request.sub(domain, 'fee:period', {'unit': 'y'}, '1')
+            domain = request.add_subtag(extension, 'fee:domain')
+            request.add_subtag(domain, 'fee:name', {}, name)
+            request.add_subtag(domain, 'fee:command', {}, command)
+            request.add_subtag(domain, 'fee:period', {'unit': 'y'}, '1')
 
     def render_create(self, request):
         return self.render_action(request, 'create')
@@ -46,5 +46,5 @@ class fee(Module):
     def render_action(self, request, action):
         extension = self.render_extension(request, action)
         data = request.get('fee', {})
-        request.sub(extension, 'fee:currency', {}, data.get('currency', 'USD'))
-        request.sub(extension, 'fee:fee',      {}, data.get('fee'))
+        request.add_subtag(extension, 'fee:currency', {}, data.get('currency', 'USD'))
+        request.add_subtag(extension, 'fee:fee',      {}, data.get('fee'))

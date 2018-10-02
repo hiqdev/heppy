@@ -39,22 +39,22 @@ class Module:
 
     def render_epp(self, request):
         if request.epp is None:
-            request.epp = request.element('epp', {'xmlns': request.get_module('epp').xmlns})
+            request.epp = request.add_tag('epp', {'xmlns': request.get_module('epp').xmlns})
         return request.epp
 
     def render_clTRID(self, request):
         clTRID = request.get('clTRID', 'AA-00')
         if clTRID != 'NONE' and request.command is not None:
-            request.sub(request.command, 'clTRID', {}, clTRID)
+            request.add_subtag(request.command, 'clTRID', {}, clTRID)
 
     def render_root_command(self, request, command, attrs={}):
         if request.command is None:
             epp = self.render_epp(request)
-            request.command = request.sub(epp, 'command')
-        return request.sub(request.command, command, attrs)
+            request.command = request.add_subtag(epp, 'command')
+        return request.add_subtag(request.command, command, attrs)
 
     def render_header(self, request, source, action):
-        return request.sub(source, self.name + ':' + action, {'xmlns:' + self.name: self.xmlns})
+        return request.add_subtag(source, self.name + ':' + action, {'xmlns:' + self.name: self.xmlns})
 
     def render_command(self, request, action, attrs={}):
         command = self.render_root_command(request, action, attrs)
@@ -62,24 +62,24 @@ class Module:
 
     def render_command_fields(self, request, command, fields={'name': {}}, attrs={}):
         command = self.render_command(request, command, attrs)
-        request.subfields(command, fields)
+        request.add_subtags(command, fields)
         return command
 
     def render_check_command(self, request, mod, field):
         command = self.render_command(request, 'check')
         for name in request.get(field + 's'):
-            request.sub(command, mod + ':' + field, text=name)
+            request.add_subtag(command, mod + ':' + field, text=name)
         return command
 
     def render_auth_info(self, request, parent, pw=None, attrs={}):
         if pw is None:
             pw = request.get('pw', '')
-        authInfo = request.sub(parent, self.name + ':authInfo')
-        request.sub(authInfo, self.name + ':pw', attrs, pw)
+        authInfo = request.add_subtag(parent, self.name + ':authInfo')
+        request.add_subtag(authInfo, self.name + ':pw', attrs, pw)
 
     def render_root_extension(self, request):
         if request.extension is None:
-            request.extension = request.sub(request.command, 'extension')
+            request.extension = request.add_subtag(request.command, 'extension')
         return request.extension
 
     def render_extension(self, request, action):
@@ -88,5 +88,5 @@ class Module:
 
     def render_extension_fields(self, request, action, fields):
         extension = self.render_extension(request, action)
-        request.subfields(extension, fields)
+        request.add_subtags(extension, fields)
         return extension
