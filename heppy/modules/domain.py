@@ -123,9 +123,5 @@ class domain(Module):
         for contactType in (set(self.CONTACT_TYPES) & set(storage.keys())):
             request.add_subtag(parent, 'domain:contact', {'type': contactType}, storage[contactType])
 
-    def render_statuses(self, request, parent, statusData):
-        for status, description in statusData.iteritems():
-            request.add_subtag(parent, 'domain:status', {'s': status}, description)
-
     def has_contacts(self, storage):
         return any(contactType in storage for contactType in self.CONTACT_TYPES)
