@@ -47,22 +47,43 @@ class contact(Module):
     def render_create(self, request):
         command = self.render_command_fields(request, 'create', {'id': {}})
         postalInfo = request.sub(command, 'contact:postalInfo', {'type': 'int'})
-        request.sub(postalInfo, 'contact:name', {}, request.get('name'))
-        request.sub(postalInfo, 'contact:org',  {}, request.get('org'))
+        request.sub(postalInfo, 'contact:name', text=request.get('name'))
+
+        if request.has('org'):
+            request.sub(postalInfo, 'contact:org', text=request.get('org'))
+
         self.render_addr(request, postalInfo)
-        request.sub(command, 'contact:voice',   {}, request.get('voice'))
-        request.sub(command, 'contact:email',   {}, request.get('email'))
+
+        if request.has('voice'):
+            request.sub(command, 'contact:voice', text=request.get('voice'))
+
+        if request.has('fax'):
+            request.sub(command, 'contact:fax', text=request.get('fax'))
+
+        request.sub(command, 'contact:email', text=request.get('email'))
         if request.has('pw'):
             self.render_auth_info(request, command)
 
+        if request.has('disclosure'):
+            request.sub(command, 'contact:fax', text=request.get('fax'))
+
     def render_addr(self, request, command):
         addr = request.sub(command, 'contact:addr')
-        request.sub(addr, 'contact:street', {}, request.get('street1'))
-        request.sub(addr, 'contact:city',   {}, request.get('city'))
+
+        if request.has('street1'):
+            request.sub(addr, 'contact:street', text=request.get('street1'))
+        if request.has('street2'):
+            request.sub(addr, 'contact:street', text=request.get('street2'))
+        if request.has('street3'):
+            request.sub(addr, 'contact:street', text=request.get('street3'))
+
+        request.sub(addr, 'contact:city', text=request.get('city'))
+
         if request.has('sp'):
-            request.sub(addr, 'contact:sp', {}, request.get('sp'))
-        request.sub(addr, 'contact:pc',     {}, request.get('pc'))
-        request.sub(addr, 'contact:cc',     {}, request.get('cc'))
+            request.sub(addr, 'contact:sp', text=request.get('sp'))
+        if request.has('pc'):
+            request.sub(addr, 'contact:pc', text=request.get('pc'))
+        request.sub(addr, 'contact:cc', text=request.get('cc'))
 
     def render_auth_info(self, request, command, pw = None):
         if pw is None:

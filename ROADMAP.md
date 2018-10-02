@@ -65,3 +65,5 @@ First **basic** extensions then remaining!
 - verificationCode
 - whoisInf
 
+**to do:**  
+- add contact:disclose
