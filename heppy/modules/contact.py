@@ -91,6 +91,8 @@ class contact(Module):
 
         if request.has('add'):
             self.render_update_section(request, command, 'add')
+        if request.has('rem'):
+            self.render_update_section(request, command, 'rem')
 
     def render_update_section(self, request, command, operation):
         element = request.add_subtag(command, 'contact:' + operation)
