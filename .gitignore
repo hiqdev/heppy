@@ -19,6 +19,7 @@ nbproject
 
 # testing
 tests/modules/hidden_test.py
+tests/modules/template.py
 
 # Byte-compiled / optimized / DLL files
 *$py.class

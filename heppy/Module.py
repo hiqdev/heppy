@@ -67,8 +67,8 @@ class Module:
 
     def render_check_command(self, request, mod, field):
         command = self.render_command(request, 'check')
-        for name in request.get(field + 's').itervalues():
-            request.sub(command, mod+':'+field, {}, name)
+        for name in request.get(field + 's'):
+            request.sub(command, mod + ':' + field, text=name)
         return command
 
     def render_root_extension(self, request):
