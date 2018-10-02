@@ -84,10 +84,3 @@ class contact(Module):
         if request.has('pc'):
             request.sub(addr, 'contact:pc', text=request.get('pc'))
         request.sub(addr, 'contact:cc', text=request.get('cc'))
-
-    def render_auth_info(self, request, command, pw = None):
-        if pw is None:
-            pw = request.get('pw', '')
-        authInfo = request.sub(command, 'contact:authInfo')
-        request.sub(authInfo, 'contact:pw', {}, pw)
-

@@ -113,12 +113,6 @@ class domain(Module):
         if 'statuses' in data:
             self.render_statuses(request, element, data['statuses'])
 
-    def render_auth_info(self, request, parent, pw=None, attrs={}):
-        if pw is None:
-            pw = request.get('pw', '')
-        authInfo = request.sub(parent, 'domain:authInfo')
-        request.sub(authInfo, 'domain:pw', attrs, pw)
-
     def render_nss(self, request, parent, hosts):
         nsElement = request.sub(parent, 'domain:ns')
         for host in hosts:

@@ -71,6 +71,12 @@ class Module:
             request.sub(command, mod + ':' + field, text=name)
         return command
 
+    def render_auth_info(self, request, parent, pw=None, attrs={}):
+        if pw is None:
+            pw = request.get('pw', '')
+        authInfo = request.sub(parent, self.name + ':authInfo')
+        request.sub(authInfo, self.name + ':pw', attrs, pw)
+
     def render_root_extension(self, request):
         if request.extension is None:
             request.extension = request.sub(request.command, 'extension')
