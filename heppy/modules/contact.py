@@ -46,6 +46,7 @@ class contact(Module):
 
     def render_create(self, request):
         command = self.render_command_fields(request, 'create', {'id': {}})
+
         postalInfo = request.add_subtag(command, 'contact:postalInfo', {'type': 'int'})
         request.add_subtag(postalInfo, 'contact:name', text=request.get('name'))
 
@@ -81,3 +82,6 @@ class contact(Module):
         if request.has('pc'):
             request.add_subtag(addr, 'contact:pc', text=request.get('pc'))
         request.add_subtag(addr, 'contact:cc', text=request.get('cc'))
+
+    def render_delete(self, request):
+        self.render_command_fields(request, 'delete', {'id': {}})
