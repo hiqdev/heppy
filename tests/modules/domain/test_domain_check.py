@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 
 import unittest
-from TestCase import TestCase
+from ..TestCase import TestCase
 
 
 class TestDomainCheck(TestCase):

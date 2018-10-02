@@ -1,25 +1,25 @@
 #!/usr/bin/env python
 
 import unittest
-from TestCase import TestCase
+from ..TestCase import TestCase
 
 
-class TestEppInfo(TestCase):
+class TestEppCheck(TestCase):
 
-    def test_render_info_request(self):
+    def test_render_check_request(self):
         self.assertRequest('''<?xml version="1.0" ?>
 <epp xmlns="urn:ietf:params:xml:ns:epp-1.0">
     <command>
-        <info>
-            <obj:info xmlns:obj="urn:ietf:params:xml:ns:obj">
+        <check>
+            <obj:check xmlns:obj="urn:ietf:params:xml:ns:obj">
                 <obj:name>example1.com</obj:name>
                 <obj:name>example2.com</obj:name>
-            </obj:info>
-        </info>
+            </obj:check>
+        </check>
         <clTRID>XXXX-11</clTRID>
     </command>
 </epp>''', {
-            'command':  'epp:info',
+            'command':  'epp:check',
             'names': [
                 'example1.com',
                 'example2.com'
