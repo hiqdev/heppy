@@ -6,7 +6,7 @@ from ..TestCase import TestCase
 
 class TestEppHello(TestCase):
 
-    def test_render_hello_request(self):
+    def test_render_epp_hello_request(self):
         self.assertRequest('''<?xml version="1.0" ?>
 <epp xmlns="urn:ietf:params:xml:ns:epp-1.0">
     <hello/>
@@ -14,7 +14,7 @@ class TestEppHello(TestCase):
             'command':  'epp:hello',
         })
 
-    def test_parse_hello_response_min(self):
+    def test_parse_epp_hello_response_min(self):
         self.assertResponse({
             'svID': 'Example EPP server epp.example.com',
             'svDate': '2000-06-08T22:00:00.0Z',
@@ -35,7 +35,7 @@ class TestEppHello(TestCase):
 </epp>
         ''')
 
-    def test_parse_hello_response(self):
+    def test_parse_epp_hello_response(self):
         self.assertResponse({
             'svID': 'VeriSign Com/Net EPP Registration Server',
             'svDate': '2018-10-01T14:05:11Z',

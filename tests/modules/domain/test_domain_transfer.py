@@ -6,7 +6,7 @@ from ..TestCase import TestCase
 
 class TestDomainTransfer(TestCase):
 
-    def test_render_transfer_op_query_request_min(self):
+    def test_render_domain_transfer_op_query_request_min(self):
         self.assertRequest('''<?xml version="1.0" ?>
 <epp xmlns="urn:ietf:params:xml:ns:epp-1.0">
     <command>
@@ -24,7 +24,7 @@ class TestDomainTransfer(TestCase):
             'clTRID':   'XXXX-11',
         })
 
-    def test_render_transfer_op_query_request(self):
+    def test_render_domain_transfer_op_query_request(self):
         self.assertRequest('''<?xml version="1.0" ?>
 <epp xmlns="urn:ietf:params:xml:ns:epp-1.0">
     <command>
@@ -47,7 +47,7 @@ class TestDomainTransfer(TestCase):
             'clTRID':   'XXXX-11',
         })
 
-    def test_render_transfer_op_request_request_min(self):
+    def test_render_domain_transfer_op_request_request_min(self):
         self.assertRequest('''<?xml version="1.0" ?>
 <epp xmlns="urn:ietf:params:xml:ns:epp-1.0">
     <command>
@@ -68,7 +68,7 @@ class TestDomainTransfer(TestCase):
             'clTRID':   'XXXX-11',
         })
 
-    def test_render_transfer_op_request_request(self):
+    def test_render_domain_transfer_op_request_request(self):
         self.assertRequest('''<?xml version="1.0" ?>
 <epp xmlns="urn:ietf:params:xml:ns:epp-1.0">
     <command>
