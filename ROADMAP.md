@@ -9,18 +9,56 @@ First **basic** commands then remaining!
 
 - epp
     - **hello**
-    - **login**
-    - **logout**
-    - **poll**
-    - info
-    - check
+    - Session Management Commands:
+        - **login**
+        - **logout**
+    - Query Commands:
+        - check
+        - info
+        - **poll**
+        - transfer
+    - Object Transform Commands:
+        - create
+        - delete
+        - renew
+        - transfer
+        - update
+    
 - domain
-    - **check**
-    - **info**
+    - Query commands:  
+        - **check**
+        - **info**
+        - transfer  
+    - Transform commands:
+        - create
+        - delete
+        - renew
+        - transfer
+        - update
+    
 - host
-    - info
+    - Query commands:  
+        - check
+        - info
+        - transfer  
+    - Transform commands:
+        - create
+        - delete
+        - renew
+        - transfer
+        - update
+
 - contact
-    - info
+    - Query commands:  
+        - check
+        - info
+        - transfer  
+    - Transform commands:
+        - create
+        - delete
+        - renew
+        - transfer
+        - update
 
 ## Implement extensions
 
