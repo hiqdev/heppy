@@ -85,3 +85,15 @@ class contact(Module):
 
     def render_delete(self, request):
         self.render_command_fields(request, 'delete', {'id': {}})
+
+    def render_update(self, request):
+        command = self.render_command_fields(request, 'update', {'id': {}})
+
+        if request.has('add'):
+            self.render_update_section(request, command, 'add')
+
+    def render_update_section(self, request, command, operation):
+        element = request.add_subtag(command, 'contact:' + operation)
+        data = request.data.get(operation)
+        if 'statuses' in data:
+            self.render_statuses(request, element, data['statuses'])

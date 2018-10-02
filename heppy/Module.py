@@ -79,7 +79,7 @@ class Module:
 
     def render_statuses(self, request, parent, status_data):
         for status, description in status_data.iteritems():
-            request.add_subtag(parent, 'domain:status', {'s': status}, description)
+            request.add_subtag(parent, self.name + ':status', {'s': status}, description)
 
     def render_root_extension(self, request):
         if request.extension is None:
