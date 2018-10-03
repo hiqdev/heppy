@@ -1,3 +1,5 @@
+from collections import OrderedDict
+
 from ..Module import Module
 
 class host(Module):
@@ -27,8 +29,15 @@ class host(Module):
 ### REQUEST rendering
 
     def render_check(self, request):
-        return self.render_check_command(request, 'host', 'name')
+        self.render_check_command(request, 'host', 'name')
 
     def render_info(self, request):
-        return self.render_command_fields(request, 'info', {'name': {}})
+        self.render_command_fields(request, 'info', {'name': {}})
+
+    def render_create(self, request):
+        command = self.render_command_fields(request, 'create')
+        if request.get('ips'):
+            for ip, version in request.get('ips').iteritems():
+                request.add_subtag(command, 'host:addr', {'ip': version or 'v6'}, ip)
+
 

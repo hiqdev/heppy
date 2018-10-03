@@ -6,7 +6,7 @@ from ..TestCase import TestCase
 
 class TestHostCheck(TestCase):
 
-    def test_render_contact_check_request(self):
+    def test_render_host_check_request(self):
         self.assertRequest('''<?xml version="1.0" ?>
 <epp xmlns="urn:ietf:params:xml:ns:epp-1.0">
     <command>
