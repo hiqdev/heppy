@@ -32,12 +32,13 @@ class host(Module):
         self.render_check_command(request, 'host', 'name')
 
     def render_info(self, request):
-        self.render_command_fields(request, 'info', {'name': {}})
+        self.render_command_fields(request, 'info')
 
     def render_create(self, request):
         command = self.render_command_fields(request, 'create')
-        if request.get('ips'):
-            for ip, version in request.get('ips').iteritems():
-                request.add_subtag(command, 'host:addr', {'ip': version or 'v6'}, ip)
+        for ip in request.get('ips', []):
+            request.add_subtag(command, 'host:addr', {'ip': 'v6' if ':' in ip else 'v4'}, ip)
 
+    def render_delete(self, request):
+        self.render_command_fields(request, 'delete')
 
