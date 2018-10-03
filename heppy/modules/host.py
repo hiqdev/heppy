@@ -42,3 +42,27 @@ class host(Module):
     def render_delete(self, request):
         self.render_command_fields(request, 'delete')
 
+    def render_update(self, request):
+        command = self.render_command_fields(request, 'update')
+
+        if request.has('add'):
+            self.render_update_section(request, command, 'add')
+        if request.has('rem'):
+            self.render_update_section(request, command, 'rem')
+        if request.has('chg'):
+            self.render_update_section(request, command, 'chg')
+
+
+    def render_update_section(self, request, command, operation):
+        element = request.add_subtag(command, 'host:' + operation)
+        data = request.get(operation)
+        if operation == 'chg':
+            request.add_subtag(element, 'host:name', text=data.get('name'))
+        else:
+            self.render_ips(request, element, data)
+            self.render_statuses(request, element, data.get('statuses', {}))
+
+    def render_ips(self, request, parent, storage=None):
+        storage = storage or request.data
+        for ip in storage.get('ips', []):
+            request.add_subtag(parent, 'host:addr', {'ip': 'v6' if ':' in ip else 'v4'}, ip)
