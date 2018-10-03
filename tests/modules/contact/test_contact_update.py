@@ -44,7 +44,7 @@ class TestContactCheck(TestCase):
             'add': {
                 'statuses': {
                     'clientHold': 'Payment overdue.',
-                    'clientUpdateProhibited': ''
+                    'clientUpdateProhibited': None
                 }
             },
             'clTRID':   'XXXX-11',
@@ -71,7 +71,7 @@ class TestContactCheck(TestCase):
             'rem': {
                 'statuses': {
                     'clientHold': 'Payment overdue.',
-                    'clientUpdateProhibited': ''
+                    'clientUpdateProhibited': None
                 }
             },
             'clTRID':   'XXXX-11',
@@ -112,18 +112,18 @@ class TestContactCheck(TestCase):
             'command':  'contact:update',
             'id':       'sh8013',
             'chg': {
-                'name': 'John Doe',
-                'org': 'Example Inc.',
-                'city': 'Dulles',
-                'street1': '123 Example Dr.',
-                'street2': 'Suite 100',
-                'sp': 'VA',
-                'pc': '20166-6503',
-                'cc': 'US',
-                'voice': '+1.7035555555',
-                'fax': '+1.7035555556',
-                'email': 'jdoe@example.com',
-                'pw': '2fooBAR',
+                'name':     'John Doe',
+                'org':      'Example Inc.',
+                'city':     'Dulles',
+                'street1':  '123 Example Dr.',
+                'street2':  'Suite 100',
+                'sp':       'VA',
+                'pc':       '20166-6503',
+                'cc':       'US',
+                'voice':    '+1.7035555555',
+                'fax':      '+1.7035555556',
+                'email':    'jdoe@example.com',
+                'pw':       '2fooBAR',
             },
             'clTRID':   'XXXX-11',
         })

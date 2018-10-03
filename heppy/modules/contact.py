@@ -47,43 +47,11 @@ class contact(Module):
     def render_create(self, request):
         command = self.render_command_fields(request, 'create', {'id': {}})
 
-        postalInfo = request.add_subtag(command, 'contact:postalInfo',
-                                        {'type': request.get('type', 'int')})
-        if request.has('name'):
-            request.add_subtag(postalInfo, 'contact:name', text=request.get('name'))
-
-        if request.has('org'):
-            request.add_subtag(postalInfo, 'contact:org', text=request.get('org'))
-
-        self.render_addr(request, postalInfo)
-
-        if request.has('voice'):
-            request.add_subtag(command, 'contact:voice', text=request.get('voice'))
-        if request.has('fax'):
-            request.add_subtag(command, 'contact:fax', text=request.get('fax'))
-        request.add_subtag(command, 'contact:email', text=request.get('email'))
+        self.render_postal_info(request, command)
+        self.render_contact_info(request, command)
 
         if request.has('pw'):
             self.render_auth_info(request, command)
-
-    def render_addr(self, request, parent, storage=None):
-        storage = storage or request.data
-        addr = request.add_subtag(parent, 'contact:addr')
-
-        if 'street1' in storage:
-            request.add_subtag(addr, 'contact:street', text=storage.get('street1'))
-        if 'street2' in storage:
-            request.add_subtag(addr, 'contact:street', text=storage.get('street2'))
-        if 'street3' in storage:
-            request.add_subtag(addr, 'contact:street', text=storage.get('street3'))
-
-        request.add_subtag(addr, 'contact:city', text=storage.get('city'))
-
-        if 'sp' in storage:
-            request.add_subtag(addr, 'contact:sp', text=storage.get('sp'))
-        if 'pc' in storage:
-            request.add_subtag(addr, 'contact:pc', text=storage.get('pc'))
-        request.add_subtag(addr, 'contact:cc', text=storage.get('cc'))
 
     def render_delete(self, request):
         self.render_command_fields(request, 'delete', {'id': {}})
@@ -118,6 +86,26 @@ class contact(Module):
         if 'org' in storage:
             request.add_subtag(postalInfo, 'contact:org', text=storage.get('org'))
         self.render_addr(request, postalInfo, storage)
+
+    def render_addr(self, request, parent, storage=None):
+        storage = storage or request.data
+        addr = request.add_subtag(parent, 'contact:addr')
+
+        if 'street1' in storage:
+            request.add_subtag(addr, 'contact:street', text=storage.get('street1'))
+        if 'street2' in storage:
+            request.add_subtag(addr, 'contact:street', text=storage.get('street2'))
+        if 'street3' in storage:
+            request.add_subtag(addr, 'contact:street', text=storage.get('street3'))
+
+        if 'city' in storage:
+            request.add_subtag(addr, 'contact:city', text=storage.get('city'))
+
+        if 'sp' in storage:
+            request.add_subtag(addr, 'contact:sp', text=storage.get('sp'))
+        if 'pc' in storage:
+            request.add_subtag(addr, 'contact:pc', text=storage.get('pc'))
+        request.add_subtag(addr, 'contact:cc', text=storage.get('cc'))
 
     def render_contact_info(self, request, parent, storage=None):
         storage = storage or request.data
