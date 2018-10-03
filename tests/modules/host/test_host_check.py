@@ -20,13 +20,13 @@ class TestHostCheck(TestCase):
         <clTRID>XXXX-11</clTRID>
     </command>
 </epp>''', {
-            'command': 'host:check',
+            'command':  'host:check',
             'names': [
                 'ns1.example1.com',
                 'ns2.example2.com',
                 'ns3.example2.com',
             ],
-            'clTRID': 'XXXX-11',
+            'clTRID':   'XXXX-11',
         })
 
 
