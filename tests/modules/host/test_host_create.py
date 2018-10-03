@@ -38,14 +38,14 @@ class TestHostCreate(TestCase):
         <clTRID>XXXX-11</clTRID>
     </command>
 </epp>''', {
-            'command': 'host:create',
-            'name': 'ns1.example1.com',
+            'command':  'host:create',
+            'name':     'ns1.example1.com',
             'ips': [
                 '192.0.2.2',
                 '192.0.2.29',
                 '1080:0:0:0:8:800:200C:417A'
             ],
-            'clTRID': 'XXXX-11',
+            'clTRID':   'XXXX-11',
         })
 
 
