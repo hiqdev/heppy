@@ -18,6 +18,13 @@ args = Args()
 config = Config(args.get('path'))
 
 is_json = args.pop('json', False)
+args = {
+    'command': 'domain:renew',
+    'name': 'silverfire.me',
+    'curExpDate': '2027-10-04',
+    'period': 1,
+    'clTRID': 'XXXX-11',
+}
 if is_json:
     query = json.dumps(args)
     print query
@@ -32,8 +39,8 @@ pprint(rabbit_config)
 client = RPCClient(rabbit_config)
 
 reply = client.request(query)
+print reply
 if is_json:
-    print reply
     pprint(json.loads(reply))
 else:
     print Request.prettifyxml(reply)

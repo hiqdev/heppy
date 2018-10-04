@@ -56,10 +56,14 @@ class SmartRequest():
     def query_from_dict(self, data):
         return str(Request.buildFromDict(data))
 
-    def perform(self, request, relogin):
+    def perform(self, request, relogin = None):
         try:
             query = self.get_query()
             reply = request(query)
+            if relogin is None:
+                return self.prepare_response(reply)
+
+            ### TODO: FIXME relogin is buggy because of 2002 can happen on different occasions
             response = Response.parsexml(reply)
             if response.data.get('result_code', '0') == '2002':
                 response = None
@@ -79,7 +83,7 @@ class SmartRequest():
         if self.is_json():
             return json.dumps(data)
 
-    def prepare_response(self, xml, response):
+    def prepare_response(self, xml, response = None):
         if self.is_xml():
             return xml
         if response is None:
