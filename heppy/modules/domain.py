@@ -7,6 +7,8 @@ class domain(Module):
         'infData':      'descend',
         'chkData':      'descend',
         'creData':      'descend',
+        'renData':      'descend',
+        'trnData':      'descend',
         'ns':           'descend',
         'authInfo':     'descend',
         'name':         'set',
