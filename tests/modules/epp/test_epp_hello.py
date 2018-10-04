@@ -16,11 +16,11 @@ class TestEppHello(TestCase):
 
     def test_parse_epp_hello_response_min(self):
         self.assertResponse({
-            'svID': 'Example EPP server epp.example.com',
-            'svDate': '2000-06-08T22:00:00.0Z',
-            'version': '1.0',
-            'lang': 'en',
-            'objURIs': ['urn:ietf:params:xml:ns:domain-1.0'],
+            'svID':     'Example EPP server epp.example.com',
+            'svDate':   '2000-06-08T22:00:00.0Z',
+            'version':  '1.0',
+            'lang':     'en',
+            'objURIs':  ['urn:ietf:params:xml:ns:domain-1.0'],
         }, '''<?xml version="1.0" ?>
 <epp xmlns="urn:ietf:params:xml:ns:epp-1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="urn:ietf:params:xml:ns:epp-1.0 epp-1.0.xsd">
     <greeting>
@@ -37,10 +37,10 @@ class TestEppHello(TestCase):
 
     def test_parse_epp_hello_response(self):
         self.assertResponse({
-            'svID': 'VeriSign Com/Net EPP Registration Server',
-            'svDate': '2018-10-01T14:05:11Z',
-            'version': '1.0',
-            'lang': 'en',
+            'svID':     'VeriSign Com/Net EPP Registration Server',
+            'svDate':   '2018-10-01T14:05:11Z',
+            'version':  '1.0',
+            'lang':     'en',
             'objURIs': [
                 'urn:ietf:params:xml:ns:domain-1.0',
                 'urn:ietf:params:xml:ns:contact-1.0',
