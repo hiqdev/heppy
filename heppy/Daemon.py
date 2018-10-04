@@ -46,10 +46,8 @@ class Daemon:
 
     def consume(self):
         rabbit_config = self.config.get('RabbitMQ', {})
-        self.server = RPCServer(
-            rabbit_config.get('host', 'localhost'),
-            rabbit_config.get('queue', 'heppy-' + self.config['name'])
-        )
+        rabbit_config.setdefault('queue', 'heppy-' + self.config['name'])
+        self.server = RPCServer(rabbit_config)
         self.loop()
 
     def loop(self):
