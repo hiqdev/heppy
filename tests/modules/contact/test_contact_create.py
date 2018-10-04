@@ -86,7 +86,7 @@ class TestContactCreate(TestCase):
             'clTRID':   'XXXX-11',
         })
 
-    def test_parse_epp_hello_response(self):
+    def test_parse_contact_create_response(self):
         self.assertResponse({
             'clTRID':       'XXXX-11',
             'crDate':       '2018-10-04T12:09:03.0Z',
