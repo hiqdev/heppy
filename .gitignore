@@ -20,6 +20,9 @@ nbproject
 # testing
 tests/modules/hidden_test.py
 tests/modules/template.py
+bin/test_heppyc
+etc/test_config.json
+tests/modules/*/response_texts
 
 # Byte-compiled / optimized / DLL files
 *$py.class
