@@ -27,10 +27,9 @@ else:
     print Request.prettifyxml(query)
 
 rabbit_config = config.get('RabbitMQ', {})
-client = RPCClient(
-    rabbit_config.get('host', 'localhost'),
-    rabbit_config.get('queue', 'heppy-' + config['name'])
-)
+rabbit_config.setdefault('queue', 'heppy-' + config['name'])
+pprint(rabbit_config)
+client = RPCClient(rabbit_config)
 
 reply = client.request(query)
 if is_json:

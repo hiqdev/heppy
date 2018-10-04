@@ -3,13 +3,14 @@
 import pika
 import uuid
 
+from pika.connection import Parameters
+from pika.connection import ConnectionParameters
+
 class RPCServer:
-    def __init__(self, host, queue):
-        self.host = host
-        self.queue = queue
-        self.connection = pika.BlockingConnection(pika.ConnectionParameters(
-            host=self.host
-        ))
+    def __init__(self, config):
+        self.config = config
+        self.queue = config.get('queue')
+        self.connection = pika.BlockingConnection(connection_parameters(config))
 
         self.channel = self.connection.channel()
         self.channel.queue_declare(queue=self.queue)
@@ -36,12 +37,10 @@ class RPCServer:
         ch.basic_ack(delivery_tag = method.delivery_tag)
 
 class RPCClient:
-    def __init__(self, host, queue):
-        self.host = host
-        self.queue = queue
-        self.connection = pika.BlockingConnection(pika.ConnectionParameters(
-            host=self.host
-        ))
+    def __init__(self, config):
+        self.config = config
+        self.queue = config.get('queue')
+        self.connection = pika.BlockingConnection(connection_parameters(config))
 
         self.channel = self.connection.channel()
 
@@ -73,3 +72,15 @@ class RPCClient:
             self.connection.process_data_events()
         return self.reply
 
+def connection_parameters(config):
+    args = {
+        'host': config.get('host', ConnectionParameters._DEFAULT),
+        'port': config.get('port', ConnectionParameters._DEFAULT),
+        'virtual_host': config.get('virtual_host', ConnectionParameters._DEFAULT),
+    }
+    if 'username' in config:
+        args['credentials'] = pika.PlainCredentials(
+            config.get('username', Parameters.DEFAULT_USERNAME),
+            config.get('password', Parameters.DEFAULT_PASSWORD)
+        )
+    return ConnectionParameters(**args)
