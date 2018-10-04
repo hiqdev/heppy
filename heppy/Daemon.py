@@ -6,6 +6,9 @@ import socket
 
 from pprint import pprint
 
+from datetime import datetime
+from datetime import timedelta
+
 from heppy.EPP import REPP
 from heppy.Error import Error
 from heppy.Login import Login
@@ -25,18 +28,16 @@ class Daemon:
         self.handler = SignalHandler({
             'SIGINT':  self.quit,
             'SIGTERM': self.quit,
-            'SIGHUP':  self.hello,
-            'SIGUSR1': self.hello,
-            'SIGUSR2': self.hello,
+            'SIGHUP':  self.stop_consuming,
+            'SIGUSR1': self.stop_consuming,
+            'SIGUSR2': self.stop_consuming,
         })
         self.login_query = None
+        self.started = datetime.now()
 
     def quit(self):
         global quit
         quit()
-
-    def hello(self):
-        print "\nHELLO\n"
 
     def start(self, args = {}):
         self.connect()
