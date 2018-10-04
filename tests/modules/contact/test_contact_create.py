@@ -86,5 +86,35 @@ class TestContactCreate(TestCase):
             'clTRID':   'XXXX-11',
         })
 
+    def test_parse_epp_hello_response(self):
+        self.assertResponse({
+            'clTRID':       'XXXX-11',
+            'crDate':       '2018-10-04T12:09:03.0Z',
+            'id':           'sh8013',
+            'result_code':  '1000',
+            'result_lang':  'en-US',
+            'result_msg':   'Command completed successfully',
+            'svTRID':       'SRW-425500000011130408'
+        }, '''<?xml version="1.0" ?>
+<epp xmlns="urn:ietf:params:xml:ns:epp-1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="urn:ietf:params:xml:ns:epp-1.0 epp-1.0.xsd">
+    <response>
+        <result code="1000">
+            <msg lang="en-US">Command completed successfully</msg>
+        </result>
+        <resData>
+            <contact:creData xmlns:contact="urn:ietf:params:xml:ns:contact-1.0" xsi:schemaLocation="urn:ietf:params:xml:ns:contact-1.0 contact-1.0.xsd">
+                <contact:id>sh8013</contact:id>
+                <contact:crDate>2018-10-04T12:09:03.0Z</contact:crDate>
+            </contact:creData>
+        </resData>
+        <trID>
+            <clTRID>XXXX-11</clTRID>
+            <svTRID>SRW-425500000011130408</svTRID>
+        </trID>
+    </response>
+</epp>
+        ''')
+
+
 if __name__ == '__main__':
     unittest.main()
