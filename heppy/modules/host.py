@@ -36,8 +36,7 @@ class host(Module):
 
     def render_create(self, request):
         command = self.render_command_fields(request, 'create')
-        for ip in request.get('ips', []):
-            request.add_subtag(command, 'host:addr', {'ip': 'v6' if ':' in ip else 'v4'}, ip)
+        self.render_ips(request, command)
 
     def render_delete(self, request):
         self.render_command_fields(request, 'delete')
