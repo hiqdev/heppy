@@ -19,8 +19,6 @@ class RPCServer:
     def consume(self, response):
         self.response = response
         self.channel.basic_consume(self.on_request, self.queue)
-
-        print(" [x] Awaiting RPC requests")
         self.channel.start_consuming()
 
     def on_request(self, ch, method, props, body):
