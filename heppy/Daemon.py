@@ -28,16 +28,26 @@ class Daemon:
         self.handler = SignalHandler({
             'SIGINT':  self.quit,
             'SIGTERM': self.quit,
-            'SIGHUP':  self.stop_consuming,
-            'SIGUSR1': self.stop_consuming,
-            'SIGUSR2': self.stop_consuming,
+            'SIGHUP':  self.hello,
+            'SIGUSR1': self.hello,
+            'SIGUSR2': self.hello,
         })
         self.login_query = None
+        self.force_quit = False
+        self.force_hello = False
         self.started = datetime.now()
+        self.last_command = datetime.now()
+        self.refreshSeconds = timedelta(**config.get('refreshInterval', {'seconds': 30})).total_seconds()
+        self.keepaliveDelta = timedelta(**config.get('keepaliveInterval', {'minutes': 9}))
+        self.forcequitDelta = timedelta(**config.get('forcequitInterval', {'hours': 23}))
 
     def quit(self):
         global quit
         quit()
+
+    def hello(self):
+        print "HELLO"
+        self.force_hello = True
 
     def start(self, args = {}):
         self.connect()
@@ -52,9 +62,28 @@ class Daemon:
 
     def loop(self):
         while (True):
-            print "LOOP"
-            self.server.connection.add_timeout(5, self.stop_consuming)
+            if self.needs_quit():
+                self.quit()
+            if self.needs_hello():
+                print "HELLO"
+                self.smart_request({'command': 'epp:hello'})
+
+            left = (self.keepaliveDelta - (datetime.now() - self.last_command)).total_seconds()
+            print "LOOP left:%i" % left
+
+            self.server.connection.add_timeout(self.refreshSeconds, self.stop_consuming)
             self.server.consume(self.smart_request)
+
+    def needs_quit(self):
+        if self.force_quit:
+            return True
+        return datetime.now() > self.started + self.forcequitDelta
+
+    def needs_hello(self):
+        if self.force_hello:
+            self.force_hello = False
+            return True
+        return datetime.now() > self.last_command + self.keepaliveDelta
 
     def stop_consuming(self):
         self.server.channel.stop_consuming()
@@ -129,6 +158,7 @@ class Daemon:
 
     def request(self, query):
         with self.handler.block_signals():
+            self.last_command = datetime.now()
             reply = self.client.request(query)
         return reply
 
