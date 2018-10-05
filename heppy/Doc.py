@@ -69,7 +69,7 @@ class Doc:
     def add_list(self, name, value):
         if not name in self.data:
             self.data[name] = []
-        if type(value) in [list,tuple]:
+        if type(value) in [list, tuple]:
             self.data[name].extend(value)
         else:
             self.data[name].append(value)
