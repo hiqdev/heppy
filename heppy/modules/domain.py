@@ -22,6 +22,11 @@ class domain(Module):
         'trDate':       'set',
         'pw':           'set',
         'registrant':   'set',
+        'trStatus':     'set',
+        'reID':         'set',
+        'reDate':       'set',
+        'acID':         'set',
+        'acDate':       'set',
     }
 
     CONTACT_TYPES = (
@@ -102,7 +107,8 @@ class domain(Module):
         if request.has('chg'):
             chgElement = request.add_subtag(command, 'domain:chg')
             chgData = request.data['chg']
-            request.add_subtag(chgElement, 'domain:registrant', text=chgData['registrant'])
+            if 'registrant' in chgData:
+                request.add_subtag(chgElement, 'domain:registrant', text=chgData['registrant'])
             self.render_auth_info(request, chgElement, chgData.get('pw'))
 
     def render_update_section(self, request, command, operation):
