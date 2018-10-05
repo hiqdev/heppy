@@ -57,7 +57,7 @@ class TestDomainUpdate(TestCase):
                 'billing':  'sh8015',
                 'statuses': {
                     'clientHold': 'Payment overdue.',
-                    'clientUpdateProhibited': ''
+                    'clientUpdateProhibited':  None
                 }
             },
             'clTRID':   'XXXX-11',
@@ -98,7 +98,7 @@ class TestDomainUpdate(TestCase):
                 'billing':  'sh8015',
                 'statuses': {
                     'clientHold': 'Payment overdue.',
-                    'clientUpdateProhibited': ''
+                    'clientUpdateProhibited':  None
                 }
             },
             'clTRID':   'XXXX-11',
@@ -183,7 +183,7 @@ class TestDomainUpdate(TestCase):
                 'billing':  'sh8015',
                 'statuses': {
                     'clientHold': 'Payment overdue.',
-                    'clientUpdateProhibited': ''
+                    'clientUpdateProhibited':  None
                 }
             },
             'rem': {
@@ -196,7 +196,7 @@ class TestDomainUpdate(TestCase):
                 'billing':  'sh8015',
                 'statuses': {
                     'clientHold': 'Payment overdue.',
-                    'clientUpdateProhibited': ''
+                    'clientUpdateProhibited':  None
                 }
             },
             'chg': {
@@ -205,6 +205,27 @@ class TestDomainUpdate(TestCase):
             },
             'clTRID':   'XXXX-11',
         })
+
+    def test_parse_domain_update_response(self):
+        self.assertResponse({
+            'clTRID':       'XXXX-11',
+            'result_code':  '1000',
+            'result_lang':  'en-US',
+            'result_msg':   'Command completed successfully',
+            'svTRID':       'SRW-425500000011143051'
+        }, '''<?xml version="1.0" ?>
+<epp xmlns="urn:ietf:params:xml:ns:epp-1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="urn:ietf:params:xml:ns:epp-1.0 epp-1.0.xsd">
+    <response>
+        <result code="1000">
+            <msg lang="en-US">Command completed successfully</msg>
+        </result>
+        <trID>
+            <clTRID>XXXX-11</clTRID>
+            <svTRID>SRW-425500000011143051</svTRID>
+        </trID>
+    </response>
+</epp>
+        ''')
 
 
 if __name__ == '__main__':
