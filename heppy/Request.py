@@ -40,21 +40,21 @@ class Request(Doc):
         return parent
 
     @staticmethod
-    def build(command, data, extensions={}):
+    def build(data):
         request = Request(data)
-        request.render(command)
-        for extension in extensions:
+        request.render(data['command'])
+        for extension in data.get('extensions', {}):
             request.extension_data = extension
             request.render(extension['command'])
         request.render('epp:clTRID')
         return request
 
-    @staticmethod
-    def buildFromDict(args):
-        extensions = args.get('extensions') or {}
-        if extensions == {} and 'extension' in args:
-            extensions = {'0': args.get('extension')}
-        return Request.build(args.get('command'), args, extensions)
+    # @staticmethod
+    # def buildFromDict(args):
+    #     extensions = args.get('extensions') or {}
+    #     if extensions == {} and 'extension' in args:
+    #         extensions = {'0': args.get('extension')}
+    #     return Request.build(args.get('command'), args, extensions)
 
     def render(self, command):
         module_name, command_name = command.split(':')
