@@ -10,7 +10,7 @@ class TestCase(unittest.TestCase):
         self.maxDiff = None
 
     def assertRequest(self, query, data):
-        request = Request.buildFromDict(data)
+        request = Request.build(data)
         test = Request.prettifyxml(str(request))
 
         self.assertEqual(query.strip(), test.strip())
