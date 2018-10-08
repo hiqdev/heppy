@@ -77,48 +77,52 @@ class domain(Module):
             roid = {'roid': data.get('roid')} if 'roid' in data else {}
             self.render_auth_info(request, command,  data.get('pw'), roid)
 
-    def render_create(self, request):
-        command = self.render_command_with_fields(request, 'create', OrderedDict([
-            ('name', {}),
-            ('period', {'unit': 'y'}),
-            ('registrant', {}),
-        ]))
+    def render_create(self, request, data):
+        command = self.render_command_with_fields(request, 'create', [
+            TagData('name', data.get('name')),
+            TagData('period', data.get('period'), {'unit': 'y'}),
+            TagData('registrant', data.get('registrant')),
+        ])
 
-        if request.has('nss'):
-            self.render_nss(request, command, request.get('nss'))
-        if self.has_contacts(request.data):
-            self.render_contacts(request, command)
-        self.render_auth_info(request, command)
+        if 'nss' in data:
+            self.render_nss(request, command, data.get('nss'))
+        if self.has_contacts(data):
+            self.render_contacts(request, command, data)
+        self.render_auth_info(request, command, data.get('pw'))
 
-    def render_delete(self, request):
-        self.render_command_with_fields(request, 'delete')
+    def render_delete(self, request, data):
+        self.render_command_with_fields(request, 'delete', [
+            TagData('name', data.get('name'))
+        ])
 
-    def render_renew(self, request):
-        self.render_command_with_fields(request, 'renew', OrderedDict([
-            ('name', {}),
-            ('curExpDate', {}),
-            ('period', {'unit': 'y'}),
-        ]))
+    def render_renew(self, request, data):
+        self.render_command_with_fields(request, 'renew', [
+            TagData('name', data.get('name')),
+            TagData('curExpDate', data.get('curExpDate')),
+            TagData('period', data.get('period'), {'unit': 'y'}),
+        ])
 
-    def render_update(self, request):
-        command = self.render_command_with_fields(request, 'update')
+    def render_update(self, request, data):
+        command = self.render_command_with_fields(request, 'update', [
+            TagData('name', data.get('name'))
+        ])
 
-        if request.has('add'):
-            self.render_update_section(request, command, 'add')
+        if 'add' in data:
+            self.render_update_section(request, command, data, 'add')
 
-        if request.has('rem'):
-            self.render_update_section(request, command, 'rem')
+        if 'rem' in data:
+            self.render_update_section(request, command, data, 'rem')
 
-        if request.has('chg'):
+        if 'chg' in data:
             chgElement = request.add_subtag(command, 'domain:chg')
-            chgData = request.data['chg']
+            chgData = data['chg']
             if 'registrant' in chgData:
                 request.add_subtag(chgElement, 'domain:registrant', text=chgData['registrant'])
             self.render_auth_info(request, chgElement, chgData.get('pw'))
 
-    def render_update_section(self, request, command, operation):
+    def render_update_section(self, request, command, data, operation):
         element = request.add_subtag(command, 'domain:' + operation)
-        data = request.data.get(operation)
+        data = data.get(operation)
         if 'nss' in data:
             self.render_nss(request, element, data['nss'])
         if self.has_contacts(data):
@@ -131,8 +135,7 @@ class domain(Module):
         for host in hosts:
             request.add_subtag(nsElement, 'domain:hostObj', text=host)
 
-    def render_contacts(self, request, parent, storage=None):
-        storage = storage or request.data
+    def render_contacts(self, request, parent, storage):
         for contactType in (set(self.CONTACT_TYPES) & set(storage.keys())):
             request.add_subtag(parent, 'domain:contact', {'type': contactType}, storage[contactType])
 
