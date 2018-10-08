@@ -1,6 +1,7 @@
 from collections import OrderedDict
 
 from ..Module import Module
+from ..TagData import TagData
 
 class domain(Module):
     opmap = {
@@ -56,11 +57,15 @@ class domain(Module):
         for name in data.get('names', []):
             request.add_subtag(command, 'domain:name', text=name)
 
-    def render_info(self, request):
-        hosts = request.get('hosts', 'all')
-        command = self.render_command_fields(request, 'info', {'name': {'hosts': hosts}})
-        if request.has('pw'):
-            self.render_auth_info(request, command)
+    def render_info(self, request, data):
+        hosts = data.get('hosts', 'all')
+        # command = self.render_command_fields(request, 'info', {'name': {'hosts': hosts}})
+        command = self.render_command(request, 'info')
+        request.add_subtags(command, [
+            TagData('name', data.get('name'), {'hosts': hosts})
+        ])
+        if 'pw' in data:
+            self.render_auth_info(request, command, data['pw'])
 
     def render_transfer(self, request):
         attrs = {'op': request.get('op') or 'request'}
