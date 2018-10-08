@@ -1,6 +1,3 @@
-
-from pprint import pprint
-
 class Module:
     opmap = {}
 
@@ -71,9 +68,9 @@ class Module:
             request.add_subtag(command, mod + ':' + field, text=name)
         return command
 
-    def render_auth_info(self, request, parent, pw=None, attrs={}):
-        if pw is None:
-            pw = request.get('pw', '')
+    def render_auth_info(self, request, parent, pw='', attrs={}):
+        # if pw is None:
+        #     pw = request.get('pw', '')
         authInfo = request.add_subtag(parent, self.name + ':authInfo')
         request.add_subtag(authInfo, self.name + ':pw', attrs, pw)
 

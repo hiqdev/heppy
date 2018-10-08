@@ -31,12 +31,10 @@ class Request(Doc):
             res.text = str(text)
         return res
 
-    def add_subtags(self, parent, fields, values=None):
-        name = parent.tag.split(':')[0]
-        for field, attrs in fields.iteritems():
-            value = self.get(field) if values is None else values.get(field)
-            if value:
-                self.add_subtag(parent, name + ':' + field, attrs, value)
+    def add_subtags(self, parent, tags):
+        ns = parent.tag.split(':')[0]
+        for tag in tags:
+            self.add_subtag(parent, ns + ':' + tag.name, tag.attrs, tag.value)
         return parent
 
     @staticmethod
