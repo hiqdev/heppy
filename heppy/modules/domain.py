@@ -59,26 +59,26 @@ class domain(Module):
 
     def render_info(self, request, data):
         hosts = data.get('hosts', 'all')
-        # command = self.render_command_fields(request, 'info', {'name': {'hosts': hosts}})
-        command = self.render_command(request, 'info')
-        request.add_subtags(command, [
+        command = self.render_command_with_fields(request, 'info', [
             TagData('name', data.get('name'), {'hosts': hosts})
         ])
         if 'pw' in data:
             self.render_auth_info(request, command, data['pw'])
 
-    def render_transfer(self, request):
-        attrs = {'op': request.get('op') or 'request'}
-        command = self.render_command_fields(request, 'transfer', OrderedDict([
-            ('name', {}),
-            ('period', {'unit': 'y'}),
-        ]), attrs)
-        if request.has('pw') or attrs.get('op') == 'request':
-            roid = {'roid': request.get('roid')} if request.has('roid') else {}
-            self.render_auth_info(request, command, attrs=roid)
+    def render_transfer(self, request, data):
+        attrs = {'op': data.get('op') or 'request'}
+
+        command = self.render_command_with_fields(request, 'transfer', [
+            TagData('name', data.get('name')),
+            TagData('period', data.get('period'), {'unit': 'y'}),
+        ], attrs)
+
+        if 'pw' in data or attrs.get('op') == 'request':
+            roid = {'roid': data.get('roid')} if 'roid' in data else {}
+            self.render_auth_info(request, command,  data.get('pw'), roid)
 
     def render_create(self, request):
-        command = self.render_command_fields(request, 'create', OrderedDict([
+        command = self.render_command_with_fields(request, 'create', OrderedDict([
             ('name', {}),
             ('period', {'unit': 'y'}),
             ('registrant', {}),
@@ -91,17 +91,17 @@ class domain(Module):
         self.render_auth_info(request, command)
 
     def render_delete(self, request):
-        self.render_command_fields(request, 'delete')
+        self.render_command_with_fields(request, 'delete')
 
     def render_renew(self, request):
-        self.render_command_fields(request, 'renew', OrderedDict([
+        self.render_command_with_fields(request, 'renew', OrderedDict([
             ('name', {}),
             ('curExpDate', {}),
             ('period', {'unit': 'y'}),
         ]))
 
     def render_update(self, request):
-        command = self.render_command_fields(request, 'update')
+        command = self.render_command_with_fields(request, 'update')
 
         if request.has('add'):
             self.render_update_section(request, command, 'add')

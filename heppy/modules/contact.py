@@ -40,12 +40,12 @@ class contact(Module):
         return self.render_check_command(request, 'contact', 'id')
 
     def render_info(self, request):
-        command = self.render_command_fields(request, 'info', {'id': {}})
+        command = self.render_command_with_fields(request, 'info', {'id': {}})
         if request.has('pw'):
             self.render_auth_info(request, command)
 
     def render_create(self, request):
-        command = self.render_command_fields(request, 'create', {'id': {}})
+        command = self.render_command_with_fields(request, 'create', {'id': {}})
 
         self.render_postal_info(request, command)
         self.render_contact_info(request, command)
@@ -54,10 +54,10 @@ class contact(Module):
             self.render_auth_info(request, command)
 
     def render_delete(self, request):
-        self.render_command_fields(request, 'delete', {'id': {}})
+        self.render_command_with_fields(request, 'delete', {'id': {}})
 
     def render_update(self, request):
-        command = self.render_command_fields(request, 'update', {'id': {}})
+        command = self.render_command_with_fields(request, 'update', {'id': {}})
 
         if request.has('add'):
             self.render_update_section(request, command, 'add')
