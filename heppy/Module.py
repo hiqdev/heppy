@@ -42,10 +42,10 @@ class Module:
             request.epp = request.add_tag('epp', {'xmlns': request.get_module('epp').xmlns})
         return request.epp
 
-    def render_clTRID(self, request):
-        clTRID = request.get('clTRID', 'AA-00')
+    def render_clTRID(self, request, data):
+        clTRID = data.get('clTRID', 'AA-00')
         if clTRID != 'NONE' and request.command is not None:
-            request.add_subtag(request.command, 'clTRID', {}, clTRID)
+            request.add_subtag(request.command, 'clTRID', text=clTRID)
 
     def render_root_command(self, request, command, attrs={}):
         if request.command is None:
@@ -53,12 +53,12 @@ class Module:
             request.command = request.add_subtag(epp, 'command')
         return request.add_subtag(request.command, command, attrs)
 
-    def render_header(self, request, source, action):
-        return request.add_subtag(source, self.name + ':' + action, {'xmlns:' + self.name: self.xmlns})
+    def render_header(self, request, parent, command):
+        return request.add_subtag(parent, self.name + ':' + command, {'xmlns:' + self.name: self.xmlns})
 
-    def render_command(self, request, action, attrs={}):
-        command = self.render_root_command(request, action, attrs)
-        return self.render_header(request, command, action)
+    def render_command(self, request, command, attrs={}):
+        command_tag = self.render_root_command(request, command, attrs)
+        return self.render_header(request, command_tag, command)
 
     def render_command_fields(self, request, command, fields={'name': {}}, attrs={}):
         command = self.render_command(request, command, attrs)

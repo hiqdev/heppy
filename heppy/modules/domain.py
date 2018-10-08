@@ -51,9 +51,9 @@ class domain(Module):
 
 ### REQUEST rendering
 
-    def render_check(self, request):
+    def render_check(self, request, data):
         command = self.render_command(request, 'check')
-        for name in request.get('names'):
+        for name in data.get('names', []):
             request.add_subtag(command, 'domain:name', text=name)
 
     def render_info(self, request):

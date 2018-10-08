@@ -5,13 +5,13 @@ from Doc import Doc
 
 class Request(Doc):
 
-    def __init__(self, data):
-        self.data           = data
+    def __init__(self):
+        # self.data           = data
         self.raw            = None
         self.epp            = None
         self.command        = None
         self.extension      = None
-        self.extension_data = None
+        # self.extension_data = None
 
     def __str__(self, encoding='UTF-8', method='xml'):
         if self.raw is None:
@@ -41,12 +41,11 @@ class Request(Doc):
 
     @staticmethod
     def build(data):
-        request = Request(data)
-        request.render(data['command'])
+        request = Request()
+        request.render(data['command'], data)
         for extension in data.get('extensions', {}):
-            request.extension_data = extension
-            request.render(extension['command'])
-        request.render('epp:clTRID')
+            request.render(extension['command'], data['extension'])
+        request.render('epp:clTRID', data)
         return request
 
     # @staticmethod
@@ -56,13 +55,13 @@ class Request(Doc):
     #         extensions = {'0': args.get('extension')}
     #     return Request.build(args.get('command'), args, extensions)
 
-    def render(self, command):
+    def render(self, command, data):
         module_name, command_name = command.split(':')
         module = self.get_module(module_name)
         method = 'render_' + command_name
         if not hasattr(module, method):
             raise Exception('unknown command',  command)
-        getattr(module, method)(self)
+        getattr(module, method)(self, data)
 
     @staticmethod
     def prettifyxml(request):
