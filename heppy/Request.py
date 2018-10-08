@@ -6,11 +6,12 @@ from Doc import Doc
 class Request(Doc):
 
     def __init__(self, data):
-        self.data       = data
-        self.raw        = None
-        self.epp        = None
-        self.command    = None
-        self.extension  = None
+        self.data           = data
+        self.raw            = None
+        self.epp            = None
+        self.command        = None
+        self.extension      = None
+        self.extension_data = None
 
     def __str__(self, encoding='UTF-8', method='xml'):
         if self.raw is None:
@@ -42,8 +43,9 @@ class Request(Doc):
     def build(command, data, extensions={}):
         request = Request(data)
         request.render(command)
-        for ext in extensions.itervalues():
-            request.render(ext)
+        for extension in extensions:
+            request.extension_data = extension
+            request.render(extension['command'])
         request.render('epp:clTRID')
         return request
 
@@ -55,10 +57,9 @@ class Request(Doc):
         return Request.build(args.get('command'), args, extensions)
 
     def render(self, command):
-        moduleName = command.split(':')[0]
-        commandName = command.split(':')[1]
-        module = self.get_module(moduleName)
-        method = 'render_' + commandName
+        module_name, command_name = command.split(':')
+        module = self.get_module(module_name)
+        method = 'render_' + command_name
         if not hasattr(module, method):
             raise Exception('unknown command',  command)
         getattr(module, method)(self)

@@ -30,12 +30,38 @@ class fee(Module):
 
     def render_check(self, request):
         extension = self.render_extension(request, 'check')
-        command = request.get('fee', {}).get('command', 'create')
-        for name in request.get('names').itervalues():
-            domain = request.add_subtag(extension, 'fee:domain')
-            request.add_subtag(domain, 'fee:name', {}, name)
-            request.add_subtag(domain, 'fee:command', {}, command)
-            request.add_subtag(domain, 'fee:period', {'unit': 'y'}, '1')
+        extension_data = request.extension_data
+        self.render_name(request, extension, extension_data)
+        self.render_currency(request, extension, extension_data)
+        self.render_action(request, extension, extension_data)
+        self.render_period(request, extension, extension_data)
+
+    def render_name(self, request, extension, extension_data):
+        if 'name' in extension_data:
+            request.add_subtag(extension, 'fee:domain', text=extension_data['name'])
+
+    def render_currency(self, request, extension, extension_data):
+        if 'currency' in extension_data:
+            request.add_subtag(extension, 'fee:currency', text=extension_data['currency'])
+
+    def render_action(self, request, extension, extension_data):
+        action = extension_data.get('action', 'create')
+
+        attrs = {}
+        phase = extension_data.get('phase', None)
+        if phase:
+            attrs['phase'] = phase
+        subphase = extension_data.get('subphase', None)
+        if subphase:
+            attrs['subphase'] = subphase
+
+        request.add_subtag(extension, 'fee:action', attrs, action)
+
+    def render_period(self, request, extension, extension_data):
+        if 'period' in extension_data:
+            request.add_subtag(extension, 'fee:period', {
+                'unit': extension_data.get('unit', 'y')
+            }, extension_data['currency'])
 
     def render_create(self, request):
         return self.render_action(request, 'create')
@@ -43,8 +69,3 @@ class fee(Module):
     def render_renew(self, request):
         return self.render_action(request, 'renew')
 
-    def render_action(self, request, action):
-        extension = self.render_extension(request, action)
-        data = request.get('fee', {})
-        request.add_subtag(extension, 'fee:currency', {}, data.get('currency', 'USD'))
-        request.add_subtag(extension, 'fee:fee',      {}, data.get('fee'))
