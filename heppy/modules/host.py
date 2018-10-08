@@ -32,17 +32,17 @@ class host(Module):
         self.render_check_command(request, 'host', 'name')
 
     def render_info(self, request):
-        self.render_command_fields(request, 'info')
+        self.render_command_with_fields(request, 'info')
 
     def render_create(self, request):
-        command = self.render_command_fields(request, 'create')
+        command = self.render_command_with_fields(request, 'create')
         self.render_ips(request, command)
 
     def render_delete(self, request):
-        self.render_command_fields(request, 'delete')
+        self.render_command_with_fields(request, 'delete')
 
     def render_update(self, request):
-        command = self.render_command_fields(request, 'update')
+        command = self.render_command_with_fields(request, 'update')
 
         if request.has('add'):
             self.render_update_section(request, command, 'add')

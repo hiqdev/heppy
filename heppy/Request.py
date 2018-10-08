@@ -34,7 +34,8 @@ class Request(Doc):
     def add_subtags(self, parent, tags):
         ns = parent.tag.split(':')[0]
         for tag in tags:
-            self.add_subtag(parent, ns + ':' + tag.name, tag.attrs, tag.value)
+            if tag.value:
+                self.add_subtag(parent, ns + ':' + tag.name, tag.attrs, tag.value)
         return parent
 
     @staticmethod

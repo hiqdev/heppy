@@ -57,7 +57,7 @@ class Module:
         command_tag = self.render_root_command(request, command, attrs)
         return self.render_header(request, command_tag, command)
 
-    def render_command_fields(self, request, command, fields={'name': {}}, attrs={}):
+    def render_command_with_fields(self, request, command, fields, attrs={}):
         command = self.render_command(request, command, attrs)
         request.add_subtags(command, fields)
         return command
@@ -69,8 +69,6 @@ class Module:
         return command
 
     def render_auth_info(self, request, parent, pw='', attrs={}):
-        # if pw is None:
-        #     pw = request.get('pw', '')
         authInfo = request.add_subtag(parent, self.name + ':authInfo')
         request.add_subtag(authInfo, self.name + ':pw', attrs, pw)
 
