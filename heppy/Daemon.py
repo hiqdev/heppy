@@ -139,7 +139,7 @@ class Daemon:
             greetobj = Response.parsexml(greeting)
             pprint(greetobj.data)
             request = Login.build(self.config, greeting, args)
-            self.login_query = str(request)
+            self.login_query = request.toxml()
         return self.login_query
 
     def connect_internal(self):

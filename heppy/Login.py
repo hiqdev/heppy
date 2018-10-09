@@ -5,6 +5,7 @@ from heppy.Request import Request
 from heppy.Response import Response
 
 class Login:
+
     @staticmethod
     def build(config, greeting, args = {}):
         if not args.get('login'):

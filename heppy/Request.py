@@ -13,9 +13,12 @@ class Request(Doc):
 
     def __str__(self, encoding='UTF-8', method='xml'):
         if self.raw is None:
-            return ET.tostring(self.epp, encoding, method)
+            return self.toxml(encoding, method)
         else:
             return self.raw
+
+    def toxml(self, encoding='UTF-8', method='xml'):
+        return ET.tostring(self.epp, encoding, method)
 
     def add_tag(self, tag, attrs={}, text=None):
         res = ET.Element(tag, attrs)
