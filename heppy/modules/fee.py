@@ -42,6 +42,18 @@ class fee(Module):
             }),
         ])
 
+    def render_info(self, request, data):
+        self.render_extension_with_fields(request, 'info', [
+            TagData('currency', data.get('currency')),
+            TagData('action', data.get('action', 'create'), {
+                'phase': data.get('phase'),
+                'subphase': data.get('subphase'),
+            }),
+            TagData('period', data.get('period'), {
+               'unit': data.get('unit', 'y')
+            }),
+        ])
+
     def render_create(self, request):
         return self.render_action(request, 'create')
 
