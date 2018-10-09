@@ -62,10 +62,10 @@ class Module:
         request.add_subtags(command, fields)
         return command
 
-    def render_check_command(self, request, mod, field):
+    def render_check_command(self, request, data, field):
         command = self.render_command(request, 'check')
-        for name in request.get(field + 's'):
-            request.add_subtag(command, mod + ':' + field, text=name)
+        for name in data.get(field + 's'):
+            request.add_subtag(command, self.name + ':' + field, text=name)
         return command
 
     def render_auth_info(self, request, parent, pw='', attrs={}):

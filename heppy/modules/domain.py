@@ -108,10 +108,10 @@ class domain(Module):
         ])
 
         if 'add' in data:
-            self.render_update_section(request, command, data, 'add')
+            self.render_update_section(request, data, command, 'add')
 
         if 'rem' in data:
-            self.render_update_section(request, command, data, 'rem')
+            self.render_update_section(request, data, command, 'rem')
 
         if 'chg' in data:
             chgElement = request.add_subtag(command, 'domain:chg')
@@ -120,7 +120,7 @@ class domain(Module):
                 request.add_subtag(chgElement, 'domain:registrant', text=chgData['registrant'])
             self.render_auth_info(request, chgElement, chgData.get('pw'))
 
-    def render_update_section(self, request, command, data, operation):
+    def render_update_section(self, request, data, command, operation):
         element = request.add_subtag(command, 'domain:' + operation)
         data = data.get(operation)
         if 'nss' in data:

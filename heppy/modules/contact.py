@@ -1,4 +1,5 @@
 from ..Module import Module
+from ..TagData import TagData
 
 class contact(Module):
     opmap = {
@@ -36,83 +37,87 @@ class contact(Module):
 
 ### REQUEST rendering
 
-    def render_check(self, request):
-        return self.render_check_command(request, 'contact', 'id')
+    def render_check(self, request, data):
+        return self.render_check_command(request, data, 'id')
 
-    def render_info(self, request):
-        command = self.render_command_with_fields(request, 'info', {'id': {}})
-        if request.has('pw'):
-            self.render_auth_info(request, command)
+    def render_info(self, request, data):
+        command = self.render_command_with_fields(request, 'info', [
+            TagData('id', data.get('id'))
+        ])
+        if 'pw' in data:
+            self.render_auth_info(request, command, data.get('pw'))
 
-    def render_create(self, request):
-        command = self.render_command_with_fields(request, 'create', {'id': {}})
+    def render_create(self, request, data):
+        command = self.render_command_with_fields(request, 'create', [
+            TagData('id', data.get('id'))
+        ])
 
-        self.render_postal_info(request, command)
-        self.render_contact_info(request, command)
+        self.render_postal_info(request, data, command)
+        self.render_contact_info(request, data, command)
 
-        if request.has('pw'):
-            self.render_auth_info(request, command)
+        if 'pw' in data:
+            self.render_auth_info(request, command, data.get('pw'))
 
-    def render_delete(self, request):
-        self.render_command_with_fields(request, 'delete', {'id': {}})
+    def render_delete(self, request, data):
+        self.render_command_with_fields(request, 'delete', [
+            TagData('id', data.get('id'))
+        ])
 
-    def render_update(self, request):
-        command = self.render_command_with_fields(request, 'update', {'id': {}})
+    def render_update(self, request, data):
+        command = self.render_command_with_fields(request, 'update', [
+            TagData('id', data.get('id'))
+        ])
 
-        if request.has('add'):
-            self.render_update_section(request, command, 'add')
-        if request.has('rem'):
-            self.render_update_section(request, command, 'rem')
-        if request.has('chg'):
+        if 'add' in data:
+            self.render_update_section(request, data, command, 'add')
+        if 'rem' in data:
+            self.render_update_section(request, data, command, 'rem')
+        if 'chg' in data:
             chg = request.add_subtag(command, 'contact:chg')
-            chgData = request.get('chg')
-            self.render_postal_info(request, chg, chgData)
-            self.render_contact_info(request, chg, chgData)
+            chgData = data.get('chg')
+            self.render_postal_info(request, chgData, chg)
+            self.render_contact_info(request, chgData, chg)
             if 'pw' in chgData:
                 self.render_auth_info(request, chg, chgData['pw'])
 
-    def render_update_section(self, request, command, operation):
+    def render_update_section(self, request, data, command, operation):
         element = request.add_subtag(command, 'contact:' + operation)
-        data = request.data.get(operation)
+        data = data.get(operation)
         if 'statuses' in data:
             self.render_statuses(request, element, data['statuses'])
 
-    def render_postal_info(self, request, parent, storage=None):
-        storage = storage or request.data
-        postalInfo = request.add_subtag(parent, 'contact:postalInfo',
-                                        {'type': storage.get('type', 'int')})
-        if 'name' in storage:
-            request.add_subtag(postalInfo, 'contact:name', text=storage.get('name'))
-        if 'org' in storage:
-            request.add_subtag(postalInfo, 'contact:org', text=storage.get('org'))
-        self.render_addr(request, postalInfo, storage)
+    def render_postal_info(self, request, data, parent):
+        attrs = {'type': data.get('type', 'int')}
+        postalInfo = request.add_subtag(parent, 'contact:postalInfo', attrs)
+        if 'name' in data:
+            request.add_subtag(postalInfo, 'contact:name', text=data.get('name'))
+        if 'org' in data:
+            request.add_subtag(postalInfo, 'contact:org', text=data.get('org'))
+        self.render_addr(request, postalInfo, data)
 
-    def render_addr(self, request, parent, storage=None):
-        storage = storage or request.data
+    def render_addr(self, request, parent, data):
         addr = request.add_subtag(parent, 'contact:addr')
 
-        if 'street1' in storage:
-            request.add_subtag(addr, 'contact:street', text=storage.get('street1'))
-        if 'street2' in storage:
-            request.add_subtag(addr, 'contact:street', text=storage.get('street2'))
-        if 'street3' in storage:
-            request.add_subtag(addr, 'contact:street', text=storage.get('street3'))
+        if 'street1' in data:
+            request.add_subtag(addr, 'contact:street', text=data.get('street1'))
+        if 'street2' in data:
+            request.add_subtag(addr, 'contact:street', text=data.get('street2'))
+        if 'street3' in data:
+            request.add_subtag(addr, 'contact:street', text=data.get('street3'))
 
-        if 'city' in storage:
-            request.add_subtag(addr, 'contact:city', text=storage.get('city'))
+        if 'city' in data:
+            request.add_subtag(addr, 'contact:city', text=data.get('city'))
 
-        if 'sp' in storage:
-            request.add_subtag(addr, 'contact:sp', text=storage.get('sp'))
-        if 'pc' in storage:
-            request.add_subtag(addr, 'contact:pc', text=storage.get('pc'))
-        request.add_subtag(addr, 'contact:cc', text=storage.get('cc'))
+        if 'sp' in data:
+            request.add_subtag(addr, 'contact:sp', text=data.get('sp'))
+        if 'pc' in data:
+            request.add_subtag(addr, 'contact:pc', text=data.get('pc'))
+        request.add_subtag(addr, 'contact:cc', text=data.get('cc'))
 
-    def render_contact_info(self, request, parent, storage=None):
-        storage = storage or request.data
-
-        if 'voice' in storage:
-            request.add_subtag(parent, 'contact:voice', text=storage.get('voice'))
-        if 'fax' in storage:
-            request.add_subtag(parent, 'contact:fax', text=storage.get('fax'))
-        if 'email' in storage:
-            request.add_subtag(parent, 'contact:email', text=storage.get('email'))
+    def render_contact_info(self, request, data, parent):
+        if 'voice' in data:
+            request.add_subtag(parent, 'contact:voice', text=data.get('voice'))
+        if 'fax' in data:
+            request.add_subtag(parent, 'contact:fax', text=data.get('fax'))
+        if 'email' in data:
+            request.add_subtag(parent, 'contact:email', text=data.get('email'))
