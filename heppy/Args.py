@@ -20,10 +20,13 @@ class Args(dict):
             if m:
                 name = m.group(1)
                 if name.find('.')>0:
-                    f, s = name.split('.', 1)
+                    f, i, s = name.split('.', 2)
+                    i = int(i)
                     if not f in self:
-                        self[f] = {}
-                    self[f][s] = m.group(2)
+                        self[f] = []
+                    if len(self[f]) < i+1:
+                        self[f].append({})
+                    self[f][i][s] = m.group(2)
                 else:
                     self[name] = m.group(2)
             else:
