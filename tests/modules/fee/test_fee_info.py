@@ -4,9 +4,9 @@ import unittest
 from ..TestCase import TestCase
 
 
-class TestContactCheck(TestCase):
+class TestFeeInfo(TestCase):
 
-    def test_render_contact_check_request(self):
+    def test_render_fee_info_request(self):
         self.assertRequest('''<?xml version="1.0" ?>
 <epp xmlns="urn:ietf:params:xml:ns:epp-1.0">
     <command>
@@ -30,16 +30,17 @@ class TestContactCheck(TestCase):
             'name': 'silverfire.me',
             'extensions': [
                 {
-                    'command': 'fee:info',
-                    'name': 'silverfire.me',
-                    'action': 'create',
+                    'command':  'fee:info',
+                    'name':     'silverfire.me',
+                    'action':   'create',
                     'currency': 'USD',
-                    'phase': 'sunrise',
-                    'period': 1
+                    'phase':    'sunrise',
+                    'period':   1
                 },
             ],
             'clTRID': 'XXXX-11',
         })
+
 
 if __name__ == '__main__':
     unittest.main(verbosity=2)

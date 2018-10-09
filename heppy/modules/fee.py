@@ -54,9 +54,9 @@ class fee(Module):
             }),
         ])
 
-    def render_create(self, request):
-        return self.render_action(request, 'create')
-
-    def render_renew(self, request):
-        return self.render_action(request, 'renew')
+    def render_create(self, request, data):
+        self.render_extension_with_fields(request, 'info', [
+            TagData('currency', data.get('currency')),
+            TagData('fee', data.get('fee'))
+        ])
 
