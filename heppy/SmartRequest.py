@@ -54,7 +54,7 @@ class SmartRequest():
         return Type.XML
 
     def query_from_dict(self, data):
-        return str(Request.buildFromDict(data))
+        return str(Request.build(data))
 
     def perform(self, request, relogin = None):
         try:

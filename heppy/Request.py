@@ -6,12 +6,10 @@ from Doc import Doc
 class Request(Doc):
 
     def __init__(self):
-        # self.data           = data
-        self.raw            = None
-        self.epp            = None
-        self.command        = None
-        self.extension      = None
-        # self.extension_data = None
+        self.raw        = None
+        self.epp        = None
+        self.command    = None
+        self.extension  = None
 
     def __str__(self, encoding='UTF-8', method='xml'):
         if self.raw is None:
@@ -43,16 +41,9 @@ class Request(Doc):
         request = Request()
         request.render(data['command'], data)
         for extension in data.get('extensions', {}):
-            request.render(extension['command'], data['extension'])
+            request.render(extension['command'], extension)
         request.render('epp:clTRID', data)
         return request
-
-    # @staticmethod
-    # def buildFromDict(args):
-    #     extensions = args.get('extensions') or {}
-    #     if extensions == {} and 'extension' in args:
-    #         extensions = {'0': args.get('extension')}
-    #     return Request.build(args.get('command'), args, extensions)
 
     def render(self, command, data):
         module_name, command_name = command.split(':')

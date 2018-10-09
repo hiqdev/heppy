@@ -4,5 +4,5 @@ from heppy.Args import Args
 from heppy.Request import Request
 
 args = Args()
-request = Request.buildFromDict(args)
+request = Request.build(args)
 print Request.prettifyxml(str(request))

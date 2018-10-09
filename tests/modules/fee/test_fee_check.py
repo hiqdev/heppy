@@ -22,13 +22,13 @@ class TestContactCheck(TestCase):
                 <fee:domain>silverfire.me</fee:domain>
                 <fee:currency>USD</fee:currency>
                 <fee:action phase="sunrise">create</fee:action>
-                <fee:period unit="y">USD</fee:period>
+                <fee:period unit="y">1</fee:period>
             </fee:check>
             <fee:check xmlns:fee="urn:ietf:params:xml:ns:fee-0.5">
                 <fee:domain>example.me</fee:domain>
                 <fee:currency>EUR</fee:currency>
                 <fee:action phase="claims" subphase="landrush">renew</fee:action>
-                <fee:period unit="m">EUR</fee:period>
+                <fee:period unit="m">2</fee:period>
             </fee:check>
             <fee:check xmlns:fee="urn:ietf:params:xml:ns:fee-0.5">
                 <fee:domain>almostempty.me</fee:domain>
