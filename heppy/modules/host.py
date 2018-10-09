@@ -1,6 +1,5 @@
-from collections import OrderedDict
-
 from ..Module import Module
+from ..TagData import TagData
 
 class host(Module):
     opmap = {
@@ -28,40 +27,45 @@ class host(Module):
 
 ### REQUEST rendering
 
-    def render_check(self, request):
-        self.render_check_command(request, 'host', 'name')
+    def render_check(self, request, data):
+        self.render_check_command(request, data, 'name')
 
-    def render_info(self, request):
-        self.render_command_with_fields(request, 'info')
+    def render_info(self, request, data):
+        self.render_command_with_fields(request, 'info', [
+            TagData('name', data.get('name'))
+        ])
 
-    def render_create(self, request):
-        command = self.render_command_with_fields(request, 'create')
-        self.render_ips(request, command)
+    def render_create(self, request, data):
+        command = self.render_command_with_fields(request, 'create', [
+            TagData('name', data.get('name'))
+        ])
+        self.render_ips(request, data.get('ips', []), command)
 
-    def render_delete(self, request):
-        self.render_command_with_fields(request, 'delete')
+    def render_delete(self, request, data):
+        self.render_command_with_fields(request, 'delete', [
+            TagData('name', data.get('name'))
+        ])
 
-    def render_update(self, request):
-        command = self.render_command_with_fields(request, 'update')
+    def render_update(self, request, data):
+        command = self.render_command_with_fields(request, 'update', [
+            TagData('name', data.get('name'))
+        ])
 
-        if request.has('add'):
-            self.render_update_section(request, command, 'add')
-        if request.has('rem'):
-            self.render_update_section(request, command, 'rem')
-        if request.has('chg'):
-            self.render_update_section(request, command, 'chg')
+        if 'add' in data:
+            self.render_update_section(request, data.get('add'), command, 'add')
+        if 'rem' in data:
+            self.render_update_section(request, data.get('rem'), command, 'rem')
+        if 'chg' in data:
+            self.render_update_section(request, data.get('chg'), command, 'chg')
 
-
-    def render_update_section(self, request, command, operation):
+    def render_update_section(self, request, data, command, operation):
         element = request.add_subtag(command, 'host:' + operation)
-        data = request.get(operation)
         if operation == 'chg':
             request.add_subtag(element, 'host:name', text=data.get('name'))
         else:
-            self.render_ips(request, element, data)
+            self.render_ips(request, data.get('ips', []), element)
             self.render_statuses(request, element, data.get('statuses', {}))
 
-    def render_ips(self, request, parent, storage=None):
-        storage = storage or request.data
-        for ip in storage.get('ips', []):
+    def render_ips(self, request, ips, parent):
+        for ip in ips:
             request.add_subtag(parent, 'host:addr', {'ip': 'v6' if ':' in ip else 'v4'}, ip)
