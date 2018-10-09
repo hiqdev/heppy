@@ -4,7 +4,7 @@ import unittest
 from ..TestCase import TestCase
 
 
-class TestFeeInfo(TestCase):
+class TestFeeCreate(TestCase):
 
     def test_render_fee_create_request(self):
         self.assertRequest('''<?xml version="1.0" ?>
@@ -28,10 +28,10 @@ class TestFeeInfo(TestCase):
             </domain:create>
         </create>
         <extension>
-            <fee:info xmlns:fee="urn:ietf:params:xml:ns:fee-0.5">
+            <fee:create xmlns:fee="urn:ietf:params:xml:ns:fee-0.5">
                 <fee:currency>USD</fee:currency>
                 <fee:fee>42.42</fee:fee>
-            </fee:info>
+            </fee:create>
         </extension>
         <clTRID>XXXX-11</clTRID>
     </command>

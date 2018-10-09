@@ -1,4 +1,5 @@
 from ..Module import Module
+from ..TagData import TagData
 
 class namestoreExt(Module):
     opmap = {
@@ -14,7 +15,8 @@ class namestoreExt(Module):
 
 ### REQUEST rendering
 
-    def render_subProduct(self, request):
-        extension = self.render_extension(request, 'namestoreExt')
-        request.add_subtags(extension, {'subProduct': {}}, request.get('namestoreExt'))
+    def render_subProduct(self, request, data):
+        self.render_extension_with_fields(request, 'namestoreExt', [
+            TagData('subProduct', data.get('subProduct'))
+        ])
 

@@ -55,7 +55,7 @@ class fee(Module):
         ])
 
     def render_create(self, request, data):
-        self.render_extension_with_fields(request, 'info', [
+        self.render_extension_with_fields(request, 'create', [
             TagData('currency', data.get('currency')),
             TagData('fee', data.get('fee'))
         ])
