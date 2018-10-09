@@ -39,50 +39,50 @@ class epp(Module):
 
 ### REQUEST rendering
 
-    def render_hello(self, request):
+    def render_hello(self, request, _data=None):
         epp = self.render_epp(request)
         request.add_subtag(epp, 'hello')
 
-    def render_login(self, request):
+    def render_login(self, request, data):
         command = self.render_root_command(request, 'login')
 
-        request.add_subtag(command, 'clID', text=request.get('clID', request.get('login')))
-        request.add_subtag(command, 'pw', text=request.get('pw', request.get('password')))
-        newPW = request.get('newPW', request.get('newPassword'))
+        request.add_subtag(command, 'clID', text=data.get('clID', data.get('login')))
+        request.add_subtag(command, 'pw', text=data.get('pw', data.get('password')))
+        newPW = data.get('newPW', data.get('newPassword'))
         if newPW is not None:
             request.add_subtag(command, 'newPW', text=newPW)
 
         options = request.add_subtag(command, 'options')
-        request.add_subtag(options, 'version', text=request.get('version', '1.0'))
-        request.add_subtag(options, 'lang', text=request.get('lang', 'en'))
+        request.add_subtag(options, 'version', text=data.get('version', '1.0'))
+        request.add_subtag(options, 'lang', text=data.get('lang', 'en'))
 
         svcs = request.add_subtag(command, 'svcs')
-        for svc in request.get('objURIs', [request.nsmap['epp']]):
+        for svc in data.get('objURIs', [request.nsmap['epp']]):
             request.add_subtag(svcs, 'objURI', text=svc)
-        extURIs = request.get('extURIs', [])
+        extURIs = data.get('extURIs', [])
         if extURIs:
             exts = request.add_subtag(svcs, 'svcExtension')
             for ext in extURIs:
                 request.add_subtag(exts, 'extURI', text=ext)
 
-    def render_logout(self, request):
+    def render_logout(self, request, _data=None):
         self.render_root_command(request, 'logout')
 
-    def render_check(self, request):
-        self.render_typical_command(request, 'check')
+    def render_check(self, request, data):
+        self.render_typical_command(request, data, 'check')
 
-    def render_info(self, request):
-        self.render_typical_command(request, 'info')
+    def render_info(self, request, data):
+        self.render_typical_command(request, data, 'info')
 
-    def render_poll(self, request):
-        attrs = {'op': request.get('op', 'req')}
-        msgID = request.get('msgID')
+    def render_poll(self, request, data):
+        attrs = {'op': data.get('op', 'req')}
+        msgID = data.get('msgID')
         if msgID is not None:
             attrs['msgID'] = msgID
         self.render_root_command(request, 'poll', attrs)
 
-    def render_typical_command(self, request, command_name):
+    def render_typical_command(self, request, data, command_name):
         command = self.render_root_command(request, command_name)
         objs = request.add_subtag(command, 'obj:' + command_name, {'xmlns:obj': 'urn:ietf:params:xml:ns:obj'})
-        for name in request.get('names'):
+        for name in data.get('names'):
             request.add_subtag(objs, 'obj:name', text=name)
