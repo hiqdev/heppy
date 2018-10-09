@@ -50,8 +50,11 @@ class Module:
             request.command = request.add_subtag(epp, 'command')
         return request.add_subtag(request.command, command, attrs)
 
-    def render_header(self, request, parent, command):
-        return request.add_subtag(parent, self.name + ':' + command, {'xmlns:' + self.name: self.xmlns})
+    def render_header(self, request, parent, command, attrs={}):
+        header_attrs = {'xmlns:' + self.name: self.xmlns}
+        if attrs:
+            header_attrs.update(attrs)
+        return request.add_subtag(parent, self.name + ':' + command, header_attrs)
 
     def render_command(self, request, command, attrs={}):
         command_tag = self.render_root_command(request, command, attrs)
@@ -81,11 +84,11 @@ class Module:
             request.extension = request.add_subtag(request.command, 'extension')
         return request.extension
 
-    def render_extension(self, request, action):
+    def render_extension(self, request, action, attrs={}):
         extension = self.render_root_extension(request)
-        return self.render_header(request, extension, action)
+        return self.render_header(request, extension, action, attrs)
 
-    def render_extension_with_fields(self, request, command, fields):
-        extension = self.render_extension(request, command)
+    def render_extension_with_fields(self, request, command, fields, attrs={}):
+        extension = self.render_extension(request, command, attrs)
         request.add_subtags(extension, fields)
         return extension
