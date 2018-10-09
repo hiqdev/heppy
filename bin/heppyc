@@ -22,7 +22,7 @@ if is_json:
     query = json.dumps(args)
     print query
 else:
-    request = Request.buildFromDict(args)
+    request = Request.build(args)
     query = str(request)
     print Request.prettifyxml(query)
 

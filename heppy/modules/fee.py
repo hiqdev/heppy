@@ -1,4 +1,5 @@
 from ..Module import Module
+from ..TagData import TagData
 
 class fee(Module):
     opmap = {
@@ -28,40 +29,18 @@ class fee(Module):
 
 ### REQUEST rendering
 
-    def render_check(self, request):
-        extension = self.render_extension(request, 'check')
-        extension_data = request.extension_data
-        self.render_name(request, extension, extension_data)
-        self.render_currency(request, extension, extension_data)
-        self.render_action(request, extension, extension_data)
-        self.render_period(request, extension, extension_data)
-
-    def render_name(self, request, extension, extension_data):
-        if 'name' in extension_data:
-            request.add_subtag(extension, 'fee:domain', text=extension_data['name'])
-
-    def render_currency(self, request, extension, extension_data):
-        if 'currency' in extension_data:
-            request.add_subtag(extension, 'fee:currency', text=extension_data['currency'])
-
-    def render_action(self, request, extension, extension_data):
-        action = extension_data.get('action', 'create')
-
-        attrs = {}
-        phase = extension_data.get('phase', None)
-        if phase:
-            attrs['phase'] = phase
-        subphase = extension_data.get('subphase', None)
-        if subphase:
-            attrs['subphase'] = subphase
-
-        request.add_subtag(extension, 'fee:action', attrs, action)
-
-    def render_period(self, request, extension, extension_data):
-        if 'period' in extension_data:
-            request.add_subtag(extension, 'fee:period', {
-                'unit': extension_data.get('unit', 'y')
-            }, extension_data['currency'])
+    def render_check(self, request, data):
+        self.render_extension_with_fields(request, 'check', [
+            TagData('domain', data.get('name')),
+            TagData('currency', data.get('currency')),
+            TagData('action', data.get('action', 'create'), {
+                'phase': data.get('phase'),
+                'subphase': data.get('subphase'),
+            }),
+            TagData('period', data.get('period'), {
+               'unit': data.get('unit', 'y')
+            }),
+        ])
 
     def render_create(self, request):
         return self.render_action(request, 'create')

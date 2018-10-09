@@ -85,7 +85,7 @@ class Module:
         extension = self.render_root_extension(request)
         return self.render_header(request, extension, action)
 
-    def render_extension_fields(self, request, action, fields):
-        extension = self.render_extension(request, action)
+    def render_extension_with_fields(self, request, command, fields):
+        extension = self.render_extension(request, command)
         request.add_subtags(extension, fields)
         return extension

@@ -12,7 +12,7 @@ from heppy.Response import Response
 try:
     args = Args()
     config = Config(args.get('path'))
-    request = Request.buildFromDict(args)
+    request = Request.build(args)
     query = str(request)
     print query
     print Request.prettifyxml(query)
