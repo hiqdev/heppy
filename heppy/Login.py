@@ -24,4 +24,5 @@ class Login:
             for uri in args['extURIs']:
                 if not uri in Request.modules:
                     args['extURIs'].remove(uri)
-        return Request.build('epp:login', args)
+        args['command'] = 'epp:login'
+        return Request.build(args)

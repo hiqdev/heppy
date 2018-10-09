@@ -42,11 +42,11 @@ class Doc:
         type = getattr(lib, name)
         return type(ns)
 
-    # def get(self, name, default=None):
-    #     return self.data.get(name, default)
-    #
-    # def has(self, name):
-    #     return name in self.data
+    def get(self, name, default=None):
+        return self.data.get(name, default)
+
+    def has(self, name):
+        return name in self.data
 
     @staticmethod
     def mget(data, map):
