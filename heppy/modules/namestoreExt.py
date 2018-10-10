@@ -1,6 +1,7 @@
 from ..Module import Module
 from ..TagData import TagData
 
+
 class namestoreExt(Module):
     opmap = {
         'nsExtErrData': 'descend',

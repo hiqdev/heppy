@@ -1,6 +1,5 @@
-from collections import OrderedDict
-
 from ..Module import Module
+
 
 class secDNS(Module):
     opmap = {

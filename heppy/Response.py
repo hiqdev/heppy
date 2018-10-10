@@ -1,8 +1,6 @@
 import xml.etree.ElementTree as ET
-
-from pprint import pprint
-
 from Doc import Doc
+
 
 class Response(Doc):
     def __init__(self, root):

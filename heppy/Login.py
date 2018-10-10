@@ -4,6 +4,7 @@ from heppy.Error import Error
 from heppy.Request import Request
 from heppy.Response import Response
 
+
 class Login:
 
     @staticmethod

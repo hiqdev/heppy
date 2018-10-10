@@ -20,6 +20,7 @@ from heppy.RabbitMQ import RPCServer
 from heppy.SmartRequest import SmartRequest
 from heppy.SignalHandler import SignalHandler
 
+
 class Daemon:
     def __init__(self, config):
         self.config = config

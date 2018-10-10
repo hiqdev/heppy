@@ -2,6 +2,7 @@ import socket
 
 from heppy import Net
 
+
 class Client:
     def __init__(self, address):
         self.socket  = None

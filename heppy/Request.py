@@ -3,6 +3,7 @@ import xml.etree.ElementTree as ET
 
 from Doc import Doc
 
+
 class Request(Doc):
 
     def __init__(self):

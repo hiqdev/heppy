@@ -1,6 +1,7 @@
 from ..Module import Module
 from ..TagData import TagData
 
+
 class host(Module):
     opmap = {
         'infData':      'descend',

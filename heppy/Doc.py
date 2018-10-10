@@ -1,5 +1,6 @@
 from importlib import import_module
 
+
 class Doc:
     nsmap = {
         'builtin':      'builtin',

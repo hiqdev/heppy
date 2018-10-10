@@ -3,6 +3,7 @@ from collections import OrderedDict
 from ..Module import Module
 from ..TagData import TagData
 
+
 class domain(Module):
     opmap = {
         'infData':      'descend',
@@ -132,13 +133,13 @@ class domain(Module):
             self.render_statuses(request, element, data['statuses'])
 
     def render_nss(self, request, parent, hosts):
-        nsElement = request.add_subtag(parent, 'domain:ns')
+        ns_element = request.add_subtag(parent, 'domain:ns')
         for host in hosts:
-            request.add_subtag(nsElement, 'domain:hostObj', text=host)
+            request.add_subtag(ns_element, 'domain:hostObj', text=host)
 
     def render_contacts(self, request, parent, storage):
-        for contactType in (set(self.CONTACT_TYPES) & set(storage.keys())):
-            request.add_subtag(parent, 'domain:contact', {'type': contactType}, storage[contactType])
+        for contact_type in (set(self.CONTACT_TYPES) & set(storage.keys())):
+            request.add_subtag(parent, 'domain:contact', {'type': contact_type}, storage[contact_type])
 
     def has_contacts(self, storage):
-        return any(contactType in storage for contactType in self.CONTACT_TYPES)
+        return any(contact_type in storage for contact_type in self.CONTACT_TYPES)
