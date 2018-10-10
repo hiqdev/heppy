@@ -2,6 +2,7 @@ import re
 import sys
 import copy
 
+
 class Args(dict):
     def __init__(self):
         if len(sys.argv)<3:

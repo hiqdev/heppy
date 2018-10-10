@@ -72,8 +72,8 @@ class Module:
         return command
 
     def render_auth_info(self, request, parent, pw='', attrs={}):
-        authInfo = request.add_subtag(parent, self.name + ':authInfo')
-        request.add_subtag(authInfo, self.name + ':pw', attrs, pw)
+        auth_info = request.add_subtag(parent, self.name + ':authInfo')
+        request.add_subtag(auth_info, self.name + ':pw', attrs, pw)
 
     def render_statuses(self, request, parent, status_data):
         for status, description in status_data.iteritems():

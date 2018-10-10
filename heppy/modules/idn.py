@@ -1,6 +1,7 @@
 from ..Module import Module
 from ..TagData import TagData
 
+
 class idn(Module):
     opmap = {
         'nsExtErrData': 'descend',

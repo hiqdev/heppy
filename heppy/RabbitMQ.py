@@ -6,6 +6,7 @@ import uuid
 from pika.connection import Parameters
 from pika.connection import ConnectionParameters
 
+
 class RPCServer:
     def __init__(self, config):
         self.config = config

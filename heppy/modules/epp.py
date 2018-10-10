@@ -1,5 +1,6 @@
 from ..Module import Module
 
+
 class epp(Module):
     opmap = {
         'greeting':     'descend',
@@ -48,9 +49,9 @@ class epp(Module):
 
         request.add_subtag(command, 'clID', text=data.get('clID', data.get('login')))
         request.add_subtag(command, 'pw', text=data.get('pw', data.get('password')))
-        newPW = data.get('newPW', data.get('newPassword'))
-        if newPW is not None:
-            request.add_subtag(command, 'newPW', text=newPW)
+        new_pw = data.get('newPW', data.get('newPassword'))
+        if new_pw is not None:
+            request.add_subtag(command, 'newPW', text=new_pw)
 
         options = request.add_subtag(command, 'options')
         request.add_subtag(options, 'version', text=data.get('version', '1.0'))

@@ -1,5 +1,6 @@
 import logging
 
+
 class Error(Exception):
     def __init__(self, message, data = {}):
         self.message = message

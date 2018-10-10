@@ -1,5 +1,6 @@
 from ..Module import Module
 
+
 class rgp(Module):
     opmap = {
         'infData':      'descend',

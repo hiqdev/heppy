@@ -1,6 +1,7 @@
 from ..Module import Module
 from ..TagData import TagData
 
+
 class contact(Module):
     opmap = {
         'infData':      'descend',
@@ -74,11 +75,11 @@ class contact(Module):
             self.render_update_section(request, data, command, 'rem')
         if 'chg' in data:
             chg = request.add_subtag(command, 'contact:chg')
-            chgData = data.get('chg')
-            self.render_postal_info(request, chgData, chg)
-            self.render_contact_info(request, chgData, chg)
-            if 'pw' in chgData:
-                self.render_auth_info(request, chg, chgData['pw'])
+            chg_data = data.get('chg')
+            self.render_postal_info(request, chg_data, chg)
+            self.render_contact_info(request, chg_data, chg)
+            if 'pw' in chg_data:
+                self.render_auth_info(request, chg, chg_data['pw'])
 
     def render_update_section(self, request, data, command, operation):
         element = request.add_subtag(command, 'contact:' + operation)
@@ -88,12 +89,12 @@ class contact(Module):
 
     def render_postal_info(self, request, data, parent):
         attrs = {'type': data.get('type', 'int')}
-        postalInfo = request.add_subtag(parent, 'contact:postalInfo', attrs)
+        postal_info = request.add_subtag(parent, 'contact:postalInfo', attrs)
         if 'name' in data:
-            request.add_subtag(postalInfo, 'contact:name', text=data.get('name'))
+            request.add_subtag(postal_info, 'contact:name', text=data.get('name'))
         if 'org' in data:
-            request.add_subtag(postalInfo, 'contact:org', text=data.get('org'))
-        self.render_addr(request, postalInfo, data)
+            request.add_subtag(postal_info, 'contact:org', text=data.get('org'))
+        self.render_addr(request, postal_info, data)
 
     def render_addr(self, request, parent, data):
         addr = request.add_subtag(parent, 'contact:addr')
