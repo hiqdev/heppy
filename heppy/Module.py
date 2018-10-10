@@ -84,9 +84,9 @@ class Module:
             request.extension = request.add_subtag(request.command, 'extension')
         return request.extension
 
-    def render_extension(self, request, action, attrs={}, text=None):
+    def render_extension(self, request, command, attrs={}, text=None):
         root_extension = self.render_root_extension(request)
-        return self.render_header(request, root_extension, action, attrs, text)
+        return self.render_header(request, root_extension, command, attrs, text)
 
     def render_extension_with_fields(self, request, command, fields, attrs={}):
         extension = self.render_extension(request, command, attrs)

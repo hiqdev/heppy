@@ -114,11 +114,12 @@ class domain(Module):
             self.render_update_section(request, data, command, 'rem')
 
         if 'chg' in data:
-            chgElement = request.add_subtag(command, 'domain:chg')
-            chgData = data['chg']
-            if 'registrant' in chgData:
-                request.add_subtag(chgElement, 'domain:registrant', text=chgData['registrant'])
-            self.render_auth_info(request, chgElement, chgData.get('pw'))
+            chg_element = request.add_subtag(command, 'domain:chg')
+            chg_data = data['chg']
+            if 'registrant' in chg_data:
+                request.add_subtag(chg_element, 'domain:registrant', text=chg_data['registrant'])
+            if 'pw' in chg_data:
+                self.render_auth_info(request, chg_element, chg_data.get('pw'))
 
     def render_update_section(self, request, data, command, operation):
         element = request.add_subtag(command, 'domain:' + operation)
