@@ -1,6 +1,6 @@
 from ..Module import Module
 
-class idnLang(Module):
+class idn(Module):
     opmap = {
         'nsExtErrData': 'descend',
     }
@@ -14,7 +14,5 @@ class idnLang(Module):
 
 ### REQUEST rendering
 
-    def render_tag(self, request):
-        extension = self.render_extension(request, 'tag')
-        extension.text = request.get('idnLang').get('tag')
-
+    def render_default(self, request, data):
+        self.render_extension(request, 'language', text=data.get('language'))

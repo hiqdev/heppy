@@ -49,7 +49,11 @@ class Request(Doc):
         return request
 
     def render(self, command, data):
-        module_name, command_name = command.split(':')
+        try:
+            module_name, command_name = command.split(':')
+        except ValueError:
+            module_name = command
+            command_name = 'default'
         module = self.get_module(module_name)
         method = 'render_' + command_name
         if not hasattr(module, method):

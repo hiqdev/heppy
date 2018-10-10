@@ -31,7 +31,6 @@ class TestFeeInfo(TestCase):
             'extensions': [
                 {
                     'command':  'fee:info',
-                    'name':     'silverfire.me',
                     'action':   'create',
                     'currency': 'USD',
                     'phase':    'sunrise',
