@@ -4,9 +4,9 @@ import unittest
 from ..TestCase import TestCase
 
 
-class TestNamestoreExtSubProduct(TestCase):
+class TestNamestoreExtDefault(TestCase):
 
-    def test_render_namestoreExt_subProduct_request(self):
+    def test_render_namestoreExt_default_request(self):
         self.assertRequest('''<?xml version="1.0" ?>
 <epp xmlns="urn:ietf:params:xml:ns:epp-1.0">
     <command>
@@ -24,18 +24,18 @@ class TestNamestoreExtSubProduct(TestCase):
         <clTRID>XXXX-11</clTRID>
     </command>
 </epp>''', {
-            'command': 'domain:check',
+            'command':  'domain:check',
             'names': [
                 'example.me',
                 'silverfire.me',
             ],
             'extensions': [
                 {
-                    'command': 'namestoreExt:subProduct',
-                    'subProduct': 'dotCOM'
+                    'command':      'namestoreExt',
+                    'subProduct':   'dotCOM'
                 }
             ],
-            'clTRID': 'XXXX-11',
+            'clTRID':   'XXXX-11',
         })
 
 
