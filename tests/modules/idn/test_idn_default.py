@@ -19,7 +19,7 @@ class TestIdnDefault(TestCase):
             </domain:create>
         </create>
         <extension>
-            <idn:language xmlns:idn="http://www.verisign.com/epp/idnLang-1.0">en</idn:language>
+            <idn:language xmlns:idn="urn:afilias:params:xml:ns:idn-1.0">en</idn:language>
         </extension>
         <clTRID>XXXX-11</clTRID>
     </command>
