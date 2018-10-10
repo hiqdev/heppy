@@ -50,9 +50,9 @@ class Request(Doc):
         return request
 
     def render(self, command, data):
-        try:
+        if ':' in command:
             module_name, command_name = command.split(':')
-        except ValueError:
+        else:
             module_name = command
             command_name = 'default'
         module = self.get_module(module_name)
