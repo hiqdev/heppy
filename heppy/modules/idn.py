@@ -16,9 +16,6 @@ class idn(Module):
 
 ### REQUEST rendering
 
-    def render_default(self, request, data):
-        self.render_extension(request, 'language', text=data.get('language'))
-
     def render_check(self, request, data):
         self.render_extension_with_fields(request, 'check', [
             TagData('script', data.get('language'))
