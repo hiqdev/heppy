@@ -29,7 +29,7 @@ class Module:
     def parse_cd_tag(self, response, tag):
         name = tag[0]
         response.addto('avails', {name.text.lower(): name.attrib['avail']})
-        if len(tag)>1:
+        if len(tag) > 1:
             response.addto('reasons', {name.text.lower(): tag[1].text})
 
 ### REQUEST rendering
