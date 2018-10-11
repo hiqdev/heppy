@@ -5,7 +5,6 @@ class epp(Module):
     opmap = {
         'greeting':     'descend',
         'response':     'descend',
-        'extension':    'descend',
         'svcMenu':      'descend',
         'svcExtension': 'descend',
         'dcp':          'nothing',
@@ -37,6 +36,10 @@ class epp(Module):
 
     def parse_reason(self, response, tag):
         response.set('result_reason', tag.text)
+
+    def parse_extension(self, response, tag):
+        response.add_list('extensions')
+        self.parse_descend(response, tag)
 
 ### REQUEST rendering
 

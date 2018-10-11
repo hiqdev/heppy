@@ -4,7 +4,6 @@ from ..TagData import TagData
 
 class fee(Module):
     opmap = {
-        'chkData':      'descend',
     }
 
 ### RESPONSE parsing
@@ -27,6 +26,21 @@ class fee(Module):
         fees = response.get('fee:check', {})
         fees[fee['name']] = fee
         response.set('fee:check', fees)
+
+    def parse_chkData(self, response, tag):
+        chkData = {}
+        chkData['command'] = 'fee:check'
+        response.put_tag_data(chkData, tag, 'fee:domain')
+        response.put_tag_data(chkData, tag, 'fee:currency')
+        response.put_tag_data(chkData, tag, 'fee:action', [
+            'phase',
+            'subphase',
+        ])
+        response.put_tag_data(chkData, tag, 'fee:period', [
+            'unit'
+        ])
+        response.put_tag_data(chkData, tag, 'fee:fee')
+        response.add_list('extensions', chkData)
 
 ### REQUEST rendering
 

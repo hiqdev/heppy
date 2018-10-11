@@ -14,7 +14,21 @@ class Response(Doc):
     def find_text(self, parent, name):
         tag = self.find(parent, name)
         if tag is not None:
-            return tag.text
+            return tag.text.strip()
+
+    def put_attr(self, data, tag, attr):
+        attr_value = tag.attrib.get(attr)
+        if attr_value:
+            data[attr] = attr_value
+
+    def put_tag_data(self, dest, root, tag_name, attrs=[]):
+        key = tag_name.split(':')[1] if ':' in tag_name else tag_name
+        tag = self.find(root, tag_name)
+        if tag is None:
+            return
+        dest[key] = tag.text.strip()
+        for attr in attrs:
+            self.put_attr(dest, tag, attr)
 
     def findall(self, tag, name):
         return tag.findall(name, self.nsmap)
