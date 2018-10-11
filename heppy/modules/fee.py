@@ -56,6 +56,12 @@ class fee(Module):
             'fee':      [],
         })
 
+    def parse_delData(self, response, tag):
+        response.put_extension_block(response, 'fee:delete', tag, {
+            'currency': [],
+            'credit':   [],
+        })
+
 
 ### REQUEST rendering
 
