@@ -56,23 +56,3 @@ class Doc:
 
     def set(self, name, value):
         self.data[name] = value
-
-    ### TODO rename to add_hash
-    def addto(self, name, values):
-        if name not in self.data:
-            self.data[name] = {}
-        for k, v in values.iteritems():
-            self.data[name][k] = v
-
-    ### TODO consider removing
-    def addpair(self, name, value):
-        self.addto(name, {value: value})
-
-    def add_list(self, name, value=[]):
-        if name not in self.data:
-            self.data[name] = []
-        if type(value) in [list, tuple]:
-            self.data[name].extend(value)
-        else:
-            self.data[name].append(value)
-

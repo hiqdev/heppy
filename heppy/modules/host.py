@@ -24,7 +24,7 @@ class host(Module):
         return self.parse_cd_tag(response, tag)
 
     def parse_addr(self, response, tag):
-        response.add_list('ips', tag.text)
+        response.put_to_list('ips', tag.text)
 
 ### REQUEST rendering
 
