@@ -33,6 +33,14 @@ class Response(Doc):
         for attr in attrs:
             self._put_attr(dest, tag, attr)
 
+    def put_extension_block(self, response, command, root_tag, tags_data):
+        data = dict()
+        data['command'] = command
+        module_name = command.split(':')[0]
+        for tag_name, attrs in tags_data.iteritems():
+            response.put_tag_data(data, root_tag, module_name + ':' + tag_name, attrs)
+        response.put_to_list('extensions', data)
+
     def put_to_dict(self, name, values):
         if name not in self.data:
             self.data[name] = {}

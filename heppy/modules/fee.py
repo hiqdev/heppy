@@ -28,20 +28,23 @@ class fee(Module):
         response.set('fee:check', fees)
 
     def parse_chkData(self, response, tag):
-        chkData = {}
-        chkData['command'] = 'fee:check'
-        response.put_tag_data(chkData, tag, 'fee:domain')
-        response.put_tag_data(chkData, tag, 'fee:currency')
-        response.put_tag_data(chkData, tag, 'fee:action', [
-            'phase',
-            'subphase',
-        ])
-        response.put_tag_data(chkData, tag, 'fee:period', [
-            'unit'
-        ])
-        response.put_tag_data(chkData, tag, 'fee:fee')
+        response.put_extension_block(response, 'fee:check', tag, {
+            'domain':   [],
+            'currency': [],
+            'fee':      [],
+            'action':   ['phase', 'subphase'],
+            'period':   ['unit'],
+        })
 
-        response.put_to_list('extensions', chkData)
+    def parse_infData(self, response, tag):
+        response.put_extension_block(response, 'fee:info', tag, {
+            'currency': [],
+            'fee':      [],
+            'action':   ['phase', 'subphase'],
+            'period':   ['unit'],
+        })
+
+
 
 ### REQUEST rendering
 
