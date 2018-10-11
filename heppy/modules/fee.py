@@ -68,6 +68,12 @@ class fee(Module):
             'fee':      [],
         })
 
+    def parse_updData(self, response, tag):
+        response.put_extension_block(response, 'fee:update', tag, {
+            'currency': [],
+            'fee':      [],
+        })
+
 ### REQUEST rendering
 
     def render_check(self, request, data):
