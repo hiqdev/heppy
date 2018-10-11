@@ -62,6 +62,11 @@ class fee(Module):
             'credit':   [],
         })
 
+    def parse_renData(self, response, tag):
+        response.put_extension_block(response, 'fee:renew', tag, {
+            'currency': [],
+            'fee':      [],
+        })
 
 ### REQUEST rendering
 
