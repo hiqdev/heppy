@@ -16,9 +16,9 @@ class TestFeeRenew(TestCase):
             'svTRID':       '54322-XYZ',
             'extensions': [
                 {
-                    'command': 'fee:renew',
+                    'command':  'fee:renew',
                     'currency': 'USD',
-                    'fee': '5.00'
+                    'fee':      '5.00'
                 }
             ],
         }, '''<?xml version="1.0" encoding="utf-8" standalone="no"?>

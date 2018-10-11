@@ -16,7 +16,7 @@ class TestFeeUpdate(TestCase):
                 {
                     'command':  'fee:update',
                     'currency': 'USD',
-                    'fee': '5.00',
+                    'fee':      '5.00',
                 }
             ],
         }, '''<?xml version="1.0" encoding="utf-8" standalone="no"?>
