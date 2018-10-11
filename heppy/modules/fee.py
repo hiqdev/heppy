@@ -50,6 +50,12 @@ class fee(Module):
             'fee':      [],
         })
 
+    def parse_creData(self, response, tag):
+        response.put_extension_block(response, 'fee:create', tag, {
+            'currency': [],
+            'fee':      [],
+        })
+
 
 ### REQUEST rendering
 
