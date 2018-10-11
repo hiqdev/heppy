@@ -14,23 +14,21 @@ class Module:
         response.set(tag.tag.split('}')[1], tag.text)
 
     def parse_add_list(self, response, tag):
-        response.add_list(tag.tag.split('}')[1] + 's', tag.text)
+        response.put_to_list(tag.tag.split('}')[1] + 's', tag.text)
 
-    def parse_addpair(self, response, tag):
-        response.addpair(tag.tag.split('}')[1] + 's', tag.text)
 
     def parse_descend(self, response, tag):
         for child in tag:
             response.parse(child)
 
     def parse_status(self, response, tag):
-        response.addto('statuses', {tag.attrib['s']: tag.text})
+        response.put_to_dict('statuses', {tag.attrib['s']: tag.text})
 
     def parse_cd_tag(self, response, tag):
         name = tag[0]
-        response.addto('avails', {name.text.lower(): name.attrib['avail']})
+        response.put_to_dict('avails', {name.text.lower(): name.attrib['avail']})
         if len(tag) > 1:
-            response.addto('reasons', {name.text.lower(): tag[1].text})
+            response.put_to_dict('reasons', {name.text.lower(): tag[1].text})
 
 ### REQUEST rendering
 

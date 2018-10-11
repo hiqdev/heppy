@@ -38,7 +38,7 @@ class epp(Module):
         response.set('result_reason', tag.text)
 
     def parse_extension(self, response, tag):
-        response.add_list('extensions')
+        response.put_to_list('extensions')
         self.parse_descend(response, tag)
 
 ### REQUEST rendering

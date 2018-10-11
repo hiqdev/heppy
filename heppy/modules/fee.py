@@ -40,7 +40,8 @@ class fee(Module):
             'unit'
         ])
         response.put_tag_data(chkData, tag, 'fee:fee')
-        response.add_list('extensions', chkData)
+
+        response.put_to_list('extensions', chkData)
 
 ### REQUEST rendering
 

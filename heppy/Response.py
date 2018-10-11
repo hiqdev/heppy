@@ -11,12 +11,15 @@ class Response(Doc):
     def find(self, tag, name):
         return tag.find(name, namespaces=self.nsmap)
 
+    def findall(self, tag, name):
+        return tag.findall(name, self.nsmap)
+
     def find_text(self, parent, name):
         tag = self.find(parent, name)
         if tag is not None:
             return tag.text.strip()
 
-    def put_attr(self, data, tag, attr):
+    def _put_attr(self, data, tag, attr):
         attr_value = tag.attrib.get(attr)
         if attr_value:
             data[attr] = attr_value
@@ -28,10 +31,21 @@ class Response(Doc):
             return
         dest[key] = tag.text.strip()
         for attr in attrs:
-            self.put_attr(dest, tag, attr)
+            self._put_attr(dest, tag, attr)
 
-    def findall(self, tag, name):
-        return tag.findall(name, self.nsmap)
+    def put_to_dict(self, name, values):
+        if name not in self.data:
+            self.data[name] = {}
+        for k, v in values.iteritems():
+            self.data[name][k] = v
+
+    def put_to_list(self, name, value=[]):
+        if name not in self.data:
+            self.data[name] = []
+        if type(value) in [list, tuple]:
+            self.data[name].extend(value)
+        else:
+            self.data[name].append(value)
 
     def parse(self, tag):
         ns = tag.tag.split('}')[0][1:]
