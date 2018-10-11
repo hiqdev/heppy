@@ -44,6 +44,11 @@ class fee(Module):
             'period':   ['unit'],
         })
 
+    def parse_trnData(self, response, tag):
+        response.put_extension_block(response, 'fee:transfer', tag, {
+            'currency': [],
+            'fee':      [],
+        })
 
 
 ### REQUEST rendering
