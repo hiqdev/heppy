@@ -16,7 +16,6 @@ class Module:
     def parse_add_list(self, response, tag):
         response.put_to_list(tag.tag.split('}')[1] + 's', tag.text)
 
-
     def parse_descend(self, response, tag):
         for child in tag:
             response.parse(child)
