@@ -3,9 +3,9 @@ from ..TagData import TagData
 
 
 class namestoreExt(Module):
-    opmap = {
-        'nsExtErrData': 'descend',
-    }
+    # opmap = {
+    #     'nsExtErrData': 'descend',
+    # }
 
 ### RESPONSE parsing
 
@@ -13,6 +13,11 @@ class namestoreExt(Module):
         if 'code' in tag.attrib:
             response.set('nsExtErr.code', tag.attrib['code'])
         response.set('nsExtErr.msg', tag.text)
+
+    def parse_nsExtErrData(self, response, tag):
+        response.put_extension_block(response, 'namestoreExt:nsExtErrData', tag, {
+            'msg': ['code'],
+        })
 
 ### REQUEST rendering
 
