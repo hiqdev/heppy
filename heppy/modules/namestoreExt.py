@@ -3,9 +3,6 @@ from ..TagData import TagData
 
 
 class namestoreExt(Module):
-    # opmap = {
-    #     'nsExtErrData': 'descend',
-    # }
 
 ### RESPONSE parsing
 

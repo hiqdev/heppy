@@ -43,7 +43,7 @@ class TestIdnCreate(TestCase):
             'extensions': [
                 {
                     'command': 'idn:create',
-                    'language': 'ua'
+                    'script':   'ua'
                 }
             ],
             'clTRID':       'XXXX-11',

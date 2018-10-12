@@ -33,7 +33,7 @@ class TestIdnUpdate(TestCase):
             'extensions': [
                 {
                     'command': 'idn:update',
-                    'language': 'fr'
+                    'script':   'fr'
                 }
             ],
             'clTRID': 'XXXX-11',

@@ -6,7 +6,7 @@ from ..TestCase import TestCase
 
 class TestIdnInfo(TestCase):
 
-    def test_parse_idn_idn_response(self):
+    def test_parse_idn_info_response(self):
         self.assertResponse({
             'admin':        'OTNE-C3',
             'billing':      'OTNE-C4',
@@ -34,7 +34,7 @@ class TestIdnInfo(TestCase):
             'extensions': [
                 {
                     'command':  'idn:info',
-                    'language': 'de'
+                    'script':   'de'
                 }
             ],
         }, '''<?xml version="1.0" encoding="utf-8" standalone="no"?>

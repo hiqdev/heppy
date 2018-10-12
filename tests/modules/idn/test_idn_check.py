@@ -30,7 +30,7 @@ class TestIdnCheck(TestCase):
             'extensions': [
                 {
                     'command':  'idn:check',
-                    'language': 'de'
+                    'script':   'de'
                 }
             ],
             'clTRID':   'XXXX-11',
