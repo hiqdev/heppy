@@ -14,6 +14,11 @@ class idn(Module):
             response.set('nsExtErr.code', tag.attrib['code'])
         response.set('nsExtErr.msg', tag.text)
 
+    def parse_infData(self, response, tag):
+        response.put_extension_block(response, 'idn:info', tag, {
+            'script@language': [],
+        })
+
 ### REQUEST rendering
 
     def render_check(self, request, data):

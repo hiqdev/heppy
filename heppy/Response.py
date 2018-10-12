@@ -25,7 +25,12 @@ class Response(Doc):
             data[attr] = attr_value
 
     def put_tag_data(self, dest, root, tag_name, attrs=[]):
-        key = tag_name.split(':')[1] if ':' in tag_name else tag_name
+        if '@' in tag_name:
+            tag_name, key = tag_name.split('@')
+        elif ':' in tag_name:
+            key = tag_name.split(':')[1]
+        else:
+            key = tag_name
         tag = self.find(root, tag_name)
         if tag is None:
             return

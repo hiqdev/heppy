@@ -29,7 +29,7 @@ class TestIdnCheck(TestCase):
             ],
             'extensions': [
                 {
-                    'command': 'idn:check',
+                    'command':  'idn:check',
                     'language': 'de'
                 }
             ],
