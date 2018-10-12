@@ -3,16 +3,8 @@ from ..TagData import TagData
 
 
 class idn(Module):
-    opmap = {
-        'nsExtErrData': 'descend',
-    }
 
 ### RESPONSE parsing
-
-    def parse_msg(self, response, tag):
-        if 'code' in tag.attrib:
-            response.set('nsExtErr.code', tag.attrib['code'])
-        response.set('nsExtErr.msg', tag.text)
 
     def parse_infData(self, response, tag):
         response.put_extension_block(response, 'idn:info', tag, {
