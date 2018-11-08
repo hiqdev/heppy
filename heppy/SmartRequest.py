@@ -87,7 +87,7 @@ class SmartRequest():
         if self.is_xml():
             return xml
         if response is None:
-            response = Response.parsexml(reply)
+            response = Response.parsexml(xml)
         if self.is_dict():
             return response.data
         if self.is_json():
