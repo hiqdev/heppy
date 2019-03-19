@@ -80,3 +80,9 @@ class fee(Module):
             TagData('fee', data.get('fee'))
         ])
 
+    def render_renew(self, request, data):
+        self.render_extension_with_fields(request, 'renew', [
+            TagData('currency', data.get('currency')),
+            TagData('fee', data.get('fee'))
+        ])
+
