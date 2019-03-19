@@ -64,6 +64,8 @@ class Response(Doc):
         ns = tag.tag.split('}')[0][1:]
         name = tag.tag.split('}')[1]
         module = self.get_module(ns)
+        if module is None:
+            return
         if name in module.opmap:
             name = module.opmap[name]
         method = 'parse_' + name
