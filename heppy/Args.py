@@ -32,7 +32,7 @@ class Args(dict):
                         self[f].append(m.group(2))
                     else:
                         self[f][i] = m.group(2)
-                else:
+                elif count == 2:
                     f, i, s = name.split('.', 2)
                     i = int(i)
                     if not f in self:
@@ -40,6 +40,16 @@ class Args(dict):
                     if len(self[f]) < i+1:
                         self[f].append({})
                     self[f][i][s] = m.group(2)
+                else:
+                    f, i, s, t = name.split('.', 3)
+                    i = int(i)
+                    if not f in self:
+                        self[f] = []
+                    if len(self[f]) < i+1:
+                        self[f].append({})
+                    if not s in self[f][i]:
+                        self[f][i][s] = {}
+                    self[f][i][s][t] = m.group(2)
             else:
                 self[no] = raw
                 no += 1
