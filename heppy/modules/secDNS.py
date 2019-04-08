@@ -27,12 +27,12 @@ class secDNS(Module):
         ext = self.render_extension(request, 'create')
         self.render_allData(request, ext, request)
 
-    def render_update(self, request):
+    def render_update(self, request, data):
         ext = self.render_extension(request, 'update')
         for k in ('add', 'rem', 'chg'):
-            if request.get(k):
+            if data.get(k):
                 command = request.add_subtag(ext, 'secDNS:' + k)
-                self.render_allData(request, command, request.get(k))
+                self.render_allData(request, command, data.get(k))
 
     def render_allData(self, request, parent, values):
         if values.get('all')=='true':
