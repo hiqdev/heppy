@@ -47,9 +47,9 @@ class RPCClient:
         self.reply_queue = result.method.queue
 
         self.channel.basic_consume(
-            queue=self.reply_queue,
-            on_message_callback=self.on_response,
-            auto_ack=True,
+            self.on_response,
+            self.reply_queue,
+            True,
         )
 
     def on_response(self, ch, method, props, body):
