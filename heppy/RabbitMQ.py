@@ -43,13 +43,13 @@ class RPCClient:
 
         self.channel = self.connection.channel()
 
-        result = self.channel.queue_declare(exclusive=True)
+        result = self.channel.queue_declare('', exclusive=True)
         self.reply_queue = result.method.queue
 
         self.channel.basic_consume(
-            self.on_response,
-            no_ack=True,
-            queue=self.reply_queue
+            queue=self.reply_queue,
+            on_message_callback=self.on_response,
+            auto_ack=True,
         )
 
     def on_response(self, ch, method, props, body):
