@@ -64,14 +64,22 @@ class SmartRequest():
                 return self.prepare_response(reply)
 
             response = Response.parsexml(reply)
-            if (response.data.get('result_code', '0') == '2002' and
-                response.data.get('result_reason', '') == 'A login command MUST be sent to a server before any other EPP command'):
+            if self.needs_relogin(response):
                 response = None
                 relogin()
                 reply = request(query)
             return self.prepare_response(reply, response)
         except Exception as e:
             return self.prepare_error(e)
+
+    def needs_relogin(self, response):
+        if (response.data.get('result_code', '0') == '2002' and
+            response.data.get('result_reason', '') == 'A login command MUST be sent to a server before any other EPP command'):
+            return True
+        if (response.data.get('result_code', '0') == '2200' and
+            response.data.get('result_reason', '') == '2200:Authentication error'):
+            return True
+        return False
 
     def prepare_error(self, error):
         error = str(error)
