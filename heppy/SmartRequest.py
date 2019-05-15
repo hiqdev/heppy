@@ -63,9 +63,9 @@ class SmartRequest():
             if relogin is None:
                 return self.prepare_response(reply)
 
-            ### TODO: FIXME relogin is buggy because of 2002 can happen on different occasions
             response = Response.parsexml(reply)
-            if response.data.get('result_code', '0') == '2002':
+            if (response.data.get('result_code', '0') == '2002' and
+                response.data.get('result_reason', '') == 'A login command MUST be sent to a server before any other EPP command'):
                 response = None
                 relogin()
                 reply = request(query)
