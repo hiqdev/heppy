@@ -59,21 +59,25 @@ class Daemon:
         rabbit_config = self.config.get('RabbitMQ', {})
         rabbit_config.setdefault('queue', 'heppy-' + self.config['name'])
         self.server = RPCServer(rabbit_config)
-        self.loop()
+        self.server.consume(self.smart_request, self.recheck, self.refreshSeconds)
 
-    def loop(self):
+    def recheck(self):
+        if self.needs_quit():
+            self.quit()
+        if self.needs_hello():
+            #print "HELLO"
+            self.smart_request({'command': 'epp:hello'})
+
+        left = (self.keepaliveDelta - (datetime.now() - self.last_command)).total_seconds()
+        #print "LOOP left:%i" % left
+
+    # alternative consuming approach
+    # worked with pika 0.12, add_timeout was removed in pika 1.0
+    def basic_loop(self):
         while (True):
-            if self.needs_quit():
-                self.quit()
-            if self.needs_hello():
-                print "HELLO"
-                self.smart_request({'command': 'epp:hello'})
-
-            left = (self.keepaliveDelta - (datetime.now() - self.last_command)).total_seconds()
-            print "LOOP left:%i" % left
-
+            self.recheck()
             self.server.connection.add_timeout(self.refreshSeconds, self.stop_consuming)
-            self.server.consume(self.smart_request)
+            self.server.basic_consume(self.smart_request)
 
     def needs_quit(self):
         if self.force_quit:

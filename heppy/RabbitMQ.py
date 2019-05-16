@@ -17,10 +17,17 @@ class RPCServer:
         self.channel.queue_declare(queue=self.queue)
         self.channel.basic_qos(prefetch_count=1)
 
-    def consume(self, response):
+    def basic_consume(self, response):
         self.response = response
         self.channel.basic_consume(self.on_request, self.queue)
         self.channel.start_consuming()
+
+    def consume(self, response, recheck, check_timeout):
+        self.response = response
+        for method, props, body in self.channel.consume(self.queue, inactivity_timeout=check_timeout):
+            if method is not None:
+                self.on_request(self.channel, method, props, body)
+            recheck()
 
     def on_request(self, ch, method, props, body):
         reply = self.response(body)
