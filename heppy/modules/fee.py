@@ -50,17 +50,12 @@ class fee(Module):
 ### REQUEST rendering
 
     def render_check(self, request, data):
-        self.render_extension_with_fields(request, 'check', [
-            TagData('domain', data.get('name')),
-            TagData('currency', data.get('currency')),
-            TagData('action', data.get('action', 'create'), {
-                'phase': data.get('phase'),
-                'subphase': data.get('subphase'),
-            }),
-            TagData('period', data.get('period'), {
-               'unit': data.get('unit', 'y')
-            }),
-        ])
+        ext = self.render_extension(request, 'check')
+        domain = request.add_subtag(ext, 'fee:domain')
+        request.add_subtag(domain, 'fee:name',      {}, data.get('name'))
+        request.add_subtag(domain, 'fee:currency',  {}, data.get('currency'))
+        request.add_subtag(domain, 'fee:command',   {}, data.get('action'))
+        request.add_subtag(domain, 'fee:period',    {'unit':'y'}, data.get('period'))
 
     def render_info(self, request, data):
         self.render_extension_with_fields(request, 'info', [
