@@ -5,7 +5,7 @@
 Domain check:
 
 ```sh
-./bin/heppyc etc/centralnic/epp.json domain:check -names.0=some.host -names.1=expensive.host -extensions.0.command=fee:check
+./bin/heppyc etc/centralnic/epp.json domain:check -names.0=advanced.host -extensions.0.command=fee:check -extensions.0.name=advanced.host -extensions.0.currency=USD -extensions.0.action=renew -extensions.0.period=1
 ```
 
 Domain create:
