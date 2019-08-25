@@ -47,22 +47,28 @@ For the moment it is in early stage of development.
 
 ## Usage
 
-Start EPP client:
+Start EPP client daemon:
 
 ```sh
-./bin/heppyd epp.verisign-grs.com start
+./bin/heppyd etc/verisign/epp.json start
+```
+
+Configure and start EPP client daemon with systemd:
+
+```sh
+./bin/heppyd etc/verisign/epp.json systemd up
 ```
 
 Register domain:
 
 ```sh
-./bin/heppyc epp.verisign-grs.com domain:create '-name=xn----0tbbnc0a.com' -pw=23_sA:d34 -period=1 -extensions.1=idnLang:tag -idnLang.tag=RUS -extensions.0=namestoreExt:subProduct -namestoreExt.subProduct=COM
+./bin/heppyc etc/verisign/epp.json domain:create '-name=xn----0tbbnc0a.com' -pw=23_sA:d34 -period=1 -extensions.1=idnLang:tag -idnLang.tag=RUS -extensions.0=namestoreExt:subProduct -namestoreExt.subProduct=COM
 ```
 
 ## TODO
 
-Send hello command every X minutes.
-Kill client every X hours.
+- Send hello command every X minutes.
+- Kill client every X hours.
 
 ## License
 
