@@ -21,6 +21,8 @@ class epp(Module):
         'clTRID':       'set',
         'svTRID':       'set',
         'resData':      'descend',
+        'qDate':        'set',
+        'msg':          'set',
     }
 
 ### RESPONSE parsing
@@ -40,6 +42,16 @@ class epp(Module):
     def parse_extension(self, response, tag):
         response.put_to_list('extensions')
         self.parse_descend(response, tag)
+
+    def parse_msgQ(self, response, tag):
+        if 'id' in tag.attrib:
+            response.set('msgID', tag.attrib['id'])
+        if 'count' in tag.attrib:
+             response.set('msgCount', tag.attrib['count'])
+        self.parse_descend(response, tag)
+
+    def parse_qDate(self, response, tag):
+        response.set('qDate', tag.text)
 
 ### REQUEST rendering
 
