@@ -3,7 +3,6 @@ from fee import fee
 class fee11(fee):
     def __init__(self, xmlns):
         fee.__init__(self, xmlns)
-        self.name = 'fee'
 
 ### REQUEST rendering
     def render_check(self, request, data):

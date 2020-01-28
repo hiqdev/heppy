@@ -3,6 +3,9 @@ from ..TagData import TagData
 
 
 class fee(Module):
+    def __init__(self, xmlns):
+        Module.__init__(self, xmlns)
+        self.name = 'fee'
 
 ### RESPONSE parsing
 
