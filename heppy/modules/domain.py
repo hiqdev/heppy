@@ -122,6 +122,12 @@ class domain(Module):
             if 'pw' in chg_data:
                 self.render_auth_info(request, chg_element, chg_data.get('pw'))
 
+    def render_restore(self, request, data):
+        command = self.render_command_with_fields(request, 'update', [
+            TagData('name', data.get('name'))
+        ])
+        request.add_subtag(command, 'domain:chg')
+
     def render_update_section(self, request, data, command, operation):
         element = request.add_subtag(command, 'domain:' + operation)
         data = data.get(operation)

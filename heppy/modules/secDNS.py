@@ -8,18 +8,31 @@ class secDNS(Module):
     }
 
 ### RESPONSE parsing
-
     def parse_dsData(self, response, tag):
-        response.set('keyTag',      response.find_text(tag, 'secDNS:keyTag'))
-        response.set('digestAlg',   response.find_text(tag, 'secDNS:alg'))
-        response.set('digestType',  response.find_text(tag, 'secDNS:digestType'))
-        response.set('digest',      response.find_text(tag, 'secDNS:digest'))
+        secData = {
+            'keyTag':       response.find_text(tag, 'secDNS:keyTag'),
+            'digestAlg':    response.find_text(tag, 'secDNS:alg'),
+            'digestType':   response.find_text(tag, 'secDNS:digestType'),
+            'digest':       response.find_text(tag, 'secDNS:digest'),
+        }
+        for child in tag :
+            if child.tag == '{' + self.xmlns + '}keyData' :
+                secData['keyData'] = {
+                    'keyFlags':     response.find_text(child, 'secDNS:flags'),
+                    'keyProtocol':  response.find_text(child, 'secDNS:protocol'),
+                    'keyAlg':       response.find_text(child, 'secDNS:alg'),
+                    'pubKey':       response.find_text(child, 'secDNS:pubKey'),
+                }
+        response.put_to_list('secDNS', secData)
 
     def parse_keyData(self, response, tag):
-        response.set('flags',       response.find_text(tag, 'secDNS:flags'))
-        response.set('protocol',    response.find_text(tag, 'secDNS:protocol'))
-        response.set('keyAlg',      response.find_text(tag, 'secDNS:alg'))
-        response.set('pubKey',      response.find_text(tag, 'secDNS:pubKey'))
+        response.put_to_list('keyData', {
+            'keyTag':       response.find_text(tag, 'secDNS:keyTag'),
+            'keyFlags':     response.find_text(tag, 'secDNS:flags'),
+            'keyProtocol':  response.find_text(tag, 'secDNS:protocol'),
+            'keyAlg':       response.find_text(tag, 'secDNS:alg'),
+            'pubKey':       response.find_text(tag, 'secDNS:pubKey'),
+        })
 
 ### REQUEST rendering
 
@@ -57,8 +70,8 @@ class secDNS(Module):
         if not values.get('pubKey'):
             return
         data = request.add_subtag(parent, 'secDNS:keyData')
-        request.add_subtag(data, 'secDNS:flags',       {}, values.get('flags'))
-        request.add_subtag(data, 'secDNS:protocol',    {}, values.get('protocol'))
+        request.add_subtag(data, 'secDNS:flags',       {}, values.get('flags', '257'))
+        request.add_subtag(data, 'secDNS:protocol',    {}, values.get('protocol', '3'))
         request.add_subtag(data, 'secDNS:alg',         {}, values.get('keyAlg'))
         request.add_subtag(data, 'secDNS:pubKey',      {}, values.get('pubKey'))
 
