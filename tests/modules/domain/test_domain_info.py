@@ -47,8 +47,10 @@ class TestDomainInfo(TestCase):
     def test_render_domain_info_response(self):
         self.assertResponse({
             'result_code':  '1000',
-            'result_lang':  'en-US',
-            'result_msg':   'Command completed successfully',
+            'extensions': [],
+#            'result_lang':  'en-US',
+#            'result_msg':   'Command completed successfully',
+            'msg':          'Command completed successfully',
             'clTRID':       'AA-00',
             'svTRID':       'SRO-1538136049528',
             'name':         'evonames.info',
@@ -58,6 +60,35 @@ class TestDomainInfo(TestCase):
                 'clientTransferProhibited': None,
                 'clientUpdateProhibited':   None,
             },
+            'secDNS':       [
+                {
+                    'digest': 'C465DCD098389C47B6868D768B900A6AD16166CB',
+                    'digestAlg': '8',
+                    'digestType': '1',
+                    'keyTag': '14197',
+                }, {
+                    'digest': '594EC8B84DB151F25C857E4E9A21A37605C7961CE98C5E6997EE69F225915227',
+                    'digestAlg': '8',
+                    'digestType': '2',
+                    'keyTag': '14197',
+                    'keyData': {
+                        'flags': '257',
+                        'protocol': '3',
+                        'alg': '1',
+                        'pubKey': 'AQPJ////4Q==',
+                    },
+                }, {
+                    'digest': '8F7B2DD4FD07E3DDD90E040336D879EF9993E98C',
+                    'digestAlg': '8',
+                    'digestType': '1',
+                    'keyTag': '40369',
+                }, {
+                    'digest': 'E99D7F9F12C1AF141051E9F118BA61F3B3F5A0ED6832AB93E6B93D9AD19AFD41',
+                    'digestAlg': '8',
+                    'digestType': '2',
+                    'keyTag': '40369',
+                }
+            ],
             'registrant':   'EEVN_1002321N',
             'admin':        'EEVN_1002321N',
             'billing':      'EEVN_1002321N',
@@ -106,6 +137,40 @@ class TestDomainInfo(TestCase):
                 </domain:authInfo>
             </domain:infData>
         </resData>
+        <extension>
+            <secDNS:infData xmlns:secDNS="urn:ietf:params:xml:ns:secDNS-1.1">
+                <secDNS:dsData>
+                    <secDNS:keyTag>14197</secDNS:keyTag>
+                    <secDNS:alg>8</secDNS:alg>
+                    <secDNS:digestType>1</secDNS:digestType>
+                    <secDNS:digest>C465DCD098389C47B6868D768B900A6AD16166CB</secDNS:digest>
+                </secDNS:dsData>
+                <secDNS:dsData>
+                    <secDNS:keyTag>14197</secDNS:keyTag>
+                    <secDNS:alg>8</secDNS:alg>
+                    <secDNS:digestType>2</secDNS:digestType>
+                    <secDNS:digest>594EC8B84DB151F25C857E4E9A21A37605C7961CE98C5E6997EE69F225915227</secDNS:digest>
+                    <secDNS:keyData>
+                        <secDNS:flags>257</secDNS:flags>
+                        <secDNS:protocol>3</secDNS:protocol>
+                        <secDNS:alg>1</secDNS:alg>
+                        <secDNS:pubKey>AQPJ////4Q==</secDNS:pubKey>
+                    </secDNS:keyData>
+                </secDNS:dsData>
+                <secDNS:dsData>
+                    <secDNS:keyTag>40369</secDNS:keyTag>
+                    <secDNS:alg>8</secDNS:alg>
+                    <secDNS:digestType>1</secDNS:digestType>
+                    <secDNS:digest>8F7B2DD4FD07E3DDD90E040336D879EF9993E98C</secDNS:digest>
+                </secDNS:dsData>
+                <secDNS:dsData>
+                    <secDNS:keyTag>40369</secDNS:keyTag>
+                    <secDNS:alg>8</secDNS:alg>
+                    <secDNS:digestType>2</secDNS:digestType>
+                    <secDNS:digest>E99D7F9F12C1AF141051E9F118BA61F3B3F5A0ED6832AB93E6B93D9AD19AFD41</secDNS:digest>
+                </secDNS:dsData>
+            </secDNS:infData>
+        </extension>
         <trID>
             <clTRID>AA-00</clTRID>
             <svTRID>SRO-1538136049528</svTRID>
