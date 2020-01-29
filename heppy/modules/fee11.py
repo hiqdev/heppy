@@ -1,9 +1,6 @@
 from fee import fee
 
 class fee11(fee):
-    def __init__(self, xmlns):
-        fee.__init__(self, xmlns)
-
 ### REQUEST rendering
     def render_check(self, request, data):
         ext = self.render_extension(request, 'check')
