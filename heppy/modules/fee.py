@@ -3,20 +3,28 @@ from ..TagData import TagData
 
 
 class fee(Module):
+    opmap = {
+        'chkData':      'descend',
+    }
+
     def __init__(self, xmlns):
         Module.__init__(self, xmlns)
         self.name = 'fee'
 
 ### RESPONSE parsing
 
-    def parse_chkData(self, response, tag):
-        response.put_extension_block(response, 'fee:check', tag, {
-            'domain':   [],
-            'currency': [],
-            'fee':      [],
-            'action':   ['phase', 'subphase'],
-            'period':   ['unit'],
+    def parse_cd_tag(self, response, tag):
+        feedata = {}
+        for child in tag :
+            tagname = child.tag.replace('{' + self.xmlns + '}', '')
+            feedata.update({tagname: child.text.lower()})
+
+        response.put_to_dict('fee', {
+            feedata['name']: feedata
         })
+
+    def parse_cd(self, response, tag):
+        return self.parse_cd_tag(response, tag)
 
     def parse_infData(self, response, tag):
         response.put_extension_block(response, 'fee:info', tag, {
@@ -81,6 +89,6 @@ class fee(Module):
     def render_renew(self, request, data):
         self.render_extension_with_fields(request, 'renew', [
             TagData('currency', data.get('currency')),
-            TagData('fee', data.get('fee'))
+            TagData('fee', data.get('fee')),
         ])
 

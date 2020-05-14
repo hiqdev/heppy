@@ -21,7 +21,8 @@ class Doc:
         'oxrs':         'urn:afilias:params:xml:ns:oxrs-1.1',
         'namestoreExt': 'http://www.verisign-grs.com/epp/namestoreExt-1.1',
         'idn':          'urn:afilias:params:xml:ns:idn-1.0',
-        'idnLang':      'http://www.verisign.com/epp/idnLang-1.0'
+        'idnLang':      'http://www.verisign.com/epp/idnLang-1.0',
+        'price':        'urn:ar:params:xml:ns:price-1.1'
     }
 
     okcodes = {

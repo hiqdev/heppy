@@ -21,6 +21,7 @@ class price(Module):
         })
 
     def parse_delData(self, response, tag):
+        self.parse_typical_tag(response, tag, 'price:delete')
 
     def parse_trnData(self, response, tag):
         self.parse_typical_tag(response, tag, 'price:transfer')
@@ -48,6 +49,7 @@ class price(Module):
         request.add_subtag(ext, 'period',    {'unit':'y'}, data.get('period'))
 
     def render_info(self, request, data):
+        pass
 
     def render_create(self, request, data):
         ext = self.render_extension(request, 'create')
