@@ -1,17 +1,16 @@
 from ..Module import Module
 from ..TagData import TagData
+from pprint import pprint
 
 
 class price(Module):
-
+    opmap = {
+        'chkData':      'descend',
+    }
 ### RESPONSE parsing
 
-    def parse_chkData(self, response, tag):
-        response.put_extension_block(response, 'chkData', tag, {
-            'currency': [],
-            'price':      [],
-            'period':   ['unit'],
-        })
+    def parse_cd(self, response, tag):
+        return self.parse_cd_tag_extension(response, tag)
 
     def parse_infData(self, response, tag):
         response.put_extension_block(response, 'price:info', tag, {
@@ -46,7 +45,7 @@ class price(Module):
 
     def render_check(self, request, data):
         ext = self.render_extension(request, 'check')
-        request.add_subtag(ext, 'period',    {'unit':'y'}, data.get('period'))
+        request.add_subtag(ext, 'price:period',    {'unit':'y'}, data.get('period', 1))
 
     def render_info(self, request, data):
         pass

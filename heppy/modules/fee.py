@@ -13,18 +13,8 @@ class fee(Module):
 
 ### RESPONSE parsing
 
-    def parse_cd_tag(self, response, tag):
-        feedata = {}
-        for child in tag :
-            tagname = child.tag.replace('{' + self.xmlns + '}', '')
-            feedata.update({tagname: child.text.lower()})
-
-        response.put_to_dict('fee', {
-            feedata['name']: feedata
-        })
-
     def parse_cd(self, response, tag):
-        return self.parse_cd_tag(response, tag)
+        return self.parse_cd_tag_extension(response, tag)
 
     def parse_infData(self, response, tag):
         response.put_extension_block(response, 'fee:info', tag, {
