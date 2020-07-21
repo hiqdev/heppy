@@ -92,3 +92,10 @@ class fee(Module):
             TagData('fee', data.get('fee')),
         ])
 
+    def render_transfer(self, request, data):
+        self.render_extension_with_fields(request, 'transfer', [
+            TagData('currency', data.get('currency')),
+            TagData('fee', data.get('fee')),
+        ])
+
+

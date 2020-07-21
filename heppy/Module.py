@@ -1,3 +1,5 @@
+import uuid
+
 class Module:
     opmap = {}
 
@@ -78,7 +80,8 @@ class Module:
         return request.epp
 
     def render_clTRID(self, request, data):
-        clTRID = data.get('clTRID', 'AA-00')
+        x = uuid.uuid1()
+        clTRID = data.get('clTRID', str(x))
         if clTRID != 'NONE' and request.command is not None:
             request.add_subtag(request.command, 'clTRID', text=clTRID)
 

@@ -18,6 +18,10 @@ class host(Module):
         'trDate':       'set',
     }
 
+    def __init__(self, xmlns):
+        Module.__init__(self, xmlns)
+        self.name = 'host'
+
 ### RESPONSE parsing
 
     def parse_cd(self, response, tag):

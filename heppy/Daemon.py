@@ -3,6 +3,7 @@
 import os
 import time
 import socket
+import xml.dom.minidom
 
 from pprint import pprint
 
@@ -165,6 +166,7 @@ class Daemon:
         with self.handler.block_signals():
             self.last_command = datetime.now()
             reply = self.client.request(query)
+        print(reply)
         return reply
 
     def smart_request(self, query):

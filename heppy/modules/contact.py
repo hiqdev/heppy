@@ -8,7 +8,6 @@ class contact(Module):
         'chkData':      'descend',
         'creData':      'descend',
         'authInfo':     'descend',
-        'postalInfo':   'descend',
         'addr':         'descend',
         'id':           'set',
         'roid':         'set',
@@ -31,10 +30,51 @@ class contact(Module):
         'pw':           'set',
     }
 
+    def __init__(self, xmlns):
+        Module.__init__(self, xmlns)
+        self.name = 'contact'
+
 ### RESPONSE parsing
 
     def parse_cd(self, response, tag):
         return self.parse_cd_tag(response, tag)
+
+    def parse_postalInfo(self, response, tag):
+        type = tag.attrib['type']
+        data = self.parse_descend_local(response, tag)
+        response.put_to_dict(type, data)
+
+    def parse_set_local(self, response, tag):
+        return tag.text
+
+    def parse_descend_local(self, response, tag):
+        data = {}
+        for child in tag:
+            tagname = child.tag.replace('{' + self.xmlns + '}', '')
+            if (self.opmap.get(tagname, None) != None):
+                if (self.opmap.get(tagname) == 'descend') :
+                    d = self.parse_descend_local(response, child)
+                    data[tagname] = d
+                else :
+                    d = self.parse_descend_local(response, child)
+                    data[tagname] =  self.parse_set_local(response, child)
+        return data
+
+    def parse_disclose(self, response, tag):
+        flag = tag.attrib['flag']
+        data = {'flag' : flag}
+        for child in tag:
+            tagname = child.tag.replace('{' + self.xmlns + '}', '')
+            tagtype = child.get('type', None)
+            if (tagtype is None):
+                data[tagname] = flag
+            else :
+                if (data.get(tagtype, None) is None):
+                    data[tagtype] = {}
+                data[tagtype][tagname] = flag
+
+        response.put_to_dict('disclose', data)
+
 
 ### REQUEST rendering
 

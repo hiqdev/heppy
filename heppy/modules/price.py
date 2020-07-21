@@ -4,6 +4,10 @@ from ..TagData import TagData
 
 class price(Module):
 
+    def __init__(self, xmlns):
+        Module.__init__(self, xmlns)
+        self.name = 'price'
+
 ### RESPONSE parsing
 
     def parse_chkData(self, response, tag):
@@ -53,21 +57,21 @@ class price(Module):
 
     def render_create(self, request, data):
         ext = self.render_extension(request, 'create')
-        self.render_extension_with_fields(ext, 'ack', [
-            TagData('price', data.get('price')),
-            TagData('renewalPrice', data.get('renewalPrice'))
-        ])
+        ack = request.add_subtag(ext, 'price:ack')
+        self.render_price_tag(request, data, ack)
 
     def render_renew(self, request, data):
         ext = self.render_extension(request, 'renew')
-        self.render_extension_with_fields(ext, 'ack', [
-            TagData('renewalPrice', data.get('renewalPrice'))
-        ])
+        ack = request.add_subtag(ext, 'price:ack')
+        self.render_price_tag(request, data, ack)
 
     def render_transfer(self, request, data):
         ext = self.render_extension(request, 'transfer')
-        self.render_extension_with_fields(ext, 'ack', [
-            TagData('renewalPrice', data.get('renewalPrice'))
-        ])
+        ack = request.add_subtag(ext, 'price:ack')
+        self.render_price_tag(request, data, ack)
+
+    def render_price_tag(self, request, data, tag):
+        if 'price' in data :
+            request.add_subtag(tag, 'price:price', {}, data.get('price'))
 
 
