@@ -5,11 +5,16 @@ from ..TagData import TagData
 class rgp(Module):
     opmap = {
         'infData':      'descend',
+        'upData':       'descend',
     }
+
+    def __init__(self, xmlns):
+        Module.__init__(self, xmlns)
+        self.name = 'rgp'
 
     def parse_rgpStatus(self, response, tag):
         status = tag.attrib['s']
-        response.set(status, tag.text)
+        response.set('status', status)
 
     def render_default(self, request, data):
         ext = self.render_extension(request, 'update')
@@ -26,7 +31,7 @@ class rgp(Module):
         request.add_subtag(report, 'rgp:postData', {}, data.get('postData'))
         request.add_subtag(report, 'rgp:delTime', {}, data.get('delTime'))
         request.add_subtag(report, 'rgp:resTime', {}, data.get('resTime'))
-        request.add_subtag(report, 'rgp:resReason', {}, data.get('resReason', 'Registrant error'))
+        request.add_subtag(report, 'rgp:resReason', {}, data.get('resReason', 'Registrant Error'))
         request.add_subtag(report, 'rgp:statement', {}, data.get('statement', 'This registrar has not restored the Registered Name in order to assume the rights to use or sell the Registered Name for itself or for any third party'))
         request.add_subtag(report, 'rgp:statement', {}, data.get('statement', 'The information in this report is true to best of this registrar\'s knowledge, and this registrar acknowledges that intentionally supplying false information in this report shall constitute an incurable material breach of the Registry-Registrar Agreement'))
 

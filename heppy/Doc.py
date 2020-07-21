@@ -22,7 +22,16 @@ class Doc:
         'namestoreExt': 'http://www.verisign-grs.com/epp/namestoreExt-1.1',
         'idn':          'urn:afilias:params:xml:ns:idn-1.0',
         'idnLang':      'http://www.verisign.com/epp/idnLang-1.0',
-        'price':        'urn:ar:params:xml:ns:price-1.1'
+        'price':        'urn:ar:params:xml:ns:price-1.1',
+        'price10':      'urn:ar:params:xml:ns:price-1.0',
+        'price11':      'urn:ar:params:xml:ns:price-1.1',
+        'price12':      'urn:ar:params:xml:ns:price-1.2',
+        'domainhm':     'http://hostmaster.ua/epp/domain-1.1',
+        'hosthm':       'http://hostmaster.ua/epp/host-1.1',
+        'contacthm':    'http://hostmaster.ua/epp/contact-1.1',
+        'rgphm':        'http://hostmaster.ua/epp/rgp-1.1',
+        'uaepp':        'http://hostmaster.ua/epp/uaepp-1.1',
+        'balance':      'http://hostmaster.ua/epp/balance-1.0',
     }
 
     okcodes = {

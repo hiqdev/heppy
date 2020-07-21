@@ -37,6 +37,10 @@ class domain(Module):
         'billing'
     )
 
+    def __init__(self, xmlns):
+        Module.__init__(self, xmlns)
+        self.name = 'domain'
+
 ### RESPONSE parsing
 
     def parse_cd(self, response, tag):
