@@ -11,6 +11,5 @@ class fee09(fee):
         domain = request.add_subtag(ext, 'fee:object', {'objURI': data.get('objURI', 'urn:ietf:params:xml:ns:domain-1.0')})
         request.add_subtag(domain, 'fee:objID',     {'element':'name'}, data.get('name'))
         request.add_subtag(domain, 'fee:currency',  {},                 data.get('currency'))
-        request.add_subtag(domain, 'fee:command',   {
-        }, data.get('action'))
+        request.add_subtag(domain, 'fee:command',   {},                 data.get('action'))
         request.add_subtag(domain, 'fee:period',    {'unit':'y'},       data.get('period'))
