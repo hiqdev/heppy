@@ -31,6 +31,18 @@ class Module:
         if len(tag) > 1:
             response.put_to_dict('reasons', {name.text.lower(): tag[1].text})
 
+    def parse_cd_tag_extension(self, response, tag, key = 'name'):
+        data = {}
+        for child in tag :
+            tagname = child.tag.replace('{' + self.xmlns + '}', '')
+            data.update({tagname: child.text.lower()})
+            for name, value in child.attrib.items():
+                data.update({name.lower() : value.lower()})
+
+        response.put_to_dict(self.name, {
+            data[key] : data
+        })
+
 ### REQUEST rendering
 
     ## Command
