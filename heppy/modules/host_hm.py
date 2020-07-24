@@ -1,4 +1,4 @@
 from host import host
 
-class hosthm(host):
+class host_hm(host):
     pass

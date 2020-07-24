@@ -1,6 +1,6 @@
 from domain import domain
 
-class domainhm(domain):
+class domain_hm(domain):
     CONTACT_TYPES = (
         'admin',
         'tech',

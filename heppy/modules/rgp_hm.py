@@ -1,4 +1,4 @@
 from rgp import rgp
 
-class rgphm(rgp):
+class rgp_hm(rgp):
     pass
