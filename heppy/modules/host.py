@@ -33,7 +33,9 @@ class host(Module):
 ### REQUEST rendering
 
     def render_check(self, request, data):
-        self.render_check_command(request, data, 'name')
+        command = self.render_command(request, 'check')
+        for name in data.get('names', []):
+            request.add_subtag(command, 'host:name', text=name)
 
     def render_info(self, request, data):
         self.render_command_with_fields(request, 'info', [

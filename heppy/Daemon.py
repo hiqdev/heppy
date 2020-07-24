@@ -39,7 +39,7 @@ class Daemon:
         self.started = datetime.now()
         self.last_command = datetime.now()
         self.refreshSeconds = timedelta(**config.get('refreshInterval', {'seconds': 30})).total_seconds()
-        self.keepaliveDelta = timedelta(**config.get('keepaliveInterval', {'minutes': 9}))
+        self.keepaliveDelta = timedelta(**config.get('keepaliveInterval', {'minutes': 3}))
         self.forcequitDelta = timedelta(**config.get('forcequitInterval', {'hours': 23}))
 
     def quit(self):

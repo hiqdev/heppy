@@ -7,6 +7,10 @@ class secDNS(Module):
         'maxSigLife':   'set',
     }
 
+    def __init__(self, xmlns):
+        Module.__init__(self, xmlns)
+        self.name = 'secDNS'
+
 ### RESPONSE parsing
     def parse_dsData(self, response, tag):
         secData = {
