@@ -46,7 +46,8 @@ class host(Module):
         command = self.render_command_with_fields(request, 'create', [
             TagData('name', data.get('name'))
         ])
-        self.render_ips(request, data.get('ips', []), command)
+        if (data.get('ips', None) is not None) :
+            self.render_ips(request, data.get('ips', []), command)
 
     def render_delete(self, request, data):
         self.render_command_with_fields(request, 'delete', [

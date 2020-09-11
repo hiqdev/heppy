@@ -13,8 +13,7 @@ class rgp(Module):
         self.name = 'rgp'
 
     def parse_rgpStatus(self, response, tag):
-        status = tag.attrib['s']
-        response.set('status', status)
+        return self.parse_status(response, tag);
 
     def render_default(self, request, data):
         ext = self.render_extension(request, 'update')
