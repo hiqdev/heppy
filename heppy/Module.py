@@ -109,7 +109,7 @@ class Module:
 
     def render_statuses(self, request, parent, status_data):
         for status, description in status_data.iteritems():
-            request.add_subtag(parent, self.name + ':status', {'s': status}, description)
+            request.add_subtag(parent, self.name + ':status', {'s': status})
 
     def render_multiple(self, request, parent, name, value, attr):
         if (isinstance(value, str)) :
@@ -120,3 +120,4 @@ class Module:
             data = value.values()
         for val in data :
             request.add_subtag(parent, name, attr, val)
+
