@@ -149,16 +149,12 @@ class domain(Module):
 
     def render_nss(self, request, parent, hosts):
         ns_element = request.add_subtag(parent, 'domain:ns')
-        if (isinstance(hosts, list)) :
-            for host in hosts:
-                request.add_subtag(ns_element, 'domain:hostObj', text=host)
-        else :
-            for host in hosts.values():
-                request.add_subtag(ns_element, 'domain:hostObj', text=host)
+        return self.render_multiple(request, ns_element, 'domain:hostObj', hosts)
+
 
     def render_contacts(self, request, parent, storage):
         for contact_type in (set(self.CONTACT_TYPES) & set(storage.keys())):
-            request.add_subtag(parent, 'domain:contact', {'type': contact_type}, storage[contact_type])
+            self.render_multiple(request, parent, 'domain:contact', storage[contact_type], {'type': contact_type})
 
     def has_contacts(self, storage):
         return any(contact_type in storage for contact_type in self.CONTACT_TYPES)
