@@ -86,11 +86,13 @@ class domain(Module):
         command = self.render_command_with_fields(request, 'create', [
             TagData('name', data.get('name')),
             TagData('period', data.get('period'), {'unit': 'y'}),
-            TagData('registrant', data.get('registrant')),
         ])
 
         if 'nss' in data:
             self.render_nss(request, command, data.get('nss'))
+        if 'registrant' in data:
+            request.add_subtag(command, 'domain:registrant', {}, data.get('registrant'))
+
         if self.has_contacts(data):
             self.render_contacts(request, command, data)
         self.render_auth_info(request, command, data.get('pw'))
@@ -135,21 +137,35 @@ class domain(Module):
     def render_update_section(self, request, data, command, operation):
         element = request.add_subtag(command, 'domain:' + operation)
         data = data.get(operation)
-        if 'nss' in data:
-            self.render_nss(request, element, data['nss'])
-        if self.has_contacts(data):
-            self.render_contacts(request, element, data)
-        if 'statuses' in data:
-            self.render_statuses(request, element, data['statuses'])
+        values = {}
+        for d in data:
+            if 'nss' in d:
+                self.render_nss(request, element, d['nss'])
+            if self.has_contacts(d):
+                self.render_contacts(request, element, d)
+            if 'statuses' in d:
+                self.render_statuses(request, element, d['statuses'])
 
     def render_nss(self, request, parent, hosts):
         ns_element = request.add_subtag(parent, 'domain:ns')
-        for host in hosts:
-            request.add_subtag(ns_element, 'domain:hostObj', text=host)
+        if (isinstance(hosts, list)) :
+            for host in hosts:
+                request.add_subtag(ns_element, 'domain:hostObj', text=host)
+        else :
+            for host in hosts.values():
+                request.add_subtag(ns_element, 'domain:hostObj', text=host)
 
     def render_contacts(self, request, parent, storage):
         for contact_type in (set(self.CONTACT_TYPES) & set(storage.keys())):
-            request.add_subtag(parent, 'domain:contact', {'type': contact_type}, storage[contact_type])
+            if (isinstance(storage[contact_type], str)) :
+                request.add_subtag(parent, 'domain:contact', {'type': contact_type}, storage[contact_type])
+            elif (isinstance(storage[contact_type], list)) :
+                for contact in storage[contact_type] :
+                    request.add_subtag(parent, 'domain:contact', {'type': contact_type}, contact)
+            else :
+                for contact in storage[contact_type].values() :
+                    request.add_subtag(parent, 'domain:contact', {'type': contact_type}, contact)
+
 
     def has_contacts(self, storage):
         return any(contact_type in storage for contact_type in self.CONTACT_TYPES)
