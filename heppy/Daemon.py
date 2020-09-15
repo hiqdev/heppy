@@ -162,9 +162,11 @@ class Daemon:
             self.client = Client(self.config['local']['address'])
 
     def request(self, query):
+        pprint(query)
         with self.handler.block_signals():
             self.last_command = datetime.now()
             reply = self.client.request(query)
+        pprint(reply)
         return reply
 
     def smart_request(self, query):
