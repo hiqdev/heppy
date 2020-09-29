@@ -33,6 +33,7 @@ class Doc:
         'secdns_hm':    'http://hostmaster.ua/epp/secDNS-1.1',
         'uaepp':        'http://hostmaster.ua/epp/uaepp-1.1',
         'balance':      'http://hostmaster.ua/epp/balance-1.0',
+        'keysys':       'http://www.key-systems.net/epp/keysys-1.0',
     }
 
     okcodes = {
