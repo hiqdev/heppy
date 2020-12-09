@@ -7,6 +7,7 @@ class host(Module):
         'infData':      'descend',
         'chkData':      'descend',
         'creData':      'descend',
+        'panData':      'descend',
         'roid':         'set',
         'name':         'set',
         'clID':         'set',
