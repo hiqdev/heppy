@@ -24,6 +24,8 @@ class keysys(Module):
 
 ### RESPONSE parsing
 
+    def parse_poll(self, response, tag):
+        pass
 
 ### REQUEST rendering
 
