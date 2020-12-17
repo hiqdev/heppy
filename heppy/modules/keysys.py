@@ -6,6 +6,7 @@ class keysys(Module):
     opmap = {
         'resData':      'descend',
         'infData':      'descend',
+        'creData':      'descend',
         'renDate':      'set',
         'punDate':      'set',
         'domain-roid':  'set',
@@ -16,6 +17,20 @@ class keysys(Module):
         'validated':    'set',
         'verification-requested': 'set',
         'verified': 'set',
+        'whois-privacy': 'set',
+        'es-admin-identificacion': 'set',
+        'de-accept-trustee-tac': 'set',
+        'es-admin-legalform': 'set',
+        'es-admin-tipo-identificacion': 'set',
+        'es-billing-identificacion': 'set',
+        'es-billing-tipo-identificacion': 'set',
+        'es-billing-legalform': 'set',
+        'es-tech-identificacion': 'set',
+        'es-tech-tipo-identificacion': 'set',
+        'es-tech-legalform': 'set',
+        'es-owner-identificacion': 'set',
+        'es-owner-tipo-identificacion': 'set',
+        'es-owner-legalform': 'set',
     }
 
     def __init__(self, xmlns):
@@ -39,8 +54,13 @@ class keysys(Module):
         pass
 
     def render_update(self, request, data):
-        pass
+        ext = self.render_extension(request, 'update')
+        domain = request.add_subtag(ext, 'keysys:domain')
+#        request.add_subtag(domain, 'keysys:accept-trade', {}, '1')
 
-
-
+    def render_delete(self, request, data):
+        ext = self.render_extension(request, 'delete')
+        domain = request.add_subtag(ext, 'keysys:domain')
+        request.add_subtag(domain, 'keysys:action', {}, 'push')
+        request.add_subtag(domain, 'keysys:target', {}, data.get('target', 'TRANSIT'))
 
