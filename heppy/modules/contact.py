@@ -123,6 +123,8 @@ class contact(Module):
             self.render_contact_info(request, chg_data, chg)
             if 'pw' in chg_data:
                 self.render_auth_info(request, chg, chg_data['pw'])
+            if 'disclose' in chg_data:
+                self.render_disclose(request, chg_data['disclose'], chg)
 
     def render_update_section(self, request, data, command, operation):
         element = request.add_subtag(command, 'contact:' + operation)
@@ -165,3 +167,25 @@ class contact(Module):
             request.add_subtag(parent, 'contact:fax', text=data.get('fax'))
         if 'email' in data:
             request.add_subtag(parent, 'contact:email', text=data.get('email'))
+
+    def render_disclose(self, request, data, parent):
+       disclose = request.add_subtag(parent, 'contact:disclose', {"flag": data})
+       request.add_subtag(disclose, 'name', {"type": "int"})
+       request.add_subtag(disclose, 'name', {"type": "loc"})
+       request.add_subtag(disclose, 'org', {"type": "int"})
+       request.add_subtag(disclose, 'org', {"type": "loc"})
+       request.add_subtag(disclose, 'addr', {"type": "int"})
+       request.add_subtag(disclose, 'addr', {"type": "loc"})
+       request.add_subtag(disclose, 'phone')
+       request.add_subtag(disclose, 'fax')
+       return request
+#       self.render_command_with_fields(parent, 'disclose', [
+#           TagData('name', attrs={"type":"int"}),
+#           TagData('name', attrs={"type":"loc"}),
+#           TagData('org', attrs={"type":"int"}),
+#           TagData('org', attrs={"type":"loc"}),
+#           TagData('addr', attrs={"type":"loc"}),
+#           TagData('addr', attrs={"type":"int"}),
+#           TagData('voice'),
+#           TagData('fax'),
+#       ], {"flag" : data})
