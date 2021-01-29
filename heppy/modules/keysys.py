@@ -68,4 +68,3 @@ class keysys(Module):
         ext = self.render_extension(request, 'update')
         domain = request.add_subtag(ext, 'keysys:domain')
         request.add_subtag(domain, 'keysys:whois-privacy', {}, data.get('whois-privacy', u'0'))
-
