@@ -152,7 +152,7 @@ class domain(Module):
 
     def render_nss(self, request, parent, hosts):
         ns_element = request.add_subtag(parent, 'domain:ns')
-        return self.render_multiple(request, ns_element, 'domain:hostObj', hosts)
+        return self.render_multiple(request, ns_element, 'domain:hostObj', hosts, {})
 
 
     def render_contacts(self, request, parent, storage):

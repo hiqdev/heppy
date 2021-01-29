@@ -108,7 +108,7 @@ class Module:
         request.add_subtag(auth_info, self.name + ':pw', attrs, pw)
 
     def render_statuses(self, request, parent, status_data):
-        for status, description in status_data.iteritems():
+        for status, description in status_data.items():
             request.add_subtag(parent, self.name + ':status', {'s': status})
 
     def render_multiple(self, request, parent, name, value, attr):
