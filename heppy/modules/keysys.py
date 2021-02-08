@@ -15,6 +15,7 @@ class keysys(Module):
         'transferlock': 'set',
         'contactInfData':'descend',
         'validated':    'set',
+        'ren': 'set',
         'verification-requested': 'set',
         'verified': 'set',
         'whois-privacy': 'set',
@@ -31,6 +32,19 @@ class keysys(Module):
         'es-owner-identificacion': 'set',
         'es-owner-tipo-identificacion': 'set',
         'es-owner-legalform': 'set',
+        'travel-uin': 'set',
+        'real-submit': 'set',
+        'pro-authority': 'set',
+        'pro-authority-website': 'set',
+        'pro-license-number': 'set',
+        'pro-av-license-authority-website': 'set',
+        'pro-profession': 'set',
+        'pro-av-license-holder-birthdate': 'set',
+        'pro-av-license-iso-countrycode': 'set',
+        'pro-av-license-issue-date': 'set',
+        'pro-av-professiontype': 'set',
+        'de-nsentry': 'set',
+        'ownerchangestatus': 'set',
     }
 
     def __init__(self, xmlns):
