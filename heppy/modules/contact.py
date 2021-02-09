@@ -169,16 +169,17 @@ class contact(Module):
             request.add_subtag(parent, 'contact:email', text=data.get('email'))
 
     def render_disclose(self, request, data, parent):
-       disclose = request.add_subtag(parent, 'contact:disclose', {"flag": data})
-       request.add_subtag(disclose, 'contact:name', {"type": "int"})
-       request.add_subtag(disclose, 'contact:name', {"type": "loc"})
-       request.add_subtag(disclose, 'contact:org', {"type": "int"})
-       request.add_subtag(disclose, 'contact:org', {"type": "loc"})
-       request.add_subtag(disclose, 'contact:addr', {"type": "int"})
-       request.add_subtag(disclose, 'contact:addr', {"type": "loc"})
-       request.add_subtag(disclose, 'contact:voice')
-       request.add_subtag(disclose, 'contact:fax')
-       return request
+        disclose = request.add_subtag(parent, 'contact:disclose', {"flag": data})
+        request.add_subtag(disclose, 'contact:name', {"type": "int"})
+        request.add_subtag(disclose, 'contact:name', {"type": "loc"})
+        request.add_subtag(disclose, 'contact:org', {"type": "int"})
+        request.add_subtag(disclose, 'contact:org', {"type": "loc"})
+        request.add_subtag(disclose, 'contact:addr', {"type": "int"})
+        request.add_subtag(disclose, 'contact:addr', {"type": "loc"})
+        request.add_subtag(disclose, 'contact:voice')
+        request.add_subtag(disclose, 'contact:fax')
+        request.add_subtag(disclose, 'contact:email')
+        return request
 #       self.render_command_with_fields(parent, 'disclose', [
 #           TagData('name', attrs={"type":"int"}),
 #           TagData('name', attrs={"type":"loc"}),
