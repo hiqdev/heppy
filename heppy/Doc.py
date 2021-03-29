@@ -9,6 +9,7 @@ class Doc:
         'domain':       'urn:ietf:params:xml:ns:domain-1.0',
         'contact':      'urn:ietf:params:xml:ns:contact-1.0',
         'secDNS':       'urn:ietf:params:xml:ns:secDNS-1.1',
+        'launch':       'urn:ietf:params:xml:ns:launch-1.0',
         'fee':          'urn:ietf:params:xml:ns:fee-0.7',
         'fee05':        'urn:ietf:params:xml:ns:fee-0.5',
         'fee06':        'urn:ietf:params:xml:ns:fee-0.6',
