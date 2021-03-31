@@ -5,12 +5,13 @@ from pprint import pprint
 class charge(Module):
     opmap = {
         'creData':  'descend',
-        'checkData': 'descend',
-        'renData': 'descend',
-        'trnData': 'descend',
-        'set': 'descend',
-        'name': 'set',
-        'type': 'set',
+        'chkData':  'descend',
+        'renData':  'descend',
+        'trnData':  'descend',
+        'cd':       'descend',
+        'set':      'descend',
+        'name':     'set',
+        'type':     'set',
     }
 
     def __init__(self, xmlns):
