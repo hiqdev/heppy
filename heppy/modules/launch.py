@@ -43,7 +43,7 @@ class launch(Module):
         if 'encoded_signed_mark' in data:
             self.render_encoded_signed_mark(ext, request, data.get('encoded_signed_mark'))
         if 'mark' in data:
-            self.render_mark(ext, request, data.get('encoded_signed_mark'))
+            self.render_mark(ext, request, data.get('mark'))
 
     def render_code_mark(self, parent, request, code):
         tag = request.add_subtag(parent, 'launch:codeMark')
