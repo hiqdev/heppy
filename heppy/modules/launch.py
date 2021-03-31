@@ -14,7 +14,6 @@ class launch(Module):
         'noticeID':     'set',
         'notAfter':     'set',
         'acceptedDate': 'set',
-
     }
 
     def __init__(self, xmlns):
@@ -39,9 +38,8 @@ class launch(Module):
         ext = self.render_extension(request, 'create')
         request.add_subtag(ext, 'launch:phase', data.get('phase'))
         for mark in data.get('code_marks', []):
-            self.render_code_mark(request, mark, ext)
+            self.render_code_mark(ext, request, mark)
 
-    def render_code_mark(self, request, data, tag):
-        smd = smd()
-        return smd.render_encodedSignedMark(request, ext, mark)
+    def render_code_mark(self, parent, request, mark):
+        return smd().render_encodedSignedMark(parent, request, mark)
 

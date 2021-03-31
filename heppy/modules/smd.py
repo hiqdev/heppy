@@ -16,5 +16,4 @@ class launch(Module):
 
 ### REQUEST rendering
     def render_encodedSignedMark(self, parent, request, mark):
-        return self.render_header(request, parent, 'encodedSignedMark', text=mark);
-
+        return self.render_header(request, parent, 'encodedSignedMark', mark);
