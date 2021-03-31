@@ -46,7 +46,7 @@ class launch(Module):
             self.render_mark(ext, request, data.get('encoded_signed_mark'))
 
     def render_code_mark(self, parent, request, code):
-        tag = request.add_subtag(parent, 'launch:codeMark', data)
+        tag = request.add_subtag(parent, 'launch:codeMark')
         request.add_subtag(tag, 'launch:code', {}, code)
 
     def render_signed_mark(self, parent, request, code):
