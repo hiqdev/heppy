@@ -35,6 +35,9 @@ class Doc:
         'uaepp':        'http://hostmaster.ua/epp/uaepp-1.1',
         'balance':      'http://hostmaster.ua/epp/balance-1.0',
         'keysys':       'http://www.key-systems.net/epp/keysys-1.0',
+        'charge':       'http://www.unitedtld.com/epp/charge-1.0',
+        'finance':      'http://www.unitedtld.com/epp/finance-1.0',
+        'smd':          'urn:ietf:params:xml:ns:signedMark-1.0',
     }
 
     okcodes = {
