@@ -1,5 +1,6 @@
 from ..Module import Module
 from ..TagData import TagData
+from smd import smd
 from pprint import pprint
 
 ### https://tools.ietf.org/html/rfc8334
@@ -7,6 +8,13 @@ from pprint import pprint
 class launch(Module):
     opmap = {
         'chkData':      'descend',
+        'creData':      'descend',
+        'notice':       'descend',
+        'phase':        'set',
+        'noticeID':     'set',
+        'notAfter':     'set',
+        'acceptedDate': 'set',
+
     }
 
     def __init__(self, xmlns):
@@ -17,35 +25,6 @@ class launch(Module):
 
     def parse_cd(self, response, tag):
         return self.parse_cd_tag_extension(response, tag)
-
-    def parse_infData(self, response, tag):
-        response.put_extension_block(response, 'launch:info', tag, {
-            'currency': [],
-            'price':      [],
-            'period':   ['unit'],
-        })
-
-    def parse_delData(self, response, tag):
-        self.parse_typical_tag(response, tag, 'price:delete')
-
-    def parse_trnData(self, response, tag):
-        self.parse_typical_tag(response, tag, 'price:transfer')
-
-    def parse_creData(self, response, tag):
-        self.parse_typical_tag(response, tag, 'price:create')
-
-    def parse_renData(self, response, tag):
-        self.parse_typical_tag(response, tag, 'price:renew')
-
-    def parse_updData(self, response, tag):
-        self.parse_typical_tag(response, tag, 'price:update')
-
-    def parse_typical_tag(self, response, tag, command):
-        response.put_extension_block(response, command, tag, {
-            'currency': [],
-            'price':    [],
-            'period':   [],
-        })
 
 ### REQUEST rendering
 
@@ -63,6 +42,6 @@ class launch(Module):
             self.render_code_mark(request, mark, ext)
 
     def render_code_mark(self, request, data, tag):
-        ### XXX TODO
-        pass
+        smd = smd()
+        return smd.render_encodedSignedMark(request, ext, mark)
 
