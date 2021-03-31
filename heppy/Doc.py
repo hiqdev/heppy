@@ -20,6 +20,7 @@ class Doc:
         'fee21':        'urn:ietf:params:xml:ns:fee-0.21',
         'rgp':          'urn:ietf:params:xml:ns:rgp-1.0',
         'smd':          'urn:ietf:params:xml:ns:signedMark-1.0',
+        'mark':         'urn:ietf:params:xml:ns:mark-1.0',
         'oxrs':         'urn:afilias:params:xml:ns:oxrs-1.1',
         'namestoreExt': 'http://www.verisign-grs.com/epp/namestoreExt-1.1',
         'idn':          'urn:afilias:params:xml:ns:idn-1.0',
