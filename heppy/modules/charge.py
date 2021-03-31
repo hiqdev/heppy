@@ -52,7 +52,7 @@ class charge(Module):
         command = {"command": action}
         if action == 'update':
             command = {"command": "update", "name": "restore"}
-        return self.render_command_with_fields(request, 'charge:set' [
+        return self.render_command_with_fields(request, 'charge:set', [
             TagData('category', data.get('category', 'premium'), category_name),
             TagData('type', data.get('type', 'price')),
             TagData('amount', data.get('amount'), command)

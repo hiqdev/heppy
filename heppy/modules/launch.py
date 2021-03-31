@@ -36,6 +36,8 @@ class launch(Module):
     def render_create(self, request, data):
         ext = self.render_extension(request, 'create')
         request.add_subtag(ext, 'launch:phase', {}, data.get('phase', 'claims'))
+        if 'notice_id' in data:
+            self.render_notice(ext, request, data)
         if 'code_mark' in data:
             self.render_code_mark(ext, request, data.get('code_mark'))
         if 'signed_mark' in data:
@@ -58,4 +60,14 @@ class launch(Module):
     def render_mark(self, parent, request, code):
         tag = request.add_subtag(parent, 'launch:codeMark')
         return request.get_module('mark').render_mark(tag, request, code)
+
+    def render_notice(self, parent, request, data):
+        attr = {}
+        if 'validator_id' in data:
+            attr = {"validatorID": data.get('validator_id')}
+        return self.render_command_with_fields(parent, 'launch:notice', [
+            TagData('noticeID', data.get('notice_id'), attr),
+            TagData('notAfter', data.get('not_after')),
+            TagData('acceptedDate', data.get('accepted_date'))
+        ])
 
