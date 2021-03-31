@@ -65,9 +65,9 @@ class launch(Module):
         attr = {}
         if 'validator_id' in data:
             attr = {"validatorID": data.get('validator_id')}
-        return self.render_command_with_fields(parent, 'launch:notice', [
-            TagData('noticeID', data.get('notice_id'), attr),
-            TagData('notAfter', data.get('not_after')),
-            TagData('acceptedDate', data.get('accepted_date'))
-        ])
+        notice = request.add_subtag(parent, 'launch:notice');
+        request.add_subtag(notice, 'launch:noticeID', attr, data.get('notice_id'))
+        request.add_subtag(notice, 'launch:notAfter', {}, data.get('not_after'))
+        request.add_subtag(notice, 'launch:acceptedDate', {}, data.get('accepted_date'))
+        return request
 
