@@ -1,8 +1,7 @@
 from ..Module import Module
 from ..TagData import TagData
-from pprint import pprint
 
-### https://tools.ietf.org/html/rfc8334
+### https://tools.ietf.org/html/rfc7848
 
 class launch(Module):
     opmap = {

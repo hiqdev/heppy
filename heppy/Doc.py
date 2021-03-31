@@ -19,6 +19,7 @@ class Doc:
         'fee11':        'urn:ietf:params:xml:ns:fee-0.11',
         'fee21':        'urn:ietf:params:xml:ns:fee-0.21',
         'rgp':          'urn:ietf:params:xml:ns:rgp-1.0',
+        'smd':          'urn:ietf:params:xml:ns:signedMark-1.0',
         'oxrs':         'urn:afilias:params:xml:ns:oxrs-1.1',
         'namestoreExt': 'http://www.verisign-grs.com/epp/namestoreExt-1.1',
         'idn':          'urn:afilias:params:xml:ns:idn-1.0',
@@ -37,7 +38,6 @@ class Doc:
         'keysys':       'http://www.key-systems.net/epp/keysys-1.0',
         'charge':       'http://www.unitedtld.com/epp/charge-1.0',
         'finance':      'http://www.unitedtld.com/epp/finance-1.0',
-        'smd':          'urn:ietf:params:xml:ns:signedMark-1.0',
     }
 
     okcodes = {

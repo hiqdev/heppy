@@ -2,8 +2,6 @@ from ..Module import Module
 from ..TagData import TagData
 from pprint import pprint
 
-### https://tools.ietf.org/html/rfc8334
-
 class charge(Module):
     opmap = {
         'creData':  'descend',
