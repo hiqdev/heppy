@@ -3,7 +3,7 @@ from ..TagData import TagData
 
 ### https://tools.ietf.org/html/rfc7848
 
-class smd(Module):
+class mark(Module):
     opmap = {
         'mark': 'set',
     }
