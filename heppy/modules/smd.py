@@ -3,7 +3,7 @@ from ..TagData import TagData
 
 ### https://tools.ietf.org/html/rfc7848
 
-class launch(Module):
+class smd(Module):
     opmap = {
         'encodedSignedMark': 'set',
     }
