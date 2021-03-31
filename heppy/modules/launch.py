@@ -41,5 +41,5 @@ class launch(Module):
             self.render_code_mark(ext, request, mark)
 
     def render_code_mark(self, parent, request, mark):
-        return smd().render_encodedSignedMark(parent, request, mark)
+        return self.get_module('smd').render_encodedSignedMark(parent, request, mark)
 
