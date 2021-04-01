@@ -85,6 +85,7 @@ class Systemd:
 [Unit]
 Description={name} %i
 StopWhenUnneeded=true
+After=rabbitmq-server.service
 
 [Service]
 WorkingDirectory={work_dir}
