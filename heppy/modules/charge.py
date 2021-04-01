@@ -8,6 +8,7 @@ class charge(Module):
         'chkData':  'descend',
         'renData':  'descend',
         'trnData':  'descend',
+        'infData':  'descend',
         'cd':       'descend',
         'set':      'descend',
         'name':     'set',
@@ -40,8 +41,14 @@ class charge(Module):
     def render_transfer(self, request, data):
         return self.render_agreement(request, data, 'transfer')
 
+    def render_update(self, request, data):
+        return self.render_restore(request, data)
+
     def render_restore(self, request, data):
         return self.render_agreement(request, data, 'update')
+
+    def render_default(self, request, data):
+        return self.render_agreement(request, data, 'create')
 
     def render_agreement(self, request, data, action='create'):
         category_name = {}
@@ -52,9 +59,11 @@ class charge(Module):
         command = {"command": action}
         if action == 'update':
             command = {"command": "update", "name": "restore"}
-        return self.render_command_with_fields(request, 'charge:set' [
-            TagData('category', data.get('category', 'premium'), category_name),
-            TagData('type', data.get('type', 'price')),
-            TagData('amount', data.get('amount'), command)
-        ])
+
+        ext = self.render_extension(request, 'agreement');
+        tag = request.add_subtag(ext, 'charge:set')
+        request.add_subtag(tag, 'charge:category', category_name, data.get('category', 'premium'))
+        request.add_subtag(tag, 'charge:type', {}, data.get('type', 'price'))
+        request.add_subtag(tag, 'charge:amount', command, data.get('amount'))
+        return request
 

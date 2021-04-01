@@ -15,5 +15,8 @@ class smd(Module):
 ### RESPONSE parsing
 
 ### REQUEST rendering
-    def render_encodedSignedMark(self, parent, request, mark):
-        return self.render_header(request, parent, 'encodedSignedMark', mark);
+    def render_encoded_signed_mark(self, parent, request, mark):
+        return self.render_header(request, parent, 'encodedSignedMark', text=mark)
+
+    def render_signed_mark(self, parent, request, mark):
+        return self.render_header(request, parent, 'signedMark', text=mark)
