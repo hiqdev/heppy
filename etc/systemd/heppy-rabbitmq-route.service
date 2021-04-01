@@ -6,7 +6,7 @@ After=rabbitmq-server.service
 [Service]
 WorkingDirectory=/usr/bin
 Type=forking
-ExecStart=/usr/bin/socat tcp4-listen:15672,fork tcp4-connect:127.0.0.1:5672
+ExecStart=/usr/bin/socat tcp4-listen:12345,fork tcp4-connect:127.0.0.1:5672
 Restart=always
 User=root
 Group=root
