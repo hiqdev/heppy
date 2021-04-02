@@ -1,9 +1,11 @@
 [Unit]
 Description=hEPPy %i
 StopWhenUnneeded=true
+After=rabbitmq-server.service
 
 [Service]
-ExecStart=/home/sol/prj/hiqdev/heppy/bin/testServer %i start
+WorkingDirectory=/home/sol/prj/hiqdev/heppy/etc
+ExecStart=/home/sol/prj/hiqdev/heppy/bin/heppyd %i start
 Restart=always
 User=heppy
 Group=heppy

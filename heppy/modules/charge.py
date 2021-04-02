@@ -9,6 +9,8 @@ class charge(Module):
         'renData':  'descend',
         'trnData':  'descend',
         'infData':  'descend',
+        'upData':   'descend',
+        'agreement':'descend',
         'cd':       'descend',
         'set':      'descend',
         'name':     'set',
