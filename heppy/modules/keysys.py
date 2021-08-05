@@ -45,6 +45,8 @@ class keysys(Module):
         'pro-av-professiontype': 'set',
         'de-nsentry': 'set',
         'ownerchangestatus': 'set',
+        'be-requestauthcode': 'set',
+        'dnsbe-contact-type': 'set',
     }
 
     def __init__(self, xmlns):
