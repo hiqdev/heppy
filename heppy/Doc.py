@@ -16,6 +16,7 @@ class Doc:
         'fee07':        'urn:ietf:params:xml:ns:fee-0.7',
         'fee08':        'urn:ietf:params:xml:ns:fee-0.8',
         'fee09':        'urn:ietf:params:xml:ns:fee-0.9',
+        'fee10':        'urn:ietf:params:xml:ns:epp:fee-1.0',
         'fee11':        'urn:ietf:params:xml:ns:fee-0.11',
         'fee21':        'urn:ietf:params:xml:ns:fee-0.21',
         'rgp':          'urn:ietf:params:xml:ns:rgp-1.0',
@@ -39,6 +40,7 @@ class Doc:
         'keysys':       'http://www.key-systems.net/epp/keysys-1.0',
         'charge':       'http://www.unitedtld.com/epp/charge-1.0',
         'finance':      'http://www.unitedtld.com/epp/finance-1.0',
+        'association':  'urn:afilias:params:xml:ns:association-1.0',
     }
 
     okcodes = {
