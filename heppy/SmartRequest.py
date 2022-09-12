@@ -14,7 +14,7 @@ class SmartRequest():
         self.input      = input
         self.query      = None
         self.type       = None
-        
+
     def get_query(self):
         if self.query is None:
             self.query = self.prepare_query()
@@ -76,8 +76,38 @@ class SmartRequest():
         if (response.data.get('result_code', '0') == '2002' and
             response.data.get('result_reason', '') == 'A login command MUST be sent to a server before any other EPP command'):
             return True
+        if (response.data.get('result_code', '0') == '2002' and
+            response.data.get('result_reason', '') == 'A login command MUST be sent to a server before any other EPP command.'):
+            return True
+        if (response.data.get('result_code', '0') == '2002' and
+            response.data.get('result_reason', '') == 'Command use error.'):
+            return True
+        if (response.data.get('result_code', '0') == '2002' and
+            response.data.get('result_reason', '') == 'Command use error'):
+            return True
         if (response.data.get('result_code', '0') == '2200' and
             response.data.get('result_reason', '') == '2200:Authentication error'):
+            return True
+        if (response.data.get('result_code', '0') == '2200' and
+            response.data.get('result_reason', '') == '2200:Authentication error.'):
+            return True
+        if (response.data.get('result_code', '0') == '2200' and
+            response.data.get('result_reason', '') == 'Authentication error'):
+            return True
+        if (response.data.get('result_code', '0') == '2200' and
+            response.data.get('result_reason', '') == 'Authentication error.'):
+            return True
+        if (response.data.get('result_code', '0') == '2500' and
+            response.data.get('result_reason', '') == 'Command failed; server closing connection'):
+            return True
+        if (response.data.get('result_code', '0') == '2500' and
+            response.data.get('result_reason', '') == 'Command failed; server closing connection.'):
+            return True
+        if (response.data.get('result_code', '0') == '2501' and
+            response.data.get('result_reason', '') == 'Authentication error; server closing connection'):
+            return True
+        if (response.data.get('result_code', '0') == '2501' and
+            response.data.get('result_reason', '') == 'Authentication error; server closing connection.'):
             return True
         return False
 

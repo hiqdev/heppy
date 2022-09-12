@@ -38,8 +38,9 @@ class Daemon:
         self.force_hello = False
         self.started = datetime.now()
         self.last_command = datetime.now()
+        self.last_hello = self.last_command
         self.refreshSeconds = timedelta(**config.get('refreshInterval', {'seconds': 30})).total_seconds()
-        self.keepaliveDelta = timedelta(**config.get('keepaliveInterval', {'minutes': 3}))
+        self.keepaliveDelta = timedelta(**config.get('keepaliveInterval', {'minutes': 1}))
         self.forcequitDelta = timedelta(**config.get('forcequitInterval', {'hours': 23}))
 
     def quit(self):
@@ -65,8 +66,11 @@ class Daemon:
         if self.needs_quit():
             self.quit()
         if self.needs_hello():
-            #print "HELLO"
-            self.smart_request({'command': 'epp:hello'})
+            response = self.smart_request({'command': 'epp:hello'})
+            code = response.get('result_code', None);
+            if code in ['2200', '2501', '2502', '2500', '2002']:
+                self.quit()
+            self.last_hello = datetime.now()
 
         left = (self.keepaliveDelta - (datetime.now() - self.last_command)).total_seconds()
         #print "LOOP left:%i" % left
@@ -88,7 +92,7 @@ class Daemon:
         if self.force_hello:
             self.force_hello = False
             return True
-        return datetime.now() > self.last_command + self.keepaliveDelta
+        return datetime.now() > self.last_hello + self.keepaliveDelta
 
     def stop_consuming(self):
         self.server.channel.stop_consuming()

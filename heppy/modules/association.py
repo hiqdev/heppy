@@ -6,7 +6,6 @@ class association(Module):
     opmap = {
         'infData':      'descend',
         'contact':      'descend',
-        'id':           'set',
     }
 
     def __init__(self, xmlns):
@@ -14,6 +13,9 @@ class association(Module):
         self.name = 'association'
 
 ### RESPONSE parsing
+
+    def parse_id(self, response, tag):
+        response.set('token', tag.text)
 
 ### REQUEST rendering
 
