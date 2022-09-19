@@ -68,7 +68,7 @@ class Daemon:
         if self.needs_hello():
             response = self.smart_request({'command': 'epp:hello'})
             code = response.get('result_code', None);
-            if code in ['2200', '2501', '2502', '2500', '2002']:
+            if code in ['2002', '2200', '2500', '2501', '2502']:
                 self.quit()
             self.last_hello = datetime.now()
 
