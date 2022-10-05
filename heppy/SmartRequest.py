@@ -14,7 +14,7 @@ class SmartRequest():
         self.input      = input
         self.query      = None
         self.type       = None
-        
+
     def get_query(self):
         if self.query is None:
             self.query = self.prepare_query()
@@ -73,11 +73,7 @@ class SmartRequest():
             return self.prepare_error(e)
 
     def needs_relogin(self, response):
-        if (response.data.get('result_code', '0') == '2002' and
-            response.data.get('result_reason', '') == 'A login command MUST be sent to a server before any other EPP command'):
-            return True
-        if (response.data.get('result_code', '0') == '2200' and
-            response.data.get('result_reason', '') == '2200:Authentication error'):
+        if response.data.get('result_code', '0') in ['2002', '2200', '2500', '2501', '2502']:
             return True
         return False
 
