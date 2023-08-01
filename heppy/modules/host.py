@@ -68,15 +68,15 @@ class host(Module):
             self.render_update_section(request, data.get('chg'), command, 'chg')
 
     def render_update_section(self, request, data, command, operation):
-          element = request.add_subtag(command, 'host:' + operation)
-          if operation == 'chg':
-              request.add_subtag(element, 'host:name', text=data.get('name'))
-          else:
-             for d in data:
-                 if 'ips' in d:
-                     self.render_ips(request, d['ips'], element)
-                 if 'statuses' in d:
-                     self.render_statuses(request, element, d['statuses'])
+        element = request.add_subtag(command, 'host:' + operation)
+        if operation == 'chg':
+            request.add_subtag(element, 'host:name', text=data.get('name'))
+        else:
+           for d in data:
+               if 'ips' in d:
+                   self.render_ips(request, d['ips'], element)
+               if 'statuses' in d:
+                   self.render_statuses(request, element, d['statuses'])
 
     def render_ips(self, request, ips, parent):
         if (isinstance(ips, list) == False):
