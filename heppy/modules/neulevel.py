@@ -14,6 +14,9 @@ class neulevel(Module):
     def parse_unspec(self, response, tag):
         pass
 
+    def parse_extension(self, response, tag):
+        pass
+
 ### REQUEST rendering
     def render_default(self, request, data):
         self.render_extension_with_fields(request, 'extension', [
