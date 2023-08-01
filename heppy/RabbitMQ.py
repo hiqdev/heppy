@@ -34,7 +34,7 @@ class RPCServer:
 
         ch.basic_publish(
             exchange='',
-            routing_key=props.reply_to,
+            routing_key=props.reply_to if props.reply_to is not None else method.routing_key,
             properties=pika.BasicProperties(
                 correlation_id = props.correlation_id,
             ),

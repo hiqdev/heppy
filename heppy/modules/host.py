@@ -68,13 +68,20 @@ class host(Module):
             self.render_update_section(request, data.get('chg'), command, 'chg')
 
     def render_update_section(self, request, data, command, operation):
-        element = request.add_subtag(command, 'host:' + operation)
-        if operation == 'chg':
-            request.add_subtag(element, 'host:name', text=data.get('name'))
-        else:
-            self.render_ips(request, data.get('ips', []), element)
-            self.render_statuses(request, element, data.get('statuses', {}))
+          element = request.add_subtag(command, 'host:' + operation)
+          if operation == 'chg':
+              request.add_subtag(element, 'host:name', text=data.get('name'))
+          else:
+             for d in data:
+                 if 'ips' in d:
+                     self.render_ips(request, d['ips'], element)
+                 if 'statuses' in d:
+                     self.render_statuses(request, element, d['statuses'])
 
     def render_ips(self, request, ips, parent):
-        for ip in ips:
-            request.add_subtag(parent, 'host:addr', {'ip': 'v6' if ':' in ip else 'v4'}, ip)
+        if (isinstance(ips, list) == False):
+            for ip in ips.values():
+                request.add_subtag(parent, 'host:addr', {'ip': 'v6' if ':' in ip else 'v4'}, ip)
+        else:
+            for ip in ips:
+                request.add_subtag(parent, 'host:addr', {'ip': 'v6' if ':' in ip else 'v4'}, ip)

@@ -54,14 +54,14 @@ class fee(Module):
         ext = self.render_extension(request, 'check')
         domain = request.add_subtag(ext, 'fee:domain')
         request.add_subtag(domain, 'fee:name',      {}, data.get('name'))
-        request.add_subtag(domain, 'fee:currency',  {}, data.get('currency', 'usd'))
+        request.add_subtag(domain, 'fee:currency',  {}, data.get('currency', 'USD'))
         commandprop = {}
         if (data.get('phase', None) != None) :
             commandprop.update({"phase" : data.get('phase')})
         if (data.get('subphase', None) != None) :
             commandprop.update({"subphase" : data.get('subphase')})
         request.add_subtag(domain, 'fee:command',   commandprop, data.get('action', 'create'))
-        request.add_subtag(domain, 'fee:period',    {'unit':'y'}, data.get('period', 1))
+        request.add_subtag(domain, 'fee:period',    {'unit':'y'}, data.get('period', '1'))
 
     def render_info(self, request, data):
         self.render_extension_with_fields(request, 'info', [
