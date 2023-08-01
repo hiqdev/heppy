@@ -43,7 +43,8 @@ class Doc:
         'association':  'urn:afilias:params:xml:ns:association-1.0',
         'urc':          'http://ns.uniregistry.net/centric-1.0',
         'sync':         'http://www.verisign.com/epp/sync-1.0',
-        'neulevel':     'urn:ietf:params:xml:ns:neulevel-1.0',
+        'neulevel'      'urn:ietf:params:xml:ns:neulevel',
+        'neulevel10':   'urn:ietf:params:xml:ns:neulevel-1.0',
         'kv':           'urn:X-ar:params:xml:ns:kv-1.0',
     }
 
