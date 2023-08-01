@@ -68,7 +68,7 @@ class Daemon:
         if self.needs_hello():
             response = self.smart_request({'command': 'epp:hello'})
             code = response.get('result_code', None);
-            if code in ['2200', '2501', '2502', '2500', '2002']:
+            if code in ['2002', '2200', '2500', '2501', '2502']:
                 self.quit()
             self.last_hello = datetime.now()
 
@@ -140,7 +140,7 @@ class Daemon:
             data = e.data
         if error is not None and data['result_code'] != '2002':
             Error.die(2, 'bad login response', data)
-        if data['result_code'] in ['2200', '2501', '2502', '2500']:
+        if data['result_code'] in ['2200', '2500', '2501', '2502']:
             Error.die(2, data['msg'] if error is None else error, data)
         print 'LOGIN OK'
 

@@ -169,6 +169,9 @@ class contact(Module):
             request.add_subtag(parent, 'contact:email', text=data.get('email'))
 
     def render_disclose(self, request, data, parent):
+        if (data is None):
+            return request
+
         disclose = request.add_subtag(parent, 'contact:disclose', {"flag": data})
         request.add_subtag(disclose, 'contact:name', {"type": "int"})
         request.add_subtag(disclose, 'contact:name', {"type": "loc"})

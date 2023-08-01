@@ -45,6 +45,13 @@ class keysys(Module):
         'pro-av-professiontype': 'set',
         'de-nsentry': 'set',
         'ownerchangestatus': 'set',
+        'be-requestauthcode': 'set',
+        'dnsbe-contact-type': 'set',
+        'old-nameserver0': 'set',
+        'old-nameserver1': 'set',
+        'old-nameserver2': 'set',
+        'old-nameserver3': 'set',
+        'time-to-suspension': 'set',
     }
 
     def __init__(self, xmlns):
