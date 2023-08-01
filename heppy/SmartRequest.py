@@ -73,7 +73,7 @@ class SmartRequest():
             return self.prepare_error(e)
 
     def needs_relogin(self, response):
-        if response.data.get('result_code', '0') in ['2002', '2200', '2500', '2501', '2502']:
+        if (response.data.get('result_code', '0') in ['2002', '2200', '2500', '2501', '2502']) :
             return True
         return False
 

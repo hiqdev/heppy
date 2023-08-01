@@ -33,6 +33,7 @@ class domain(Module):
         'reDate':       'set',
         'acID':         'set',
         'acDate':       'set',
+        'curExpDate':   'set',
     }
 
     CONTACT_TYPES = (
