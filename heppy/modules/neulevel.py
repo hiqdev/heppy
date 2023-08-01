@@ -4,6 +4,7 @@ from ..TagData import TagData
 
 class neulevel(Module):
     opmap = {
+        'extension': 'set',
     }
 
     def __init__(self, xmlns):
