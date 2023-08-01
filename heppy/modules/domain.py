@@ -58,7 +58,13 @@ class domain(Module):
         response.put_to_list('hosts', tag.text.lower())
 
     def parse_contact(self, response, tag):
-        response.set(tag.attrib['type'], tag.text)
+        if (tag.attrib['type'] == 'registrant'):
+            response.set(tag.attrib['type'], tag.text)
+        else:
+            response.put_to_list(tag.attrib['type'], tag.text)
+
+    def parse_panData(self, response, tag):
+        pass
 
 ### REQUEST rendering
 

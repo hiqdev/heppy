@@ -13,6 +13,9 @@ class Login:
             args['login'] = config['epp']['login']
         if not args.get('pw'):
             args['pw'] = config['epp']['password']
+        if not args.get('newPassword'):
+            if config['epp'].get("newPassword", None) is not None :
+                args['newPassword'] = config['epp']['newPassword']
         if not greeting:
             Error.die(4, 'no greeting given')
         greeting = Response.parsexml(greeting)

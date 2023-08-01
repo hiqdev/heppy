@@ -41,6 +41,10 @@ class Doc:
         'charge':       'http://www.unitedtld.com/epp/charge-1.0',
         'finance':      'http://www.unitedtld.com/epp/finance-1.0',
         'association':  'urn:afilias:params:xml:ns:association-1.0',
+        'urc':          'http://ns.uniregistry.net/centric-1.0',
+        'sync':         'http://www.verisign.com/epp/sync-1.0',
+        'neulevel':     'urn:ietf:params:xml:ns:neulevel-1.0',
+        'kv':           'urn:X-ar:params:xml:ns:kv-1.0',
     }
 
     okcodes = {
