@@ -72,11 +72,11 @@ class host(Module):
         if operation == 'chg':
             request.add_subtag(element, 'host:name', text=data.get('name'))
         else:
-           for d in data:
-               if 'ips' in d:
-                   self.render_ips(request, d['ips'], element)
-               if 'statuses' in d:
-                   self.render_statuses(request, element, d['statuses'])
+            for d in data:
+                if 'ips' in d:
+                    self.render_ips(request, d['ips'], element)
+                if 'statuses' in d:
+                    self.render_statuses(request, element, d['statuses'])
 
     def render_ips(self, request, ips, parent):
         if (isinstance(ips, list) == False):
