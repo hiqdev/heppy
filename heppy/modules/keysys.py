@@ -1,5 +1,6 @@
 from ..Module import Module
 from ..TagData import TagData
+from pprint import pprint
 
 
 class keysys(Module):
@@ -52,6 +53,8 @@ class keysys(Module):
         'old-nameserver2': 'set',
         'old-nameserver3': 'set',
         'time-to-suspension': 'set',
+        'eu-accept-trustee-tac': 'set',
+        'eu-naturalperson': 'set',
     }
 
     def __init__(self, xmlns):
@@ -72,7 +75,10 @@ class keysys(Module):
         request.add_subtag(domain, 'keysys:transfermode', {}, data.get('transfermode', 'DEFAULT'))
 
     def render_create(self, request, data):
-        pass
+        ext = self.render_extension(request, 'create')
+        domain = request.add_subtag(ext, 'keysys:domain')
+        if (data.get('eu-accept-trustee-tac', None) != None):
+            request.add_subtag(domain, 'keysys:eu-accept-trustee-tac', {}, data.get('eu-accept-trustee-tac'))
 
     def render_update(self, request, data):
         ext = self.render_extension(request, 'update')
