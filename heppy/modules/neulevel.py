@@ -21,5 +21,5 @@ class neulevel(Module):
 ### REQUEST rendering
     def render_default(self, request, data):
         self.render_extension_with_fields(request, 'extension', [
-            TagData('unspec', data.get('neurlevel', 'WhoisType=Natural Publish=Y'))
+            TagData('unspec', data.get('neulevel', 'WhoisType=Natural Publish=Y'))
         ])
