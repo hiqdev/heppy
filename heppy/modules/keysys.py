@@ -80,6 +80,13 @@ class keysys(Module):
         if (data.get('eu-accept-trustee-tac', None) != None):
             request.add_subtag(domain, 'keysys:eu-accept-trustee-tac', {}, data.get('eu-accept-trustee-tac'))
 
+    def render_transfer(self, request, data):
+        if (data.get('eu-accept-trustee-tac', None) != None):
+            ext = self.render_extension(request, 'transfer')
+            domain = request.add_subtag(ext, 'keysys:domain')
+            request.add_subtag(domain, 'keysys:eu-accept-trustee-tac', {}, data.get('eu-accept-trustee-tac'))
+            request.add_subtag(domain, 'keysys:ownercontact0', {}, data.get('registrant'))
+
     def render_update(self, request, data):
         ext = self.render_extension(request, 'update')
         domain = request.add_subtag(ext, 'keysys:domain')
