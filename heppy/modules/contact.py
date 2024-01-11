@@ -101,6 +101,8 @@ class contact(Module):
 
         if 'pw' in data:
             self.render_auth_info(request, command, data.get('pw'))
+        if 'disclose' in data:
+            self.render_disclose(request, data['disclose'], command)
 
     def render_delete(self, request, data):
         self.render_command_with_fields(request, 'delete', [
@@ -183,13 +185,4 @@ class contact(Module):
         request.add_subtag(disclose, 'contact:fax')
         request.add_subtag(disclose, 'contact:email')
         return request
-#       self.render_command_with_fields(parent, 'disclose', [
-#           TagData('name', attrs={"type":"int"}),
-#           TagData('name', attrs={"type":"loc"}),
-#           TagData('org', attrs={"type":"int"}),
-#           TagData('org', attrs={"type":"loc"}),
-#           TagData('addr', attrs={"type":"loc"}),
-#           TagData('addr', attrs={"type":"int"}),
-#           TagData('voice'),
-#           TagData('fax'),
-#       ], {"flag" : data})
+
