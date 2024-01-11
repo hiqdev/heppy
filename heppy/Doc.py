@@ -34,7 +34,7 @@ class Doc:
         'host_hm':      'http://hostmaster.ua/epp/host-1.1',
         'contact_hm':   'http://hostmaster.ua/epp/contact-1.1',
         'rgp_hm':       'http://hostmaster.ua/epp/rgp-1.1',
-        'secdns_hm':    'http://hostmaster.ua/epp/secDNS-1.1',
+        'secDNShm':    'http://hostmaster.ua/epp/secDNS-1.1',
         'uaepp':        'http://hostmaster.ua/epp/uaepp-1.1',
         'balance':      'http://hostmaster.ua/epp/balance-1.0',
         'keysys':       'http://www.key-systems.net/epp/keysys-1.0',
