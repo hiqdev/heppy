@@ -1,16 +1,25 @@
 #!/usr/bin/python -u
 
 # Message queue subscribing version based on RabbitMQ and pika.
-
+import sentry_sdk
 from heppy.Args import Args
 from heppy.Error import Error
 from heppy.Config import Config
 from heppy.Daemon import Daemon
 from heppy.RabbitMQ import RPCServer
 
+
 args = Args()
 config = Config(args.get('path'))
 config.merge(args)
+
+if (config.get('sentry_dsn', None) is not None):
+    sentry_sdk.init(
+        dsn=config.get('sentry_dsn'),
+        enable_tracing=True,
+    )
+
+
 
 daemon = Daemon(config)
 command = args.get('command')
