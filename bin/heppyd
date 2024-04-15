@@ -19,8 +19,6 @@ if (config.get('sentry_dsn', None) is not None):
         enable_tracing=True,
     )
 
-
-
 daemon = Daemon(config)
 command = args.get('command')
 method = getattr(daemon, command, None)
