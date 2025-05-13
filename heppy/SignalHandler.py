@@ -14,7 +14,7 @@ class SignalHandler:
         self.working = False
         self.received = False
         self.callbacks = {}
-        for name, callback in callbacks.iteritems():
+        for name, callback in callbacks.items():
             no = getattr(signal, name)
             self.callbacks[str(no)] = callback
             signal.signal(no, self.on_signal)

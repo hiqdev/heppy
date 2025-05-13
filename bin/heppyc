@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 
 # Message queue RPC version based on RabbitMQ and pika.
 
@@ -27,11 +27,11 @@ if (config.get('sentry_dsn', None) is not None):
 is_json = args.pop('json', False)
 if is_json:
     query = json.dumps(args)
-    print query
+    print(query)
 else:
     request = Request.build(args)
     query = str(request)
-    print Request.prettifyxml(query)
+    print(Request.prettifyxml(query))
 
 rabbit_config = config.get('RabbitMQ', {})
 rabbit_config.setdefault('queue', 'heppy-' + config['name'])
@@ -39,11 +39,11 @@ pprint(rabbit_config)
 client = RPCClient(rabbit_config)
 
 reply = client.request(query)
-print reply
+print(reply)
 if is_json:
     pprint(json.loads(reply))
 else:
-    print Request.prettifyxml(reply)
+    print(Request.prettifyxml(reply))
     response = Response.parsexml(reply)
     pprint(response.data)
 

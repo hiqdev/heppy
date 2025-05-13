@@ -15,9 +15,9 @@ class Error(Exception):
             e = error
             error = '{0}.{1}'.format(type(e).__module__, type(e).__name__)
             message = str(e)
-        print 'Error: ' + error
+        print('Error: ' + error)
         if message:
-            print message
+            print(message)
         #logging.exception(message)
         exit(code)
 

@@ -2,7 +2,7 @@ import xml.dom.minidom
 import xml.etree.ElementTree as ET
 
 from pprint import pprint
-from Doc import Doc
+from heppy.Doc import Doc
 
 
 class Request(Doc):

@@ -62,7 +62,7 @@ class Doc:
         if ns in self.nsmap:
             ns = self.nsmap[ns]
         if self.modules == {}:
-            for name, nsi in self.nsmap.iteritems():
+            for name, nsi in self.nsmap.items():
                 self.modules[nsi] = name
         module = self.modules.get(ns)
         if isinstance(module, basestring):
@@ -83,7 +83,7 @@ class Doc:
 
     @staticmethod
     def mget(data, map):
-        return {k: data.get(v or k) for k, v in map.iteritems()}
+        return {k: data.get(v or k) for k, v in map.items()}
 
     def set(self, name, value):
         self.data[name] = value

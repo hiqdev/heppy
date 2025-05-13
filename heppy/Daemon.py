@@ -48,7 +48,7 @@ class Daemon:
         quit()
 
     def hello(self):
-        print "HELLO"
+        print("HELLO")
         self.force_hello = True
 
     def start(self, args = {}):
@@ -73,7 +73,7 @@ class Daemon:
             self.last_hello = datetime.now()
 
         left = (self.keepaliveDelta - (datetime.now() - self.last_command)).total_seconds()
-        #print "LOOP left:%i" % left
+        #print("LOOP left:%i" % left)
 
     # alternative consuming approach
     # worked with pika 0.12, add_timeout was removed in pika 1.0
@@ -125,9 +125,9 @@ class Daemon:
     def login(self, args):
         try:
             query = self.get_login_query(args)
-            print Request.prettifyxml(query)
+            print(Request.prettifyxml(query))
             reply = self.request(query)
-            print Request.prettifyxml(reply)
+            print(Request.prettifyxml(reply))
         except Error as e:
             Error.die(2, 'failed perform login request')
         error = None
@@ -142,7 +142,7 @@ class Daemon:
             Error.die(2, 'bad login response', data)
         if data['result_code'] in ['2200', '2500', '2501', '2502']:
             Error.die(2, data['msg'] if error is None else error, data)
-        print 'LOGIN OK'
+        print('LOGIN OK')
 
     def get_login_query(self, args = {}):
         if self.login_query is None:
