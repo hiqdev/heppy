@@ -55,7 +55,7 @@ class Config(dict):
 
     def _open(self):
         if not self.file:
-            self.file = open(self.path, 'w', 0)
+            self.file = open(self.path, 'w', encoding="utf-8")
         return self.file
 
     def exists(self):
