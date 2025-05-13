@@ -19,7 +19,7 @@ with open(path) as file:
 
 epp = REPP(config['epp'])
 
-print epp.greeting
+print(epp.greeting)
 
 args = Args()
 config = Config(args.get('path'))
@@ -31,8 +31,8 @@ for line in sys.stdin:
 if not login.strip():
     Error.die(2, 'no login command given')
 
-print login
+print(login)
 
 respond = epp.command(login)
 
-print respond
+print(respond)

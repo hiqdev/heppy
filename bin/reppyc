@@ -14,10 +14,10 @@ try:
     config = Config(args.get('path'))
     request = Request.build(args)
     query = str(request)
-    print query
-    print Request.prettifyxml(query)
+    print(query)
+    print(Request.prettifyxml(query))
     reply = Client(config['local']['address']).request(query)
-    print Request.prettifyxml(reply)
+    print(Request.prettifyxml(reply))
     response = Response.parsexml(reply)
     pprint(response.data)
 except Exception as e:

@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 
 import sys
 
@@ -25,5 +25,5 @@ except Exception as e:
 if res is None:
     Errro.die(4, 'None')
 else:
-    print res
+    print(res)
 

@@ -18,7 +18,7 @@ args = Args()
 config = Config(args.get('path'))
 
 def hello():
-    print "\nHELLO\n"
+    print("\nHELLO\n")
 
 handler = SignalHandler({
     'SIGINT':  quit,
@@ -30,10 +30,10 @@ handler = SignalHandler({
 
 def response(query):
     with handler.block_signals():
-        print  "query[{}]: {}".format(os.getpid(), query)
+        print  ("query[{}]: {}".format(os.getpid(), query))
         return "reply[{}]: {}".format(os.getpid(), query)
 
 server = RPCServer(config)
 server.consume(response)
 
-print 'FINISHED'
+print('FINISHED')
