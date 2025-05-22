@@ -1,4 +1,4 @@
-#!/usr/bin/python -u
+#!/usr/bin/python3 -u
 
 # Message queue subscribing version based on RabbitMQ and pika.
 import sentry_sdk
@@ -26,4 +26,4 @@ method = getattr(daemon, command, None)
 if callable(method):
     method(args)
 else:
-    print 'Wrong command: ' + command
+    print('Wrong command: ' + command)

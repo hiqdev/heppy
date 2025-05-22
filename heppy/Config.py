@@ -5,6 +5,10 @@ import sys
 import json
 import fcntl
 import collections
+try:
+    from collections import Mapping
+except ImportError:
+    from collections.abc import Mapping
 
 # http://stackoverflow.com/questions/10703858
 def merge_dict(d1, d2):
@@ -15,8 +19,8 @@ def merge_dict(d1, d2):
     """
     for k,v2 in d2.items():
         v1 = d1.get(k) # returns None if v1 has no value for this key
-        if (isinstance(v1, collections.Mapping)
-        and isinstance(v2, collections.Mapping)):
+        if (isinstance(v1, Mapping)
+        and isinstance(v2, Mapping)):
             merge_dict(v1, v2)
         else:
             d1[k] = v2
@@ -33,7 +37,7 @@ class Config(dict):
         try:
             with open(self.path) as file:
                 jstr = file.read()
-                #print self.path + ' ' + jstr
+                #print(self.path + ' ' + jstr)
                 if jstr:
                     self.merge(json.loads(jstr))
         except Exception as e:
@@ -51,7 +55,7 @@ class Config(dict):
 
     def _open(self):
         if not self.file:
-            self.file = open(self.path, 'w', 0)
+            self.file = open(self.path, 'w', encoding="utf-8")
         return self.file
 
     def exists(self):

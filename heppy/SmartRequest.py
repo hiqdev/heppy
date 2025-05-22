@@ -4,8 +4,8 @@ import json
 import sys
 from enum import Enum
 from pprint import pprint
-from Request import Request
-from Response import Response
+from heppy.Request import Request
+from heppy.Response import Response
 
 
 class SmartRequest():

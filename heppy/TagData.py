@@ -5,4 +5,4 @@ class TagData:
         self.attrs = self.filter_attrs(attrs)
 
     def filter_attrs(self, attrs):
-        return {attr: value for attr, value in attrs.iteritems() if value}
+        return {attr: value for attr, value in attrs.items() if value}

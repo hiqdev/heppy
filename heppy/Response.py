@@ -1,5 +1,5 @@
 import xml.etree.ElementTree as ET
-from Doc import Doc
+from heppy.Doc import Doc
 from pprint import pprint
 
 class Response(Doc):
@@ -42,14 +42,14 @@ class Response(Doc):
         data = dict()
         data['command'] = command
         module_name = command.split(':')[0]
-        for tag_name, attrs in tags_data.iteritems():
+        for tag_name, attrs in tags_data.items():
             response.put_tag_data(data, root_tag, module_name + ':' + tag_name, attrs)
         response.put_to_list('extensions', data)
 
     def put_to_dict(self, name, values):
         if name not in self.data:
             self.data[name] = {}
-        for k, v in values.iteritems():
+        for k, v in values.items():
             self.data[name][k] = v
 
     def put_to_list(self, name, value=[]):
