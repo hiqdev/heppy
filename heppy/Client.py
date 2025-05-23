@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 import socket
 
 from heppy import Net
@@ -5,7 +6,7 @@ from heppy import Net
 
 class Client:
     def __init__(self, address):
-        self.socket  = None
+        self.socket = None
         self.address = address
 
     def _connect(self):
@@ -14,35 +15,36 @@ class Client:
         self.socket.connect(self.address)
         self.socket.settimeout(None)
 
-    def connect(self):
+    def connect(self) -> None:
         if self.socket is None:
             self._connect()
 
-    def disconnect(self):
+    def disconnect(self) -> None:
+        if self.socket:
+            self.socket.close()  # Ensure the socket is properly closed
         self.socket = None
 
-    def write(self, data):
+    def write(self, data: bytes) -> None:
         self.connect()
         Net.write(self.socket, data)
 
-    def read(self):
+    def read(self) -> bytes:
         res = Net.read(self.socket)
         self.disconnect()
         return res
 
-    def request(self, data):
+    def request(self, data: bytes) -> bytes:
         self.write(data)
         return self.read()
 
-    def get_greeting(self):
+    def get_greeting(self) -> bytes:
         return self.request('greeting')
 
     @staticmethod
-    def try_connect(address):
+    def try_connect(address) -> bool:
         try:
             client = Client(address)
             client.connect()
             return True
-        except:
+        except (socket.error, OSError):  # Catch specific exceptions
             return False
-

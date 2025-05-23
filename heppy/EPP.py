@@ -18,10 +18,10 @@ class REPP:
         self.epp = EPP(self.config)
         self.greeting = self.epp.greeting
 
-    def get_greeting(self):
+    def get_greeting(self) -> bytes:
         return self.greeting
 
-    def request(self, xml) -> bytes:
+    def request(self, xml: bytes) -> bytes:
         res = self.epp.request(xml)
         if not res:
             self.connect()
@@ -43,10 +43,10 @@ class EPP:
         self.greeting = self.read()
         self.config['start_time'] = datetime.now().isoformat(' ')
 
-    def get_path(self, name):
+    def get_path(self, name: str) -> str:
         return self.find_path(self.config[name])
 
-    def find_path(self, filename):
+    def find_path(self, filename: str) -> str:
         if os.path.isfile(filename):
             return filename
         return self.config['dir'] + '/' + filename
@@ -54,11 +54,11 @@ class EPP:
     def get_greeting(self):
         return self.greeting
 
-    def request(self, xml) -> bytes:
+    def request(self, xml: bytes) -> bytes:
         self.write(xml)
         return self.read()
 
-    def write(self, xml) -> int:
+    def write(self, xml: bytes) -> int:
         Net.write(self.ssl, xml)
 
     def read(self) -> bytes:
