@@ -65,6 +65,8 @@ class Doc:
             for name, nsi in self.nsmap.items():
                 self.modules[nsi] = name
         module = self.modules.get(ns)
+        if isinstance(module, bytes):
+            module = module.decode('utf-8')
         if isinstance(module, str):
             module = self.build_module(ns, module)
             self.modules[ns] = module

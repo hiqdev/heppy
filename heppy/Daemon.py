@@ -1,11 +1,10 @@
 #!/usr/bin/env python3
+# -*- coding: utf-8 -*-
 
 import os
 import time
 import socket
-
 from pprint import pprint
-
 from datetime import datetime, timedelta
 
 from heppy.EPP import REPP
@@ -26,9 +25,9 @@ class Daemon:
         self.is_external = False
         self.client = None
         self.handler = SignalHandler({
-            'SIGINT':  self.quit,
+            'SIGINT': self.quit,
             'SIGTERM': self.quit,
-            'SIGHUP':  self.hello,
+            'SIGHUP': self.hello,
             'SIGUSR1': self.hello,
             'SIGUSR2': self.hello,
         })
@@ -43,14 +42,15 @@ class Daemon:
         self.forcequitDelta = timedelta(**config.get('forcequitInterval', {'hours': 23}))
 
     def quit(self):
-        global quit
-        quit()
+        raise SystemExit("Daemon is quitting...")
 
     def hello(self):
         print("HELLO")
         self.force_hello = True
 
-    def start(self, args={}):
+    def start(self, args=None):
+        if args is None:
+            args = {}
         self.connect()
         self.login(args)
         self.consume()
@@ -71,11 +71,6 @@ class Daemon:
                 self.quit()
             self.last_hello = datetime.now()
 
-        left = (self.keepaliveDelta - (datetime.now() - self.last_command)).total_seconds()
-        # print("LOOP left:%i" % left)
-
-    # alternative consuming approach
-    # worked with pika 0.12, add_timeout was removed in pika 1.0
     def basic_loop(self):
         while True:
             self.recheck()
@@ -96,7 +91,9 @@ class Daemon:
     def stop_consuming(self):
         self.server.channel.stop_consuming()
 
-    def systemd(self, args={}):
+    def systemd(self, args=None):
+        if args is None:
+            args = {}
         if 0 not in args:
             Error.die(3, 'no systemd command given')
 
@@ -121,14 +118,16 @@ class Daemon:
     def relogin(self):
         return self.login({})
 
-    def login(self, args):
+    def login(self, args=None):
+        if args is None:
+            args = {}
         try:
             query = self.get_login_query(args)
             print(Request.prettifyxml(query))
             reply = self.request(query)
             print(Request.prettifyxml(reply))
         except Error:
-            Error.die(2, 'failed perform login request')
+            Error.die(2, 'failed to perform login request')
         error = None
         try:
             response = Response.parsexml(reply)
@@ -143,7 +142,9 @@ class Daemon:
             Error.die(2, data['msg'] if error is None else error, data)
         print('LOGIN OK')
 
-    def get_login_query(self, args={}):
+    def get_login_query(self, args=None):
+        if args is None:
+            args = {}
         if self.login_query is None:
             greeting = self.client.get_greeting()
             greetobj = Response.parsexml(greeting)
@@ -176,4 +177,3 @@ class Daemon:
 
     def smart_request(self, query):
         return SmartRequest(query).perform(self.request, self.relogin)
-
