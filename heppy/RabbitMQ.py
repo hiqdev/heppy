@@ -29,7 +29,7 @@ class RPCServer:
                 self.on_request(self.channel, method, props, body)
             recheck()
 
-    def on_request(self, ch, method, props, body):
+    def on_request(self, ch, method, props, body: bytes) -> None:
         reply = self.response(body)
 
         ch.basic_publish(
@@ -59,11 +59,11 @@ class RPCClient:
             auto_ack=True,
         )
 
-    def on_response(self, ch, method, props, body):
+    def on_response(self, ch, method, props, body: bytes) -> None:
         if self.corr_id == props.correlation_id:
             self.reply = body
 
-    def request(self, query):
+    def request(self, query: bytes) -> bytes:
         self.reply = None
         self.corr_id = str(uuid.uuid4())
         self.channel.basic_publish(exchange='',
