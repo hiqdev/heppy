@@ -4,7 +4,6 @@
 
 import json
 import sentry_sdk
-
 from pprint import pprint
 
 from heppy.Args import Args
@@ -18,7 +17,7 @@ from heppy.RabbitMQ import RPCClient
 args = Args()
 config = Config(args.get('path'))
 
-if (config.get('sentry_dsn', None) is not None):
+if config.get('sentry_dsn', None) is not None:
     sentry_sdk.init(
         dsn=config.get('sentry_dsn'),
         enable_tracing=True,
@@ -27,11 +26,9 @@ if (config.get('sentry_dsn', None) is not None):
 is_json = args.pop('json', False)
 if is_json:
     query = json.dumps(args)
-    print(query)
 else:
     request = Request.build(args)
-    query = str(request)
-    print(Request.prettifyxml(query))
+    query = request.decode('utf-8') if isinstance(request, bytes) else str(request)
 
 rabbit_config = config.get('RabbitMQ', {})
 rabbit_config.setdefault('queue', 'heppy-' + config['name'])
@@ -40,10 +37,10 @@ client = RPCClient(rabbit_config)
 
 reply = client.request(query)
 print(reply)
+
 if is_json:
     pprint(json.loads(reply))
 else:
     print(Request.prettifyxml(reply))
-    response = Response.parsexml(reply)
-    pprint(response.data)
-
+    response = Response.parsexml(reply.decode())
+    print(response)

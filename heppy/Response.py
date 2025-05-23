@@ -55,7 +55,7 @@ class Response(Doc):
     def put_to_list(self, name, value=[]):
         if name not in self.data:
             self.data[name] = []
-        if type(value) in [list, tuple]:
+        if isinstance(value, (list, tuple)):
             self.data[name].extend(value)
         else:
             self.data[name].append(value)
@@ -75,6 +75,10 @@ class Response(Doc):
 
     @staticmethod
     def parsexml(xml):
+        if isinstance(xml, bytes):
+            xml = xml.decode('utf-8-sig')  # Handle UTF-8 with BOM
+        xml = xml.strip()
+        xml = xml.strip("b")
         root = ET.fromstring(xml)
         return Response(root)
 

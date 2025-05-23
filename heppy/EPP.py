@@ -21,7 +21,7 @@ class REPP:
     def get_greeting(self):
         return self.greeting
 
-    def request(self, xml):
+    def request(self, xml) -> bytes:
         res = self.epp.request(xml)
         if not res:
             self.connect()
@@ -54,13 +54,13 @@ class EPP:
     def get_greeting(self):
         return self.greeting
 
-    def request(self, xml):
+    def request(self, xml) -> bytes:
         self.write(xml)
         return self.read()
 
-    def write(self, xml):
+    def write(self, xml) -> int:
         Net.write(self.ssl, xml)
 
-    def read(self):
+    def read(self) -> bytes:
         return Net.read(self.ssl)
 

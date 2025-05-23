@@ -12,38 +12,45 @@ def format_32():
         format_32 = ">H"
         if struct.calcsize(format_32) != 4:
             raise Exception("Cannot find a 32 bits integer")
-    else:
-        pass
     return format_32
 
 FORMAT_32 = format_32()
 
-def int_from_net(data):
+def int_from_net(data: bytes) -> int:
     return struct.unpack(FORMAT_32, data)[0]
 
-def int_to_net(value):
+def int_to_net(value: int) -> bytes:
     return struct.pack(FORMAT_32, value)
 
-def write(socket, data):
-    # +4 for the length field itself (section 4 mandates that)
-    # +2 for the CRLF at the end
-    length = int_to_net(len(data) + 4 + 2)
-    socket.settimeout(20)
-    socket.send(length)
-    sended = socket.send(data + "\r\n")
-    socket.settimeout(None)
+def write(sock, data: bytes) -> int:
+    """
+    Send data to socket with length prefix and CRLF suffix.
+    data must be bytes.
+    """
+    length = int_to_net(len(data) + 4 + 2)  # 4 bytes length + 2 bytes CRLF
+    sock.settimeout(20)
+    sock.sendall(length)
+    sended = sock.send((data if isinstance(data, bytes) else data.encode('utf-8')) + b"\r\n")
+    sock.settimeout(None)
     return sended
 
-def read(socket):
-    socket.settimeout(20)
-    net = socket.recv(4)
+def read(sock) -> bytes:
+    """
+    Read a message from socket that is prefixed with 4 bytes length.
+    Returns bytes (without trailing CRLF).
+    """
+    sock.settimeout(20)
+    net = sock.recv(4)
     if net:
-        length = int_from_net(net)-4
-        buffer = ''
-        while (length>len(buffer)):
-            buffer += socket.recv(4096)
-        socket.settimeout(None)
-        return buffer
+        length = int_from_net(net) - 4
+        buffer = b''
+        while length > len(buffer):
+            chunk = sock.recv(min(4096, length - len(buffer)))
+            if not chunk:
+                break
+            buffer += chunk
+        sock.settimeout(None)
+        return buffer.rstrip(b"\r\n")
     else:
-        socket.settimeout(None)
-
+        sock.settimeout(None)
+        return b''

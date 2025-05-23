@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 
 import os
 import time
@@ -6,8 +6,7 @@ import socket
 
 from pprint import pprint
 
-from datetime import datetime
-from datetime import timedelta
+from datetime import datetime, timedelta
 
 from heppy.EPP import REPP
 from heppy.Error import Error
@@ -51,7 +50,7 @@ class Daemon:
         print("HELLO")
         self.force_hello = True
 
-    def start(self, args = {}):
+    def start(self, args={}):
         self.connect()
         self.login(args)
         self.consume()
@@ -67,18 +66,18 @@ class Daemon:
             self.quit()
         if self.needs_hello():
             response = self.smart_request({'command': 'epp:hello'})
-            code = response.get('result_code', None);
+            code = response.get('result_code', None)
             if code in ['2002', '2200', '2500', '2501', '2502']:
                 self.quit()
             self.last_hello = datetime.now()
 
         left = (self.keepaliveDelta - (datetime.now() - self.last_command)).total_seconds()
-        #print("LOOP left:%i" % left)
+        # print("LOOP left:%i" % left)
 
     # alternative consuming approach
     # worked with pika 0.12, add_timeout was removed in pika 1.0
     def basic_loop(self):
-        while (True):
+        while True:
             self.recheck()
             self.server.connection.add_timeout(self.refreshSeconds, self.stop_consuming)
             self.server.basic_consume(self.smart_request)
@@ -97,8 +96,8 @@ class Daemon:
     def stop_consuming(self):
         self.server.channel.stop_consuming()
 
-    def systemd(self, args = {}):
-        if not 0 in args:
+    def systemd(self, args={}):
+        if 0 not in args:
             Error.die(3, 'no systemd command given')
 
         command = args.pop(0)
@@ -107,7 +106,7 @@ class Daemon:
         Systemd(
             name='heppy-' + self.config['name'],
             num=self.config['clientsNum'],
-            exec_start="%s %s start" % (bin_path, config_path),
+            exec_start=f"{bin_path} {config_path} start",
             work_dir=os.path.dirname(config_path)
         ).call(command, args)
 
@@ -128,7 +127,7 @@ class Daemon:
             print(Request.prettifyxml(query))
             reply = self.request(query)
             print(Request.prettifyxml(reply))
-        except Error as e:
+        except Error:
             Error.die(2, 'failed perform login request')
         error = None
         try:
@@ -144,7 +143,7 @@ class Daemon:
             Error.die(2, data['msg'] if error is None else error, data)
         print('LOGIN OK')
 
-    def get_login_query(self, args = {}):
+    def get_login_query(self, args={}):
         if self.login_query is None:
             greeting = self.client.get_greeting()
             greetobj = Response.parsexml(greeting)
@@ -162,13 +161,13 @@ class Daemon:
         try:
             self.client = Client(self.config['local']['address'])
             self.client.connect()
-        except socket.error as e:
+        except socket.error:
             os.system(self.config['zdir'] + '/eppyd ' + self.config.path + ' &')
             time.sleep(2)
             self.client = Client(self.config['local']['address'])
 
     def request(self, query):
-        pprint(query)
+        pprint(type(query))
         with self.handler.block_signals():
             self.last_command = datetime.now()
             reply = self.client.request(query)

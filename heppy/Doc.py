@@ -34,7 +34,7 @@ class Doc:
         'host_hm':      'http://hostmaster.ua/epp/host-1.1',
         'contact_hm':   'http://hostmaster.ua/epp/contact-1.1',
         'rgp_hm':       'http://hostmaster.ua/epp/rgp-1.1',
-        'secDNShm':    'http://hostmaster.ua/epp/secDNS-1.1',
+        'secDNShm':     'http://hostmaster.ua/epp/secDNS-1.1',
         'uaepp':        'http://hostmaster.ua/epp/uaepp-1.1',
         'balance':      'http://hostmaster.ua/epp/balance-1.0',
         'keysys':       'http://www.key-systems.net/epp/keysys-1.0',
@@ -61,19 +61,19 @@ class Doc:
     def get_module(self, ns):
         if ns in self.nsmap:
             ns = self.nsmap[ns]
-        if self.modules == {}:
+        if not self.modules:
             for name, nsi in self.nsmap.items():
                 self.modules[nsi] = name
         module = self.modules.get(ns)
-        if isinstance(module, basestring):
+        if isinstance(module, str):
             module = self.build_module(ns, module)
             self.modules[ns] = module
         return module
 
     def build_module(self, ns, name):
         lib = import_module('heppy.modules.' + name)
-        type = getattr(lib, name)
-        return type(ns)
+        klass = getattr(lib, name)
+        return klass(ns)
 
     def get(self, name, default=None):
         return self.data.get(name, default)
@@ -87,3 +87,4 @@ class Doc:
 
     def set(self, name, value):
         self.data[name] = value
+
