@@ -72,7 +72,7 @@ class RPCClient:
                 reply_to = self.reply_queue,
                 correlation_id = self.corr_id,
             ),
-            body=str(query)
+            body=str(query.decode('utf-8') if isinstance(query, bytes) else query)
         )
         while self.reply is None:
             self.connection.process_data_events()

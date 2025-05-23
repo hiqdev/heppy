@@ -13,10 +13,13 @@ class Request(Doc):
         self.command    = None
         self.extension  = None
 
-    def __str__(self, encoding='UTF-8', method='xml'):
+    def __str__(self, encoding='UTF-8', method='xml') -> str:
         if self.raw is None:
-            return self.toxml(encoding, method)
+            xml_bytes = self.toxml(encoding, method)
+            return xml_bytes.decode(encoding)
         else:
+            if isinstance(self.raw, bytes):
+                return self.raw.decode(encoding)
             return self.raw
 
     def toxml(self, encoding='UTF-8', method='xml'):
@@ -64,8 +67,9 @@ class Request(Doc):
 
     @staticmethod
     def prettifyxml(request):
-        string = str(request)
-        if string[0] != '<':
+        string = string = request.decode('utf-8') if isinstance(request, bytes) else str(request)
+        if not string.startswith('<'):
             return string
         dom = xml.dom.minidom.parseString(string)
         return dom.toprettyxml(indent='    ')
+
