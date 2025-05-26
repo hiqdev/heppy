@@ -4,6 +4,7 @@ import struct
 import socket
 import xml.etree.ElementTree as ET
 
+from typing import Union
 from pprint import pprint
 from heppy.Error import Error
 from heppy.Request import Request
@@ -31,7 +32,7 @@ def int_to_net(value: int) -> bytes:
     return struct.pack(FORMAT_32, value)
 
 # Remove BOM from a string (works for both str and bytes)
-def remove_bom(s):
+def remove_bom(s: Union[bytes, str]):
     BOM = '\ufeff'
     if isinstance(s, bytes):
         return s.lstrip(b'\xef\xbb\xbf')
@@ -39,10 +40,11 @@ def remove_bom(s):
         return s.lstrip(BOM)
     return s
 
-def write(sock: socket, data) -> int:
+def write(sock: socket, data: Union[bytes, str]) -> int:
     """
     Send data to socket with length prefix and CRLF suffix.
     data must be bytes or str.
+    Returns number of bytes sent (including length prefix)
     """
     if not isinstance(data, (bytes, str)):
         raise Error("Data must be bytes or str", {"data": data})
@@ -63,7 +65,7 @@ def write(sock: socket, data) -> int:
 def read(sock: socket) -> str:
     """
     Read a message from socket that is prefixed with 4 bytes length.
-    Returns bytes (without trailing CRLF).
+    Returns str (without trailing CRLF).
     """
     sock.settimeout(20)
     net = sock.recv(4)
