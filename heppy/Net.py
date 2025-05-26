@@ -46,7 +46,7 @@ def write(sock: socket, data) -> int:
     if not isinstance(data, (bytes, str)):
         raise Error("Data must be bytes or str", {"data": data})
     data = remove_bom(data)  # Remove BOM if present
-    if isinstance(data, byte):
+    if isinstance(data, bytes):
         data = data.decode('utf-8')  # Convert bytes to str if necessary
     if not data.endswith('\r\n'):
         data += '\r\n'
