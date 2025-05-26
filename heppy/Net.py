@@ -44,6 +44,8 @@ def write(sock: socket, data: Union[bytes, str]) -> int:
     data must be bytes or str.
     Returns number of bytes sent (including length prefix)
     """
+    if sock is None:
+        raise Error('Connection lost to registry or not connected')
     if not isinstance(data, (bytes, str)):
         raise Error("Data must be bytes or str", {"data": data})
     data = remove_bom(data)  # Remove BOM if present
@@ -55,15 +57,17 @@ def write(sock: socket, data: Union[bytes, str]) -> int:
     length = int_to_net(len(data_bytes) + 4)  # 4 bytes length
     sock.settimeout(20)
     sock.sendall(length)
-    sent = sock.sendall(data_bytes)
+    sock.sendall(data_bytes)
     sock.settimeout(None)
-    return length if sent is None else 0
+    return length
 
 def read(sock: socket) -> str:
     """
     Read a message from socket that is prefixed with 4 bytes length.
     Returns string (without trailing CRLF).
     """
+    if sock is None:
+        raise Error('Connection lost to registry or not connected')
     sock.settimeout(20)
     net = sock.recv(4)
     if net:
