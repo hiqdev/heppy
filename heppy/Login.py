@@ -1,4 +1,5 @@
 #!/usr/bin/env python
+# -*- coding: utf-8 -*-
 
 from heppy.Error import Error
 from heppy.Request import Request

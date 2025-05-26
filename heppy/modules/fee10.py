@@ -1,8 +1,9 @@
+# -*- coding: utf-8 -*-
+
 from ..Module import Module
 from ..TagData import TagData
 from pprint import pprint
 from fee import fee
-
 
 class fee10(fee):
     opmap = {
