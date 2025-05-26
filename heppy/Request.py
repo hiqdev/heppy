@@ -33,10 +33,12 @@ class Request(Doc):
             res.text = str(text.decode('utf-8') if isinstance(text, bytes) else text)
         return res
 
-    def add_subtag(self, parent, tag, attrs={}, text=None):
+    def add_subtag(self, parent, tag, attrs=None, text=None):
+        if attrs is None:
+            attrs = {}
         res = ET.SubElement(parent, tag, attrs)
         if text is not None:
-            res.text = str(text)
+            res.text = str(text.decode('utf-8') if isinstance(text, bytes) else text)
         return res
 
     def add_subtags(self, parent, tags):
@@ -47,7 +49,7 @@ class Request(Doc):
         return parent
 
     @staticmethod
-    def build(data) -> Request:
+    def build(data):
         request = Request()
         request.render(data['command'], data)
         for extension in data.get('extensions', {}):
