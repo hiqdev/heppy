@@ -43,11 +43,18 @@ def write(sock: socket, data) -> int:
     Send data to socket with length prefix and CRLF suffix.
     data must be bytes or str.
     """
+    if not isinstance(data, (bytes, str)):
+        raise Error("Data must be bytes or str", {"data": data})
+    data = remove_bom(data)  # Remove BOM if present
+    if isinstance(data, byte):
+        data = data.decode('utf-8')  # Convert bytes to str if necessary
+    if not data.endswith('\r\n'):
+        data += '\r\n'
     data_bytes = data if isinstance(data, bytes) else data.encode('utf-8')
-    length = int_to_net(len(data_bytes) + 4 + 2)  # 4 bytes length + 2 bytes CRLF
+    length = int_to_net(len(data) + 4)  # 4 bytes length + 2 bytes CRLF
     sock.settimeout(20)
     sock.sendall(length)
-    sent = sock.sendall(data_bytes + b"\r\n")
+    sent = sock.sendall(data_bytes)
     sock.settimeout(None)
     if sent is None or sent == 0:
         raise Error("Socket send failed", {"data": data})
