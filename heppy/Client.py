@@ -49,3 +49,4 @@ class Client:
             return True
         except (socket.error, OSError):  # Catch specific exceptions
             return False
+
