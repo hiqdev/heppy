@@ -41,7 +41,7 @@ reply = client.request(query)
 if is_json:
     pprint(json.loads(reply))
 else:
+    print(Request.prettifyxml(reply))
     response = Response.parsexml(reply)
-    print(response)
     pprint(response.data)
 
