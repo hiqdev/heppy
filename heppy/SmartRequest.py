@@ -2,7 +2,6 @@
 # -*- coding: utf-8 -*-
 
 import json
-import sys
 from enum import Enum
 from heppy.Request import Request
 from heppy.Response import Response
