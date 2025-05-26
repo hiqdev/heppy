@@ -6,6 +6,7 @@ import xml.etree.ElementTree as ET
 
 from pprint import pprint
 from heppy.Error import Error
+from heppy.Request import Request
 
 # http://www.bortzmeyer.org/4934.html
 def format_32():
@@ -50,15 +51,14 @@ def write(sock: socket, data) -> int:
         data = data.decode('utf-8')  # Convert bytes to str if necessary
     if not data.endswith('\r\n'):
         data += '\r\n'
+    pprint(Request.prettifyxml(data))
     data_bytes = data if isinstance(data, bytes) else data.encode('utf-8')
     length = int_to_net(len(data) + 4)  # 4 bytes length + 2 bytes CRLF
     sock.settimeout(20)
     sock.sendall(length)
     sent = sock.sendall(data_bytes)
     sock.settimeout(None)
-    if sent is None or sent == 0:
-        raise Error("Socket send failed", {"data": data})
-    return sent + 4
+    return length if sent is None else 0
 
 def read(sock: socket) -> str:
     """
@@ -76,7 +76,9 @@ def read(sock: socket) -> str:
                 break
             buffer += chunk
         sock.settimeout(None)
-        return (buffer.rstrip(b"\r\n")).decode('utf-8')
+        answer = (buffer.rstrip(b"\r\n")).decode('utf-8')
+        pprint(Request.prettifyxml(answer+"\r\n"))
+        return answer
     else:
         sock.settimeout(None)
         return ''
