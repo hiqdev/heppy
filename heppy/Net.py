@@ -53,7 +53,7 @@ def write(sock: socket, data) -> int:
         data += '\r\n'
     pprint(Request.prettifyxml(data))
     data_bytes = data if isinstance(data, bytes) else data.encode('utf-8')
-    length = int_to_net(len(data) + 4)  # 4 bytes length + 2 bytes CRLF
+    length = int_to_net(len(data_bytes) + 4)  # 4 bytes length + 2 bytes CRLF
     sock.settimeout(20)
     sock.sendall(length)
     sent = sock.sendall(data_bytes)
