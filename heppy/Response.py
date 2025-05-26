@@ -54,7 +54,9 @@ class Response(Doc):
         for k, v in values.items():
             self.data[name][k] = v
 
-    def put_to_list(self, name, value=[]):
+    def put_to_list(self, name, value=None):
+        if value is None:
+            value = []
         if name not in self.data:
             self.data[name] = []
         if isinstance(value, (list, tuple)):

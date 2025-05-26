@@ -5,6 +5,7 @@ import socket
 import xml.etree.ElementTree as ET
 
 from pprint import pprint
+from heppy.Error import Error
 
 # http://www.bortzmeyer.org/4934.html
 def format_32():
@@ -40,14 +41,17 @@ def remove_bom(s):
 def write(sock: socket, data) -> int:
     """
     Send data to socket with length prefix and CRLF suffix.
-    data must be bytes.
+    data must be bytes or str.
     """
-    length = int_to_net(len(data) + 4 + 2)  # 4 bytes length + 2 bytes CRLF
+    data_bytes = data if isinstance(data, bytes) else data.encode('utf-8')
+    length = int_to_net(len(data_bytes) + 4 + 2)  # 4 bytes length + 2 bytes CRLF
     sock.settimeout(20)
     sock.sendall(length)
-    sended = sock.send((data if isinstance(data, bytes) else data.encode('utf-8')) + b"\r\n")
+    sent = sock.sendall(data_bytes + b"\r\n")
     sock.settimeout(None)
-    return sended
+    if sent is None or sent == 0:
+        raise Error("Socket send failed", {"data": data})
+    return sent + 4
 
 def read(sock: socket) -> str:
     """

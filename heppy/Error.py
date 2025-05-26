@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 
+import sys
 import logging
 
 
@@ -21,5 +22,5 @@ class Error(Exception):
         if message:
             print(message)
         #logging.exception(message)
-        exit(code)
+        sys.exit(code)
 
