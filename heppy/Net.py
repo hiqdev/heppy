@@ -54,9 +54,8 @@ def write(sock: socket, data: Union[bytes, str]) -> int:
         data = data.decode('utf-8')  # Convert bytes to str if necessary
     if not data.endswith('\r\n'):
         data += '\r\n'
-    pprint(Request.prettifyxml(data))
-    data_bytes = data if isinstance(data, bytes) else data.encode('utf-8')
-    length = int_to_net(len(data_bytes) + 4)  # 4 bytes length + 2 bytes CRLF
+    data_bytes = data.encode('utf-8')
+    length = int_to_net(len(data_bytes) + 4)  # 4 bytes length
     sock.settimeout(20)
     sock.sendall(length)
     sent = sock.sendall(data_bytes)
@@ -66,7 +65,7 @@ def write(sock: socket, data: Union[bytes, str]) -> int:
 def read(sock: socket) -> str:
     """
     Read a message from socket that is prefixed with 4 bytes length.
-    Returns str (without trailing CRLF).
+    Returns string (without trailing CRLF).
     """
     sock.settimeout(20)
     net = sock.recv(4)
@@ -80,7 +79,6 @@ def read(sock: socket) -> str:
             buffer += chunk
         sock.settimeout(None)
         answer = (buffer.rstrip(b"\r\n")).decode('utf-8')
-        pprint(Request.prettifyxml(answer+"\r\n"))
         return answer
     else:
         sock.settimeout(None)
