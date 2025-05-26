@@ -5,6 +5,7 @@ import socket
 import xml.etree.ElementTree as ET
 
 from typing import Union
+from socket import socket
 from pprint import pprint
 from heppy.Error import Error
 from heppy.Request import Request
