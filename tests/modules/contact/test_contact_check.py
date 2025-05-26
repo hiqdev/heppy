@@ -1,7 +1,7 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 
 import unittest
-from ..TestCase import TestCase
+from ..TestCase import TestCase 
 
 
 class TestContactCheck(TestCase):
@@ -38,8 +38,7 @@ class TestContactCheck(TestCase):
             },
             'clTRID': 'XXXX-11',
             'result_code': '1000',
-            'result_lang': 'en-US',
-            'result_msg': 'Command completed successfully',
+            'msg':          'Command completed successfully',
             'svTRID': 'SRO-1538655515906'
         }, '''<?xml version="1.0" ?>
 <epp xmlns="urn:ietf:params:xml:ns:epp-1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="urn:ietf:params:xml:ns:epp-1.0 epp-1.0.xsd">
