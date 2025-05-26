@@ -68,7 +68,7 @@ class Request(Doc):
         getattr(module, method)(self, data)
 
     @staticmethod
-    def prettifyxml(request):
+    def prettifyxml(request) -> str:
         string = request.decode('utf-8') if isinstance(request, bytes) else request
         if not string.startswith('<'):
             return string

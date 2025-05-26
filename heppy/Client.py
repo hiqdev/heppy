@@ -25,9 +25,9 @@ class Client:
             self.socket.close()  # Ensure the socket is properly closed
         self.socket = None
 
-    def write(self, data) -> None:
+    def write(self, data) -> int:
         self.connect()
-        Net.write(self.socket, data if isinstance(data, str) else date.encode('utf-8'))
+        return Net.write(self.socket, data if isinstance(data, str) else data.encode('utf-8'))
 
     def read(self) -> str:
         res = Net.read(self.socket)
