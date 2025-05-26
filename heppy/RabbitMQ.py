@@ -79,6 +79,9 @@ class RPCClient:
             self.connection.process_data_events()
         return self.reply if isinstance(self.reply, str) else (self.reply).decode('utf-8')
 
+    def __del__(self):
+        self.connection.close()
+
 def connection_parameters(config):
     args = {
         'host': config.get('host', ConnectionParameters._DEFAULT),
