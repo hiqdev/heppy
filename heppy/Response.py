@@ -80,9 +80,8 @@ class Response(Doc):
     @staticmethod
     def parsexml(xml):
         if isinstance(xml, bytes):
-            xml = xml.decode('utf-8-sig')  # Handle UTF-8 with BOM
+            xml = xml.decode('utf-8')  # Handle UTF-8 with BOM
         xml = xml.strip()
-        xml = xml.strip("b")
         root = ET.fromstring(xml)
         return Response(root)
 
