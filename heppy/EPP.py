@@ -9,6 +9,7 @@ from datetime import datetime
 from heppy import Net
 from heppy.Config import Config
 from heppy.Request import Request
+from typing import Union 
 from pprint import pprint
 
 
@@ -24,7 +25,7 @@ class REPP:
     def get_greeting(self) -> str:
         return self.greeting
 
-    def request(self, xml) -> str:
+    def request(self, xml: Union[str, bytes]) -> str:
         res = self.epp.request(xml)
         if not res:
             self.connect()
@@ -57,12 +58,12 @@ class EPP:
     def get_greeting(self) -> str:
         return self.greeting
 
-    def request(self, xml) -> str:
+    def request(self, xml: Union[str, bytes]) -> str:
         pprint(Request.prettifyxml(xml))
         self.write(xml)
         return self.read()
 
-    def write(self, xml) -> int:
+    def write(self, xml: Union[str, bytes]) -> int:
         return Net.write(self.ssl, xml if isinstance(xml, str) else xml.decode('utf-8'))
 
     def read(self) -> str:
