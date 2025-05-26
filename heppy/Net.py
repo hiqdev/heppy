@@ -1,4 +1,8 @@
+# -*- coding: utf-8 -*-
 import struct
+import xml.etree.ElementTree as ET
+
+from pprint import pprint
 
 # http://www.bortzmeyer.org/4934.html
 def format_32():
@@ -22,11 +26,21 @@ def int_from_net(data: bytes) -> int:
 def int_to_net(value: int) -> bytes:
     return struct.pack(FORMAT_32, value)
 
-def write(sock, data: bytes) -> int:
+# Remove BOM from a string (works for both str and bytes)
+def remove_bom(s):
+    BOM = '\ufeff'
+    if isinstance(s, bytes):
+        return s.lstrip(b'\xef\xbb\xbf')
+    elif isinstance(s, str):
+        return s.lstrip(BOM)
+    return s
+
+def write(sock, data) -> int:
     """
     Send data to socket with length prefix and CRLF suffix.
     data must be bytes.
     """
+    pprint(data)
     length = int_to_net(len(data) + 4 + 2)  # 4 bytes length + 2 bytes CRLF
     sock.settimeout(20)
     sock.sendall(length)
@@ -34,7 +48,7 @@ def write(sock, data: bytes) -> int:
     sock.settimeout(None)
     return sended
 
-def read(sock) -> bytes:
+def read(sock) -> str:
     """
     Read a message from socket that is prefixed with 4 bytes length.
     Returns bytes (without trailing CRLF).
@@ -50,7 +64,7 @@ def read(sock) -> bytes:
                 break
             buffer += chunk
         sock.settimeout(None)
-        return buffer.rstrip(b"\r\n")
+        return (buffer.rstrip(b"\r\n")).decode('utf-8')
     else:
         sock.settimeout(None)
-        return b''
+        return ''

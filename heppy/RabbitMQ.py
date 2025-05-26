@@ -2,6 +2,7 @@
 
 import pika
 import uuid
+from pprint import pprint
 
 from pika.connection import Parameters
 from pika.connection import ConnectionParameters
@@ -29,16 +30,15 @@ class RPCServer:
                 self.on_request(self.channel, method, props, body)
             recheck()
 
-    def on_request(self, ch, method, props, body: bytes) -> None:
-        reply = self.response(body)
-
+    def on_request(self, ch, method, props, body) -> None:
+        reply = self.response(body.decode('utf-8') if isinstance(body, bytes) else body)
         ch.basic_publish(
             exchange='',
             routing_key=props.reply_to if props.reply_to is not None else method.routing_key,
             properties=pika.BasicProperties(
                 correlation_id = props.correlation_id,
             ),
-            body=str(reply),
+            body=str(reply.decode('utf-8') if isinstance(reply, bytes) else reply),
         )
         ch.basic_ack(delivery_tag = method.delivery_tag)
 
@@ -63,7 +63,7 @@ class RPCClient:
         if self.corr_id == props.correlation_id:
             self.reply = body
 
-    def request(self, query: bytes) -> bytes:
+    def request(self, query) -> str:
         self.reply = None
         self.corr_id = str(uuid.uuid4())
         self.channel.basic_publish(exchange='',
@@ -72,11 +72,11 @@ class RPCClient:
                 reply_to = self.reply_queue,
                 correlation_id = self.corr_id,
             ),
-            body=str(query.decode('utf-8') if isinstance(query, bytes) else query)
+            body=(query.decode('utf-8') if isinstance(query, bytes) else query)
         )
         while self.reply is None:
             self.connection.process_data_events()
-        return self.reply
+        return self.reply if isinstance(self.reply, str) else (self.reply).decode('utf-8')
 
 def connection_parameters(config):
     args = {

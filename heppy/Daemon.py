@@ -167,13 +167,13 @@ class Daemon:
             time.sleep(2)
             self.client = Client(self.config['local']['address'])
 
-    def request(self, query):
-        pprint(type(query))
+    def request(self, query) -> str:
+        pprint(query)
         with self.handler.block_signals():
             self.last_command = datetime.now()
-            reply = self.client.request(query)
+            reply = self.client.request(query if isinstance(query, bytes) else query.encode('utf-8'))
         pprint(reply)
-        return reply
+        return reply if isinstance(reply, str) else reply.decode('utf-8')
 
     def smart_request(self, query):
         return SmartRequest(query).perform(self.request, self.relogin)
