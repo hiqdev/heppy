@@ -10,13 +10,15 @@ from heppy import Net
 from heppy.Config import Config
 from heppy.Request import Request
 from typing import Union 
-from pprint import pprint
 
 
 class REPP:
     def __init__(self, config):
         self.config = config
         self.connect()
+
+    def __del__(self):
+        self.epp.disconnect()
 
     def connect(self):
         self.epp = EPP(self.config)
@@ -47,6 +49,14 @@ class EPP:
         self.greeting = self.read()
         self.config['start_time'] = datetime.now().isoformat(' ')
 
+    def __del__(self):
+        self.disconnect()
+
+    def disconnect(self):
+        if self.socket:
+            self.socket.close()
+        self.socket = None
+
     def get_path(self, name: str) -> str:
         return self.find_path(self.config[name])
 
@@ -59,12 +69,11 @@ class EPP:
         return self.greeting
 
     def request(self, xml: Union[str, bytes]) -> str:
-        pprint(Request.prettifyxml(xml))
         self.write(xml)
         return self.read()
 
     def write(self, xml: Union[str, bytes]) -> int:
-        return Net.write(self.ssl, xml if isinstance(xml, str) else xml.decode('utf-8'))
+        return Net.write(self.ssl, xml.decode('utf-8') if isinstance(xml, bytes) else xml)
 
     def read(self) -> str:
         return Net.read(self.ssl)
