@@ -3,7 +3,6 @@
 import xml.dom.minidom
 import xml.etree.ElementTree as ET
 
-from pprint import pprint
 from heppy.Doc import Doc
 
 
