@@ -69,7 +69,7 @@ class Request(Doc):
 
     @staticmethod
     def prettifyxml(request):
-        string = string = request.decode('utf-8') if isinstance(request, bytes) else request
+        string = request.decode('utf-8') if isinstance(request, bytes) else request
         if not string.startswith('<'):
             return string
         dom = xml.dom.minidom.parseString(string)
