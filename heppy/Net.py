@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 import struct
+import socket
 import xml.etree.ElementTree as ET
 
 from pprint import pprint
@@ -35,12 +36,11 @@ def remove_bom(s):
         return s.lstrip(BOM)
     return s
 
-def write(sock, data) -> int:
+def write(sock: socket, data) -> int:
     """
     Send data to socket with length prefix and CRLF suffix.
     data must be bytes.
     """
-    pprint(data)
     length = int_to_net(len(data) + 4 + 2)  # 4 bytes length + 2 bytes CRLF
     sock.settimeout(20)
     sock.sendall(length)
@@ -48,7 +48,7 @@ def write(sock, data) -> int:
     sock.settimeout(None)
     return sended
 
-def read(sock) -> str:
+def read(sock: socket) -> str:
     """
     Read a message from socket that is prefixed with 4 bytes length.
     Returns bytes (without trailing CRLF).
@@ -68,3 +68,4 @@ def read(sock) -> str:
     else:
         sock.settimeout(None)
         return ''
+
