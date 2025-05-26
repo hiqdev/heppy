@@ -21,10 +21,10 @@ class REPP:
         self.epp = EPP(self.config)
         self.greeting = self.epp.greeting
 
-    def get_greeting(self) -> bytes:
+    def get_greeting(self) -> str:
         return self.greeting
 
-    def request(self, xml) -> bytes:
+    def request(self, xml) -> str:
         res = self.epp.request(xml)
         if not res:
             self.connect()
@@ -35,7 +35,7 @@ class EPP:
     def __init__(self, config):
         self.config = config
         self.socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        if ('bind' in self.config and self.config.get('bind', None) != None):
+        if ('bind' in self.config and self.config.get('bind', None) is not None):
             self.socket.bind((self.config['bind'], 0))
         self.socket.connect((self.config['host'], self.config['port']))
         self.ssl = ssl.wrap_socket(self.socket,
@@ -54,10 +54,10 @@ class EPP:
             return filename
         return self.config['dir'] + '/' + filename
 
-    def get_greeting(self):
+    def get_greeting(self) -> str:
         return self.greeting
 
-    def request(self, xml) -> bytes:
+    def request(self, xml) -> str:
         pprint(Request.prettifyxml(xml))
         self.write(xml)
         return self.read()
@@ -65,6 +65,6 @@ class EPP:
     def write(self, xml) -> int:
         return Net.write(self.ssl, xml if isinstance(xml, str) else xml.decode('utf-8'))
 
-    def read(self) -> bytes:
+    def read(self) -> str:
         return Net.read(self.ssl)
 
