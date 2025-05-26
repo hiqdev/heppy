@@ -3,7 +3,6 @@
 
 import pika
 import uuid
-from pprint import pprint
 
 from pika.connection import Parameters
 from pika.connection import ConnectionParameters
