@@ -24,20 +24,21 @@ class Client:
             self.socket.close()  # Ensure the socket is properly closed
         self.socket = None
 
-    def write(self, data: bytes) -> None:
+    def write(self, data) -> None:
         self.connect()
-        Net.write(self.socket, data)
+        Net.write(self.socket, data if isinstance(data, str) else date.encode('utf-8'))
 
-    def read(self) -> bytes:
+    def read(self) -> str:
         res = Net.read(self.socket)
         self.disconnect()
-        return res
+        return res if isinstance(res, str) else res.decode('utf-8')
 
-    def request(self, data: bytes) -> bytes:
+    def request(self, data) -> str:
         self.write(data)
-        return self.read()
+        response = self.read()
+        return response if isinstance(response , str) else response.decode('utf-8')
 
-    def get_greeting(self) -> bytes:
+    def get_greeting(self) -> str:
         return self.request('greeting')
 
     @staticmethod
