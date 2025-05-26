@@ -36,8 +36,7 @@ class Client:
 
     def request(self, data) -> str:
         self.write(data)
-        response = self.read()
-        return response if isinstance(response , str) else response.decode('utf-8')
+        return self.read()
 
     def get_greeting(self) -> str:
         return self.request('greeting')
