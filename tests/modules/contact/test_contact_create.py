@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 
 import unittest
 from ..TestCase import TestCase
@@ -92,8 +92,7 @@ class TestContactCreate(TestCase):
             'crDate':       '2018-10-04T12:09:03.0Z',
             'id':           'sh8013',
             'result_code':  '1000',
-            'result_lang':  'en-US',
-            'result_msg':   'Command completed successfully',
+            'msg':          'Command completed successfully',
             'svTRID':       'SRW-425500000011130408'
         }, '''<?xml version="1.0" ?>
 <epp xmlns="urn:ietf:params:xml:ns:epp-1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="urn:ietf:params:xml:ns:epp-1.0 epp-1.0.xsd">
