@@ -45,7 +45,7 @@ class Daemon:
         raise SystemExit("Daemon is quitting...")
 
     def hello(self):
-        print("HELLO")
+        pprint("HELLO")
         self.force_hello = True
 
     def start(self, args=None):
@@ -123,9 +123,9 @@ class Daemon:
             args = {}
         try:
             query = self.get_login_query(args)
-            print(Request.prettifyxml(query))
+            pprint(Request.prettifyxml(query))
             reply = self.request(query)
-            print(Request.prettifyxml(reply))
+            pprint(Request.prettifyxml(reply))
         except Error:
             Error.die(2, 'failed to perform login request')
         error = None
@@ -140,7 +140,7 @@ class Daemon:
             Error.die(2, 'bad login response', data)
         if data['result_code'] in ['2200', '2500', '2501', '2502']:
             Error.die(2, data['msg'] if error is None else error, data)
-        print('LOGIN OK')
+        pprint('LOGIN OK')
 
     def get_login_query(self, args=None):
         if args is None:
