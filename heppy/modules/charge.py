@@ -2,7 +2,6 @@
 
 from ..Module import Module
 from ..TagData import TagData
-from pprint import pprint
 
 class charge(Module):
     opmap = {
