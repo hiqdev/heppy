@@ -2,8 +2,6 @@
 
 from ..Module import Module
 from ..TagData import TagData
-from pprint import pprint
-
 
 class keysys(Module):
     opmap = {

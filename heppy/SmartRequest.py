@@ -4,7 +4,6 @@
 import json
 import sys
 from enum import Enum
-from pprint import pprint
 from heppy.Request import Request
 from heppy.Response import Response
 

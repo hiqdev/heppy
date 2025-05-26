@@ -4,9 +4,6 @@
 import signal
 from contextlib import contextmanager
 
-from pprint import pprint
-
-
 class SignalHandler:
     def __init__(self, callbacks):
         """Defines callbacks.

@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 
 from collections import OrderedDict
-from pprint import pprint
 
 from ..Module import Module
 from ..TagData import TagData
