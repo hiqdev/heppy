@@ -1,6 +1,7 @@
+# -*- coding: utf-8 -*-
+
 from ..Module import Module
 from ..TagData import TagData
-
 
 class idn(Module):
 

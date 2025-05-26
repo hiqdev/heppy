@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+
 import xml.etree.ElementTree as ET
 from heppy.Doc import Doc
 from pprint import pprint
