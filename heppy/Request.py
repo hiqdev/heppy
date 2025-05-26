@@ -4,7 +4,7 @@ import xml.dom.minidom
 import xml.etree.ElementTree as ET
 
 from heppy.Doc import Doc
-
+from typing import Union
 
 class Request(Doc):
 
@@ -26,10 +26,11 @@ class Request(Doc):
     def toxml(self, encoding='UTF-8', method='xml'):
         return ET.tostring(self.epp, encoding, method)
 
-    def add_tag(self, tag, attrs={}, text=None):
+    def add_tag(self, tag, attrs=None, text=None):
+        attrs = {} if attrs is None else attrs
         res = ET.Element(tag, attrs)
         if text is not None:
-            res.text = str(text)
+            res.text = str(text.decode('utf-8') if isinstance(text, bytes) else text)
         return res
 
     def add_subtag(self, parent, tag, attrs={}, text=None):
@@ -46,7 +47,7 @@ class Request(Doc):
         return parent
 
     @staticmethod
-    def build(data):
+    def build(data) -> Request:
         request = Request()
         request.render(data['command'], data)
         for extension in data.get('extensions', {}):
@@ -67,7 +68,8 @@ class Request(Doc):
         getattr(module, method)(self, data)
 
     @staticmethod
-    def prettifyxml(request) -> str:
+    def prettifyxml(request: Union[str, bytes]) -> str:
+        """Prettify XML string or bytes."""
         string = request.decode('utf-8') if isinstance(request, bytes) else request
         if not string.startswith('<'):
             return string

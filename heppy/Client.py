@@ -3,13 +3,18 @@
 import socket
 
 from heppy import Net
+from heppy.Error import Error
+from typing import Union
 
 
 class Client:
     def __init__(self, address):
         self.socket = None
         self.address = address
-
+        
+    def __del__(self):
+        self.disconnect()
+       
     def _connect(self):
         self.socket = socket.socket(socket.AF_UNIX, socket.SOCK_STREAM)
         self.socket.settimeout(0.01)
@@ -25,18 +30,19 @@ class Client:
             self.socket.close()  # Ensure the socket is properly closed
         self.socket = None
 
-    def write(self, data) -> int:
+    def write(self, data: Union[str, bytes]) -> int:
         self.connect()
-        return Net.write(self.socket, data if isinstance(data, str) else data.encode('utf-8'))
+        return Net.write(self.socket, data if isinstance(data, str) else data.decode('utf-8'))
 
     def read(self) -> str:
         res = Net.read(self.socket)
         self.disconnect()
         return res if isinstance(res, str) else res.decode('utf-8')
 
-    def request(self, data) -> str:
+    def request(self, data: Union[str, bytes]) -> str:
         self.write(data)
-        return self.read()
+        response = self.read()
+        return response if isinstance(response , str) else response.decode('utf-8')
 
     def get_greeting(self) -> str:
         return self.request('greeting')
