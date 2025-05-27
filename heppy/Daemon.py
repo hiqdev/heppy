@@ -42,6 +42,7 @@ class Daemon:
         self.forcequitDelta = timedelta(**config.get('forcequitInterval', {'hours': 23}))
 
     def quit(self):
+        self.client.disconnect()
         raise SystemExit("Daemon is quitting...")
 
     def hello(self):
