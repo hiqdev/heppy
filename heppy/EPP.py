@@ -45,11 +45,19 @@ class EPP:
             self.socket.bind((self.config['bind'], 0))
         self.socket.connect((self.config['host'], self.config['port']))
 
-        self.ssl = ssl.wrap_socket(self.socket,
-            keyfile  = self.get_path('keyfile'),
-            certfile = self.get_path('certfile'),
-            ca_certs = self.get_path('ca_certs'),
-        )
+        try:
+            self.ssl = ssl.wrap_socket(self.socket,
+                keyfile  = self.get_path('keyfile'),
+                certfile = self.get_path('certfile'),
+                ca_certs = self.get_path('ca_certs'),
+            )
+        except AttributeError:
+            context = ssl.create_default_context(ssl.Purpose.SERVER_AUTH, cafile=self.get_path('ca_certs'))
+            context.load_cert_chain(
+                certfile=self.get_path('certfile'),
+                keyfile=self.get_path('keyfile')
+            )
+            self.ssl = context.wrap_socket(self.socket, server_hostname=self.config['host'])
 
         self.greeting = self.read()
         self.config['start_time'] = datetime.now().isoformat(' ')
