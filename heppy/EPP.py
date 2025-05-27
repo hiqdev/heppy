@@ -45,16 +45,11 @@ class EPP:
             self.socket.bind((self.config['bind'], 0))
         self.socket.connect((self.config['host'], self.config['port']))
 
-        # context = ssl.create_default_context(ssl.Purpose.SERVER_AUTH, cafile=self.get_path('ca_certs'))
-        context = ssl.create_default_context()
-        context.check_hostname = False
-        context.verify_mode = ssl.CERT_NONE
-
-        context.load_cert_chain(
-            certfile=self.get_path('certfile'),
-            keyfile=self.get_path('keyfile')
+        self.ssl = ssl.wrap_socket(self.socket,
+            keyfile  = self.get_path('keyfile'),
+            certfile = self.get_path('certfile'),
+            ca_certs = self.get_path('ca_certs'),
         )
-        self.ssl = context.wrap_socket(self.socket, server_hostname=self.config['host'])
 
         self.greeting = self.read()
         self.config['start_time'] = datetime.now().isoformat(' ')
