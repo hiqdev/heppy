@@ -6,6 +6,22 @@ from ..TagData import TagData
 
 class urc(Module):
     opmap = {
+        'registrant':   'set',
+        'postalInfo':   'descend',
+        'addr':         'descend',
+        'name':         'set',
+        'org':          'set',
+        'street':       'set',
+        'city':         'set',
+        'pc':           'set',
+        'sp':           'set',
+        'cc':           'set',
+        'email':        'set',
+        'voice':        'set',
+        'fax':          'set',
+        'emailAlt':     'set',
+        'mobile':       'set',
+        'security':     'set',
     }
 
     def __init__(self, xmlns):

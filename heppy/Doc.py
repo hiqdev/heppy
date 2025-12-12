@@ -21,6 +21,7 @@ class Doc:
         'fee10':        'urn:ietf:params:xml:ns:epp:fee-1.0',
         'fee11':        'urn:ietf:params:xml:ns:fee-0.11',
         'fee21':        'urn:ietf:params:xml:ns:fee-0.21',
+        'fee23':        'urn:ietf:params:xml:ns:fee-0.23',
         'rgp':          'urn:ietf:params:xml:ns:rgp-1.0',
         'smd':          'urn:ietf:params:xml:ns:signedMark-1.0',
         'mark':         'urn:ietf:params:xml:ns:mark-1.0',
@@ -48,6 +49,7 @@ class Doc:
         'neulevel':     'urn:ietf:params:xml:ns:neulevel',
         'neulevel10':   'urn:ietf:params:xml:ns:neulevel-1.0',
         'kv':           'urn:X-ar:params:xml:ns:kv-1.0',
+        'sync':         'http://www.verisign.com/epp/sync-1.0',
     }
 
     okcodes = {

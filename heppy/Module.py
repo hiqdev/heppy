@@ -29,17 +29,21 @@ class Module:
 
     def parse_cd_tag(self, response, tag):
         name = tag[0]
-        response.put_to_dict('avails', {name.text.lower(): name.attrib['avail']})
+        if name.text is not None:
+            response.put_to_dict('avails', {name.text.lower(): name.attrib['avail']})
         if len(tag) > 1:
-            response.put_to_dict('reasons', {name.text.lower(): tag[1].text})
+            if name.text is not None:
+                response.put_to_dict('reasons', {name.text.lower(): tag[1].text})
 
     def parse_cd_tag_extension(self, response, tag, key = 'name'):
         data = {}
         for child in tag :
             tagname = child.tag.replace('{' + self.xmlns + '}', '')
-            data.update({tagname: child.text.lower()})
+            if child.text is not None:
+                data.update({tagname: child.text.lower()})
             for name, value in child.attrib.items():
-                data.update({name.lower() : value.lower()})
+                if value is not None:
+                    data.update({name.lower() : value.lower()})
 
         response.put_to_dict(self.name, {
             data[key] : data
