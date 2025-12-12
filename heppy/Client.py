@@ -11,10 +11,10 @@ class Client:
     def __init__(self, address):
         self.socket = None
         self.address = address
-        
+
     def __del__(self):
         self.disconnect()
-       
+
     def _connect(self):
         self.socket = socket.socket(socket.AF_UNIX, socket.SOCK_STREAM)
         self.socket.settimeout(0.01)

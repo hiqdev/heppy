@@ -31,7 +31,7 @@ class fee10(fee09):
                         data.update({ctagname: cchild.text.lower()})
 
         return response.put_to_dict(self.name, {
-             data['objID'] : data
+             data.get('objID', 'domain') : data
          })
 
     def render_check(self, request, data):

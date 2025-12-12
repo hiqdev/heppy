@@ -166,7 +166,7 @@ class Daemon:
             request = Logout.build(self.config)
             self.logout_query = request.toxml()
         query = self.logout_query
-        reply = self.request(query)
+        self.request(query)
 
     def connect_external(self):
         try:
