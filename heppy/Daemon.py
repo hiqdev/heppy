@@ -10,6 +10,7 @@ from datetime import datetime, timedelta
 from heppy.EPP import REPP
 from heppy.Error import Error
 from heppy.Login import Login
+from heppy.Logout import Logout
 from heppy.Client import Client
 from heppy.Request import Request
 from heppy.Systemd import Systemd
@@ -25,13 +26,14 @@ class Daemon:
         self.is_external = False
         self.client = None
         self.handler = SignalHandler({
-            'SIGINT': self.quit,
+            'SIGINT':  self.quit,
             'SIGTERM': self.quit,
-            'SIGHUP': self.hello,
+            'SIGHUP':  self.hello,
             'SIGUSR1': self.hello,
             'SIGUSR2': self.hello,
         })
         self.login_query = None
+        self.logout_query = None
         self.force_quit = False
         self.force_hello = False
         self.started = datetime.now()
@@ -42,6 +44,7 @@ class Daemon:
         self.forcequitDelta = timedelta(**config.get('forcequitInterval', {'hours': 23}))
 
     def quit(self):
+        self.logout()
         self.client.disconnect()
         raise SystemExit("Daemon is quitting...")
 
@@ -50,8 +53,7 @@ class Daemon:
         self.force_hello = True
 
     def start(self, args=None):
-        if args is None:
-            args = {}
+        args = {} if args is None else args
         self.connect()
         self.login(args)
         self.consume()
@@ -93,8 +95,7 @@ class Daemon:
         self.server.channel.stop_consuming()
 
     def systemd(self, args=None):
-        if args is None:
-            args = {}
+        args = {} if args is None else args
         if 0 not in args:
             Error.die(3, 'no systemd command given')
 
@@ -117,6 +118,7 @@ class Daemon:
             self.connect_internal()
 
     def relogin(self):
+        self.logout({})
         return self.login({})
 
     def login(self, args=None):
@@ -158,6 +160,13 @@ class Daemon:
         config = self.config['epp']
         config['dir'] = self.config.get_dir()
         self.client = REPP(self.config['epp'])
+
+    def logout(self, args=None):
+        if self.logout_query is None:
+            request = Logout.build(self.config)
+            self.logout_query = request.toxml()
+        query = self.logout_query
+        self.request(query)
 
     def connect_external(self):
         try:

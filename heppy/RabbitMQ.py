@@ -12,10 +12,13 @@ class RPCServer:
     def __init__(self, config):
         self.config = config
         self.queue = config.get('queue')
+        self.message_ttl = str(config.get('queue.message.ttl', '5000'))
         self.connection = pika.BlockingConnection(connection_parameters(config))
 
         self.channel = self.connection.channel()
-        self.channel.queue_declare(queue=self.queue)
+        self.channel.queue_declare(
+            queue=self.queue,
+        )
         self.channel.basic_qos(prefetch_count=1)
 
     def basic_consume(self, response):
@@ -37,6 +40,7 @@ class RPCServer:
             routing_key=props.reply_to if props.reply_to is not None else method.routing_key,
             properties=pika.BasicProperties(
                 correlation_id = props.correlation_id,
+                expiration = self.message_ttl,
             ),
             body=str(reply.decode('utf-8') if isinstance(reply, bytes) else reply),
         )
@@ -50,7 +54,10 @@ class RPCClient:
 
         self.channel = self.connection.channel()
 
-        result = self.channel.queue_declare('', exclusive=True)
+        result = self.channel.queue_declare(
+            '',
+            exclusive=True,
+        )
         self.reply_queue = result.method.queue
 
         self.channel.basic_consume(
