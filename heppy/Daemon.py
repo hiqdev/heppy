@@ -12,6 +12,7 @@ from datetime import timedelta
 from heppy.EPP import REPP
 from heppy.Error import Error
 from heppy.Login import Login
+from heppy.Logout import Logout
 from heppy.Client import Client
 from heppy.Request import Request
 from heppy.Systemd import Systemd
@@ -34,13 +35,14 @@ class Daemon:
             'SIGUSR2': self.hello,
         })
         self.login_query = None
+        self.logout_query = None
         self.force_quit = False
         self.force_hello = False
         self.started = datetime.now()
         self.last_command = datetime.now()
         self.last_hello = self.last_command
         self.refreshSeconds = timedelta(**config.get('refreshInterval', {'seconds': 30})).total_seconds()
-        self.keepaliveDelta = timedelta(**config.get('keepaliveInterval', {'minutes': 1}))
+        self.keepaliveDelta = timedelta(**config.get('keepaliveInterval', {'minutes': 5}))
         self.forcequitDelta = timedelta(**config.get('forcequitInterval', {'hours': 23}))
 
     def quit(self):
@@ -120,6 +122,7 @@ class Daemon:
             self.connect_internal()
 
     def relogin(self):
+        self.logout({})
         return self.login({})
 
     def login(self, args):
@@ -143,6 +146,16 @@ class Daemon:
         if data['result_code'] in ['2200', '2500', '2501', '2502']:
             Error.die(2, data['msg'] if error is None else error, data)
         print 'LOGIN OK'
+
+    def logout(self, args):
+        if self.logout_query is None:
+            request = Logout.build(self.config)
+            self.logout_query = request.toxml()
+        query = self.logout_query
+        print Request.prettifyxml(query)
+        reply = self.request(query)
+        print Request.prettifyxml(reply)
+
 
     def get_login_query(self, args = {}):
         if self.login_query is None:

@@ -138,6 +138,11 @@ class domain(Module):
                 request.add_subtag(chg_element, 'domain:registrant', text=chg_data['registrant'])
             if 'pw' in chg_data:
                 self.render_auth_info(request, chg_element, chg_data.get('pw'))
+##           for d in chg_data:
+##               if 'registrant' in d:
+##                   request.add_subtag(chg_element, 'domain:registrant', text=d['registrant'])
+##               if 'pw' in d:
+##                   self.render_auth_info(request, chg_element, d.get('pw'))
 
     def render_restore(self, request, data):
         command = self.render_command_with_fields(request, 'update', [

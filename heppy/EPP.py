@@ -7,6 +7,7 @@ from datetime import datetime
 
 from heppy import Net
 from heppy.Config import Config
+from pprint import pprint
 
 
 class REPP:
@@ -59,7 +60,11 @@ class EPP:
         return self.read()
 
     def write(self, xml):
-        Net.write(self.ssl, xml)
+        try:
+            Net.write(self.ssl, xml)
+        except socket.timeout:
+            print(234)
+            pprint(234)
 
     def read(self):
         return Net.read(self.ssl)

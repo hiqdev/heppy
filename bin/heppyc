@@ -32,11 +32,12 @@ pprint(rabbit_config)
 client = RPCClient(rabbit_config)
 
 reply = client.request(query)
-print reply
+# print reply
 if is_json:
     pprint(json.loads(reply))
 else:
-    print Request.prettifyxml(reply)
+#    print (Request.prettifyxml(reply))
+#    pprint(reply)
     response = Response.parsexml(reply)
     pprint(response.data)
 

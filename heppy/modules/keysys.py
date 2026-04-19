@@ -55,6 +55,11 @@ class keysys(Module):
         'time-to-suspension': 'set',
         'eu-accept-trustee-tac': 'set',
         'eu-naturalperson': 'set',
+        'cn-accept-trustee-tac': 'set',
+        'cn-owner-id-number': 'set',
+        'cn-owner-id-type': 'set',
+        'cn-owner-type': 'set',
+        'idn-language': 'set',
     }
 
     def __init__(self, xmlns):
