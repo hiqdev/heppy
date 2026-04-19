@@ -40,7 +40,7 @@ class Daemon:
         self.last_command = datetime.now()
         self.last_hello = self.last_command
         self.refreshSeconds = timedelta(**config.get('refreshInterval', {'seconds': 30})).total_seconds()
-        self.keepaliveDelta = timedelta(**config.get('keepaliveInterval', {'minutes': 1}))
+        self.keepaliveDelta = timedelta(**config.get('keepaliveInterval', {'minutes': 5}))
         self.forcequitDelta = timedelta(**config.get('forcequitInterval', {'hours': 23}))
 
     def quit(self):
@@ -148,6 +148,7 @@ class Daemon:
     def get_login_query(self, args=None):
         if args is None:
             args = {}
+
         if self.login_query is None:
             greeting = self.client.get_greeting()
             greetobj = Response.parsexml(greeting)

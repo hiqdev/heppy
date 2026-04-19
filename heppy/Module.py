@@ -25,12 +25,13 @@ class Module:
             response.parse(child)
 
     def parse_status(self, response, tag):
-        response.put_to_dict('statuses', {tag.attrib['s']: tag.attrib['s'] if tag.text is None else tag.text  })
+        response.put_to_dict('statuses', {tag.attrib['s']: None if tag.text is None else tag.text})
 
     def parse_cd_tag(self, response, tag):
         name = tag[0]
         if name.text is not None:
             response.put_to_dict('avails', {name.text.lower(): name.attrib['avail']})
+
         if len(tag) > 1:
             if name.text is not None:
                 response.put_to_dict('reasons', {name.text.lower(): tag[1].text})
@@ -39,6 +40,7 @@ class Module:
         data = {}
         for child in tag :
             tagname = child.tag.replace('{' + self.xmlns + '}', '')
+
             if child.text is not None:
                 data.update({tagname: child.text.lower()})
             for name, value in child.attrib.items():
@@ -122,7 +124,7 @@ class Module:
 
     def render_statuses(self, request, parent, status_data):
         for status, description in status_data.items():
-            request.add_subtag(parent, self.name + ':status', {'s': status})
+            request.add_subtag(parent, self.name + ':status', {'s': status}, description)
 
     def render_multiple(self, request, parent, name, value, attr):
         if (isinstance(value, str)) :
@@ -133,4 +135,3 @@ class Module:
             data = value.values()
         for val in data :
             request.add_subtag(parent, name, attr, val)
-

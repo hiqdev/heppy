@@ -74,6 +74,8 @@ class host(Module):
         if operation == 'chg':
             request.add_subtag(element, 'host:name', text=data.get('name'))
         else:
+            if isinstance(data, dict):
+                data = [data]
             for d in data:
                 if 'ips' in d:
                     self.render_ips(request, d['ips'], element)

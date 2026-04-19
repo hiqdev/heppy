@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from fee import fee
+from .fee import fee
 
 class fee09(fee):
 #   PARSE

@@ -2,12 +2,9 @@
 
 from ..Module import Module
 from ..TagData import TagData
-from pprint import pprint
-from fee09 import fee09
-
+from .fee09 import fee09
 
 class fee10(fee09):
-
     opmap = {
         'chkData':      'descend',
         'currency':     'set',
@@ -39,4 +36,3 @@ class fee10(fee09):
         request.add_subtag(ext, 'fee:currency',  {}, data.get('currency', 'USD'))
         create_command = request.add_subtag(ext, 'fee:command', {'name': data.get('action', 'create')})
         request.add_subtag(create_command, 'fee:period', {'unit': 'y'}, 1)
-

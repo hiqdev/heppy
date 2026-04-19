@@ -12,7 +12,7 @@ class TestDomainRenew(TestCase):
     <command>
         <renew>
             <domain:renew xmlns:domain="urn:ietf:params:xml:ns:domain-1.0">
-                <domain:name>example.com</domain:name>
+                <domain:name>testdomain.test</domain:name>
                 <domain:curExpDate>2020-04-03</domain:curExpDate>
                 <domain:period unit="y">5</domain:period>
             </domain:renew>
@@ -21,7 +21,7 @@ class TestDomainRenew(TestCase):
     </command>
 </epp>''', {
             'command':      'domain:renew',
-            'name':         'example.com',
+            'name':         'testdomain.test',
             'curExpDate':   '2020-04-03',
             'period':       5,
             'clTRID':       'XXXX-11',
@@ -31,7 +31,7 @@ class TestDomainRenew(TestCase):
         self.assertResponse({
             'clTRID':       'XXXX-11',
             'exDate':       '2021-10-04T15:35:20.0Z',
-            'name':         'silverfire.me',
+            'name':         'testfree.test',
             'result_code':  '1000',
             'result_lang':  'en-US',
             'result_msg':   'Command completed successfully',
@@ -44,7 +44,7 @@ class TestDomainRenew(TestCase):
         </result>
         <resData>
             <domain:renData xmlns:domain="urn:ietf:params:xml:ns:domain-1.0" xsi:schemaLocation="urn:ietf:params:xml:ns:domain-1.0 domain-1.0.xsd">
-                <domain:name>silverfire.me</domain:name>
+                <domain:name>testfree.test</domain:name>
                 <domain:exDate>2021-10-04T15:35:20.0Z</domain:exDate>
             </domain:renData>
         </resData>

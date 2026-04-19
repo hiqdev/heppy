@@ -35,7 +35,7 @@ class TestEppPoll(TestCase):
         self.assertRequest('''<?xml version="1.0" ?>
 <epp xmlns="urn:ietf:params:xml:ns:epp-1.0">
     <command>
-        <poll msgID="42" op="ack"/>
+        <poll op="ack" msgID="42"/>
         <clTRID>XXXX-11</clTRID>
     </command>
 </epp>''', {
@@ -56,8 +56,8 @@ class TestEppPoll(TestCase):
             'reDate':       '2019-12-24T09:52:32Z',
             'reID':         '1418',
             'result_code':  '1301',
+            'result_msg':   'Transfer Rejected.',
             'trStatus':     'clientRejected',
-            'msg':          'Transfer Rejected.',
             'msgCount':     '1',
             'msgID':        '80076487',
         }, '''<?xml version="1.0" ?>

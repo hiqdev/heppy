@@ -27,7 +27,8 @@ class Doc:
         'mark':         'urn:ietf:params:xml:ns:mark-1.0',
         'oxrs':         'urn:afilias:params:xml:ns:oxrs-1.1',
         'namestoreExt': 'http://www.verisign-grs.com/epp/namestoreExt-1.1',
-        'idn':          'urn:afilias:params:xml:ns:idn-1.0',
+        'idn_af':       'urn:afilias:params:xml:ns:idn-1.0',
+        'idn':          'urn:ietf:params:xml:ns:idn-1.0',
         'idnLang':      'http://www.verisign.com/epp/idnLang-1.0',
         'price':        'urn:ar:params:xml:ns:price-1.1',
         'price10':      'urn:ar:params:xml:ns:price-1.0',
@@ -49,6 +50,7 @@ class Doc:
         'neulevel':     'urn:ietf:params:xml:ns:neulevel',
         'neulevel10':   'urn:ietf:params:xml:ns:neulevel-1.0',
         'kv':           'urn:X-ar:params:xml:ns:kv-1.0',
+        'sync':         'http://www.verisign.com/epp/sync-1.0',
     }
 
     okcodes = {

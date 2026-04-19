@@ -32,9 +32,9 @@ class TestHostCheck(TestCase):
     def test_parse_host_check_response(self):
         self.assertResponse({
             'avails': {
-                'ns1.silverfire.me': '0',
-                'ns2.silverfire.me': '0',
-                'ns3.silverfire.me': '1'
+                'ns1.testfree.test': '0',
+                'ns2.testfree.test': '0',
+                'ns3.testfree.test': '1'
             },
             'clTRID':       'XXXX-11',
             'result_code':  '1000',
@@ -50,13 +50,13 @@ class TestHostCheck(TestCase):
         <resData>
             <host:chkData xmlns:host="urn:ietf:params:xml:ns:host-1.0" xsi:schemaLocation="urn:ietf:params:xml:ns:host-1.0 host-1.0.xsd">
                 <host:cd>
-                    <host:name avail="0">ns1.silverfire.me</host:name>
+                    <host:name avail="0">ns1.testfree.test</host:name>
                 </host:cd>
                 <host:cd>
-                    <host:name avail="0">ns2.silverfire.me</host:name>
+                    <host:name avail="0">ns2.testfree.test</host:name>
                 </host:cd>
                 <host:cd>
-                    <host:name avail="1">ns3.silverfire.me</host:name>
+                    <host:name avail="1">ns3.testfree.test</host:name>
                 </host:cd>
             </host:chkData>
         </resData>

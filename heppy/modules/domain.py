@@ -100,10 +100,10 @@ class domain(Module):
             TagData('period', data.get('period'), {'unit': 'y'}),
         ])
 
-        if 'nss' in data:
-            self.render_nss(request, command, data.get('nss'))
         if 'registrant' in data:
             request.add_subtag(command, 'domain:registrant', {}, data.get('registrant'))
+        if 'nss' in data:
+            self.render_nss(request, command, data.get('nss'))
 
         if self.has_contacts(data):
             self.render_contacts(request, command, data)
@@ -149,7 +149,8 @@ class domain(Module):
     def render_update_section(self, request, data, command, operation):
         element = request.add_subtag(command, 'domain:' + operation)
         data = data.get(operation)
-        values = {}
+        if isinstance(data, dict):
+            data = [data]
         for d in data:
             if 'nss' in d:
                 self.render_nss(request, element, d['nss'])
@@ -164,8 +165,9 @@ class domain(Module):
 
 
     def render_contacts(self, request, parent, storage):
-        for contact_type in (set(self.CONTACT_TYPES) & set(storage.keys())):
-            self.render_multiple(request, parent, 'domain:contact', storage[contact_type], {'type': contact_type})
+        for contact_type in self.CONTACT_TYPES:
+            if contact_type in storage:
+                self.render_multiple(request, parent, 'domain:contact', storage[contact_type], {'type': contact_type})
 
     def has_contacts(self, storage):
         return any(contact_type in storage for contact_type in self.CONTACT_TYPES)

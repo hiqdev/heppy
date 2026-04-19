@@ -58,6 +58,7 @@ class SmartRequest():
     def perform(self, request, relogin = None):
         try:
             query = self.get_query()
+
             reply = request(query)
             if relogin is None:
                 return self.prepare_response(reply)

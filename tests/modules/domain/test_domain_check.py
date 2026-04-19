@@ -12,8 +12,8 @@ class TestDomainCheck(TestCase):
     <command>
         <check>
             <domain:check xmlns:domain="urn:ietf:params:xml:ns:domain-1.0">
-                <domain:name>example.me</domain:name>
-                <domain:name>silverfire.me</domain:name>
+                <domain:name>testcheck.test</domain:name>
+                <domain:name>testfree.test</domain:name>
             </domain:check>
         </check>
         <clTRID>XXXX-11</clTRID>
@@ -21,8 +21,8 @@ class TestDomainCheck(TestCase):
 </epp>''', {
             'command':  'domain:check',
             'names': [
-                'example.me',
-                'silverfire.me',
+                'testcheck.test',
+                'testfree.test',
             ],
             'clTRID':   'XXXX-11',
         })
@@ -30,12 +30,12 @@ class TestDomainCheck(TestCase):
     def test_parse_domain_check_response(self):
         self.assertResponse({
             'avails': {
-                'example.me': '0',
-                'silverfire.me': '1'
+                'testcheck.test': '0',
+                'testfree.test': '1'
             },
             'clTRID': 'XXXX-11',
             'reasons': {
-                'example.me': 'In use'
+                'testcheck.test': 'In use'
             },
             'result_code': '1000',
             'result_lang': 'en-US',
@@ -50,10 +50,10 @@ class TestDomainCheck(TestCase):
         <resData>
             <domain:chkData xmlns:domain="urn:ietf:params:xml:ns:domain-1.0" xsi:schemaLocation="urn:ietf:params:xml:ns:domain-1.0 domain-1.0.xsd">
                 <domain:cd>
-                    <domain:name avail="1">silverfire.me</domain:name>
+                    <domain:name avail="1">testfree.test</domain:name>
                 </domain:cd>
                 <domain:cd>
-                    <domain:name avail="0">example.me</domain:name>
+                    <domain:name avail="0">testcheck.test</domain:name>
                     <domain:reason>In use</domain:reason>
                 </domain:cd>
             </domain:chkData>

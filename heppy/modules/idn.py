@@ -4,27 +4,29 @@ from ..Module import Module
 from ..TagData import TagData
 
 class idn(Module):
+    opmap = {
+        'infData': 'descend',
+        'data': 'descend',
+        'table': 'set',
+        'uname': 'set',
+        'language': 'set',
+    }
 
 ### RESPONSE parsing
 
     def parse_infData(self, response, tag):
         response.put_extension_block(response, 'idn:info', tag, {
-            'script': [],
+            'table': [],
+
         })
 
 ### REQUEST rendering
 
-    def render_check(self, request, data):
-        self.render_extension_with_fields(request, 'check', [
-            TagData('script', data.get('script'))
-        ])
+    def render_default(self, request, data):
+        return self.render_data(request, data)
 
-    def render_create(self, request, data):
-        self.render_extension_with_fields(request, 'create', [
-            TagData('script', data.get('script'))
+    def render_data(self, request, data):
+        self.render_extension_with_fields(request, 'data', [
+            TagData('table', data.get('table', 'ru')),
+            TagData('table', data.get('name'))
         ])
-
-    def render_update(self, request, data):
-        command = self.render_extension(request, 'update')
-        chg_element = request.add_subtag(command, 'idn:chg')
-        request.add_subtag(chg_element, 'idn:script', text=data.get('script'))

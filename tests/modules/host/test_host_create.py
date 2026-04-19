@@ -52,7 +52,7 @@ class TestHostCreate(TestCase):
         self.assertResponse({
             'clTRID':       'XXXX-11',
             'crDate':       '2018-10-05T09:21:37.0Z',
-            'name':         'ns1.silverfire.me',
+            'name':         'ns1.testfree.test',
             'result_code':  '1000',
             'result_lang':  'en-US',
             'result_msg':   'Command completed successfully',
@@ -65,7 +65,7 @@ class TestHostCreate(TestCase):
         </result>
         <resData>
             <host:creData xmlns:host="urn:ietf:params:xml:ns:host-1.0" xsi:schemaLocation="urn:ietf:params:xml:ns:host-1.0 host-1.0.xsd">
-                <host:name>ns1.silverfire.me</host:name>
+                <host:name>ns1.testfree.test</host:name>
                 <host:crDate>2018-10-05T09:21:37.0Z</host:crDate>
             </host:creData>
         </resData>
