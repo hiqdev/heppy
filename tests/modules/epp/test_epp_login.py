@@ -12,7 +12,7 @@ class TestEppLogin(TestCase):
     <command>
         <login>
             <clID>ClientX</clID>
-            <pw>2fooBar</pw>
+            <pw>tR4!xPass</pw>
             <options>
                 <version>1.0</version>
                 <lang>en</lang>
@@ -28,7 +28,8 @@ class TestEppLogin(TestCase):
 </epp>''', {
             'command':  'epp:login',
             'clID':     'ClientX',
-            'pw':       '2fooBar',
+            'pw':       'tR4!xPass',
+            'clTRID':   'AA-00',
             'objURIs': [
                 'urn:ietf:params:xml:ns:obj1',
                 'urn:ietf:params:xml:ns:obj2',
@@ -42,7 +43,7 @@ class TestEppLogin(TestCase):
     <command>
         <login>
             <clID>ClientX</clID>
-            <pw>2fooBar</pw>
+            <pw>tR4!xPass</pw>
             <newPW>bar-FOO2</newPW>
             <options>
                 <version>4.2</version>
@@ -63,8 +64,9 @@ class TestEppLogin(TestCase):
 </epp>''', {
             'command':  'epp:login',
             'clID':     'ClientX',
-            'pw':       '2fooBar',
+            'pw':       'tR4!xPass',
             'newPW':    'bar-FOO2',
+            'clTRID':   'AA-00',
             'version':  4.2,
             'lang':     'ua',
             'objURIs': [
@@ -84,7 +86,7 @@ class TestEppLogin(TestCase):
     <command>
         <login>
             <clID>ClientX</clID>
-            <pw>2fooBar</pw>
+            <pw>tR4!xPass</pw>
             <newPW>bar-FOO2</newPW>
             <options>
                 <version>4.2</version>
@@ -105,8 +107,9 @@ class TestEppLogin(TestCase):
 </epp>''', {
             'command':      'epp:login',
             'login':        'ClientX',
-            'password':     '2fooBar',
+            'password':     'tR4!xPass',
             'newPassword':  'bar-FOO2',
+            'clTRID':       'AA-00',
             'version':      4.2,
             'lang':         'ua',
             'objURIs': [

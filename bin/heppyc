@@ -38,7 +38,6 @@ rabbit_config.setdefault('queue', 'heppy-' + config['name'])
 client = RPCClient(rabbit_config)
 reply = client.request(query)
 
-# print reply
 if is_json:
     pprint(json.loads(reply))
 else:

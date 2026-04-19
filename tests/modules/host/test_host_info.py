@@ -34,7 +34,7 @@ class TestHostInfo(TestCase):
                 '192.0.2.29',
                 '1080:0:0:0:8:800:200c:417a'
             ],
-            'name':         'ns1.silverfire.me',
+            'name':         'ns1.testfree.test',
             'result_code':  '1000',
             'result_lang':  'en-US',
             'result_msg':   'Command completed successfully',
@@ -51,7 +51,7 @@ class TestHostInfo(TestCase):
         </result>
         <resData>
             <host:infData xmlns:host="urn:ietf:params:xml:ns:host-1.0" xsi:schemaLocation="urn:ietf:params:xml:ns:host-1.0 host-1.0.xsd">
-                <host:name>ns1.silverfire.me</host:name>
+                <host:name>ns1.testfree.test</host:name>
                 <host:roid>H151302-AGRS</host:roid>
                 <host:status s="ok"/>
                 <host:addr ip="v4">192.0.2.2</host:addr>

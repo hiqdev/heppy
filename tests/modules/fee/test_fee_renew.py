@@ -10,7 +10,7 @@ class TestFeeRenew(TestCase):
         self.assertResponse({
             'clTRID':       'ABC-12345',
             'exDate':       '2005-04-03T22:00:00.0Z',
-            'name':         'example.com',
+            'name':         'testdomain.test',
             'result_code':  '1000',
             'result_msg':   'Command completed successfully',
             'svTRID':       '54322-XYZ',
@@ -30,7 +30,7 @@ class TestFeeRenew(TestCase):
         <resData>
             <domain:renData
                 xmlns:domain="urn:ietf:params:xml:ns:domain-1.0">
-                <domain:name>example.com</domain:name>
+                <domain:name>testdomain.test</domain:name>
                 <domain:exDate>2005-04-03T22:00:00.0Z</domain:exDate>
             </domain:renData>
         </resData>

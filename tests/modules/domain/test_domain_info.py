@@ -12,14 +12,14 @@ class TestDomainInfo(TestCase):
     <command>
         <info>
             <domain:info xmlns:domain="urn:ietf:params:xml:ns:domain-1.0">
-                <domain:name hosts="all">example.com</domain:name>
+                <domain:name hosts="all">testdomain.test</domain:name>
             </domain:info>
         </info>
         <clTRID>XXXX-11</clTRID>
     </command>
 </epp>''', {
             'command':  'domain:info',
-            'name':     'example.com',
+            'name':     'testdomain.test',
             'clTRID':   'XXXX-11',
         })
 
@@ -29,9 +29,9 @@ class TestDomainInfo(TestCase):
     <command>
         <info>
             <domain:info xmlns:domain="urn:ietf:params:xml:ns:domain-1.0">
-                <domain:name hosts="all">example.com</domain:name>
+                <domain:name hosts="all">testdomain.test</domain:name>
                 <domain:authInfo>
-                    <domain:pw>2fooBAR</domain:pw>
+                    <domain:pw>tR4!xPass</domain:pw>
                 </domain:authInfo>
             </domain:info>
         </info>
@@ -39,8 +39,8 @@ class TestDomainInfo(TestCase):
     </command>
 </epp>''', {
             'command':  'domain:info',
-            'name':     'example.com',
-            'pw':       '2fooBAR',
+            'name':     'testdomain.test',
+            'pw':       'tR4!xPass',
             'clTRID':   'XXXX-11',
         })
 
@@ -48,9 +48,8 @@ class TestDomainInfo(TestCase):
         self.assertResponse({
             'result_code':  '1000',
             'extensions': [],
-#            'result_lang':  'en-US',
-#            'result_msg':   'Command completed successfully',
-            'msg':          'Command completed successfully',
+            'result_lang':  'en-US',
+            'result_msg':   'Command completed successfully',
             'clTRID':       'AA-00',
             'svTRID':       'SRO-1538136049528',
             'name':         'evonames.info',
@@ -72,9 +71,9 @@ class TestDomainInfo(TestCase):
                     'digestType': '2',
                     'keyTag': '14197',
                     'keyData': {
-                        'flags': '257',
-                        'protocol': '3',
-                        'alg': '1',
+                        'keyFlags': '257',
+                        'keyProtocol': '3',
+                        'keyAlg': '1',
                         'pubKey': 'AQPJ////4Q==',
                     },
                 }, {
@@ -90,10 +89,10 @@ class TestDomainInfo(TestCase):
                 }
             ],
             'registrant':   'EEVN_1002321N',
-            'admin':        'EEVN_1002321N',
-            'billing':      'EEVN_1002321N',
-            'tech':         'EEVN_1002321N',
-            'nss':          ['ns1.evonames.com', 'ns2.evonames.com'],
+            'admin':        ['EEVN_1002321N'],
+            'billing':      ['EEVN_1002321N'],
+            'tech':         ['EEVN_1002321N'],
+            'nss':          ['ns1.testhost.test', 'ns2.testhost.test'],
             'hosts':        ['ns1.nonstopo.info.evonames.info', 'ns2.nonstopo.info.evonames.info', 'nrie.evonames.info'],
             'clID':         '5186-EP',
             'crID':         '5186-EP',
@@ -120,8 +119,8 @@ class TestDomainInfo(TestCase):
                 <domain:contact type="billing">EEVN_1002321N</domain:contact>
                 <domain:contact type="tech">EEVN_1002321N</domain:contact>
                 <domain:ns>
-                    <domain:hostObj>ns1.evonames.com</domain:hostObj>
-                    <domain:hostObj>ns2.evonames.com</domain:hostObj>
+                    <domain:hostObj>ns1.testhost.test</domain:hostObj>
+                    <domain:hostObj>ns2.testhost.test</domain:hostObj>
                 </domain:ns>
                 <domain:host>ns1.nonstopo.info.evonames.info</domain:host>
                 <domain:host>ns2.nonstopo.info.evonames.info</domain:host>
