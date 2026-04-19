@@ -1,9 +1,9 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 
 # Message queue RPC version based on RabbitMQ and pika.
 
 import json
-
+import sentry_sdk
 from pprint import pprint
 
 from heppy.Args import Args
@@ -13,31 +13,36 @@ from heppy.Config import Config
 from heppy.Request import Request
 from heppy.Response import Response
 from heppy.RabbitMQ import RPCClient
+from heppy.Net import remove_bom
 
 args = Args()
 config = Config(args.get('path'))
 
+if config.get('sentry_dsn', None) is not None:
+    sentry_sdk.init(
+        dsn=config.get('sentry_dsn'),
+        enable_tracing=True,
+    )
+
 is_json = args.pop('json', False)
 if is_json:
     query = json.dumps(args)
-    print query
+    print(query)
 else:
     request = Request.build(args)
-    query = str(request)
-    print Request.prettifyxml(query)
+    query = remove_bom(request.decode('utf-8') if isinstance(request, bytes) else str(request))
+    print(Request.prettifyxml(query))
 
 rabbit_config = config.get('RabbitMQ', {})
 rabbit_config.setdefault('queue', 'heppy-' + config['name'])
-pprint(rabbit_config)
 client = RPCClient(rabbit_config)
-
 reply = client.request(query)
+
 # print reply
 if is_json:
     pprint(json.loads(reply))
 else:
-#    print (Request.prettifyxml(reply))
-#    pprint(reply)
+    print(Request.prettifyxml(reply))
     response = Response.parsexml(reply)
     pprint(response.data)
 
