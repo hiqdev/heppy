@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+
 import uuid
 
 class Module:
@@ -29,19 +31,20 @@ class Module:
         name = tag[0]
         if name.text is not None:
             response.put_to_dict('avails', {name.text.lower(): name.attrib['avail']})
-            if len(tag) > 1:
+
+        if len(tag) > 1:
+            if name.text is not None:
                 response.put_to_dict('reasons', {name.text.lower(): tag[1].text})
 
     def parse_cd_tag_extension(self, response, tag, key = 'name'):
         data = {}
         for child in tag :
             tagname = child.tag.replace('{' + self.xmlns + '}', '')
-            print(tagname)
-            
+
             if child.text is not None:
                 data.update({tagname: child.text.lower()})
             for name, value in child.attrib.items():
-                if (name is not None) and (value is not None):
+                if value is not None:
                     data.update({name.lower() : value.lower()})
 
         response.put_to_dict(self.name, {
@@ -52,23 +55,27 @@ class Module:
 
     ## Command
 
-    def render_header(self, request, parent, command, attrs={}, text=None):
+    def render_header(self, request, parent, command, attrs=None, text=None):
+        attrs = {} if attrs is None else attrs
         header_attrs = {'xmlns:' + self.name: self.xmlns}
         if attrs:
             header_attrs.update(attrs)
         return request.add_subtag(parent, self.name + ':' + command, header_attrs, text)
 
-    def render_root_command(self, request, command, attrs={}):
+    def render_root_command(self, request, command, attrs=None):
+        attrs = {} if attrs is None else attrs
         if request.command is None:
             epp = self.render_epp(request)
             request.command = request.add_subtag(epp, 'command')
         return request.add_subtag(request.command, command, attrs)
 
-    def render_command(self, request, command, attrs={}):
+    def render_command(self, request, command, attrs=None):
+        attrs = {} if attrs is None else attrs
         command_tag = self.render_root_command(request, command, attrs)
         return self.render_header(request, command_tag, command)
 
-    def render_command_with_fields(self, request, command, fields, attrs={}):
+    def render_command_with_fields(self, request, command, fields, attrs=None):
+        attrs = {} if attrs is None else attrs
         command = self.render_command(request, command, attrs)
         request.add_subtags(command, fields)
         return command
@@ -80,11 +87,13 @@ class Module:
             request.extension = request.add_subtag(request.command, 'extension')
         return request.extension
 
-    def render_extension(self, request, command, attrs={}, text=None):
+    def render_extension(self, request, command, attrs=None, text=None):
+        attrs = {} if attrs is None else attrs
         root_extension = self.render_root_extension(request)
         return self.render_header(request, root_extension, command, attrs, text)
 
-    def render_extension_with_fields(self, request, command, fields, attrs={}):
+    def render_extension_with_fields(self, request, command, fields, attrs=None):
+        attrs = {} if attrs is None else attrs
         extension = self.render_extension(request, command, attrs)
         request.add_subtags(extension, fields)
         return extension
@@ -108,7 +117,8 @@ class Module:
             request.add_subtag(command, self.name + ':' + field, text=name)
         return command
 
-    def render_auth_info(self, request, parent, pw='', attrs={}):
+    def render_auth_info(self, request, parent, pw='', attrs=None):
+        attrs = {} if attrs is None else attrs
         auth_info = request.add_subtag(parent, self.name + ':authInfo')
         request.add_subtag(auth_info, self.name + ':pw', attrs, pw)
 

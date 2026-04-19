@@ -1,9 +1,10 @@
+# -*- coding: utf-8 -*-
+
 import xml.dom.minidom
 import xml.etree.ElementTree as ET
 
-from pprint import pprint
-from Doc import Doc
-
+from heppy.Doc import Doc
+from typing import Union
 
 class Request(Doc):
 
@@ -13,25 +14,31 @@ class Request(Doc):
         self.command    = None
         self.extension  = None
 
-    def __str__(self, encoding='UTF-8', method='xml'):
+    def __str__(self, encoding='UTF-8', method='xml') -> str:
         if self.raw is None:
-            return self.toxml(encoding, method)
+            xml_bytes = self.toxml(encoding, method)
+            return xml_bytes.decode(encoding)
         else:
+            if isinstance(self.raw, bytes):
+                return self.raw.decode(encoding)
             return self.raw
 
     def toxml(self, encoding='UTF-8', method='xml'):
         return ET.tostring(self.epp, encoding, method)
 
-    def add_tag(self, tag, attrs={}, text=None):
+    def add_tag(self, tag, attrs=None, text=None):
+        attrs = {} if attrs is None else attrs
         res = ET.Element(tag, attrs)
         if text is not None:
-            res.text = str(text)
+            res.text = str(text.decode('utf-8') if isinstance(text, bytes) else text)
         return res
 
-    def add_subtag(self, parent, tag, attrs={}, text=None):
+    def add_subtag(self, parent, tag, attrs=None, text=None):
+        if attrs is None:
+            attrs = {}
         res = ET.SubElement(parent, tag, attrs)
         if text is not None:
-            res.text = str(text)
+            res.text = str(text.decode('utf-8') if isinstance(text, bytes) else text)
         return res
 
     def add_subtags(self, parent, tags):
@@ -63,9 +70,11 @@ class Request(Doc):
         getattr(module, method)(self, data)
 
     @staticmethod
-    def prettifyxml(request):
-        string = str(request)
-        if string[0] != '<':
+    def prettifyxml(request: Union[str, bytes]) -> str:
+        """Prettify XML string or bytes."""
+        string = request.decode('utf-8') if isinstance(request, bytes) else request
+        if not string.startswith('<'):
             return string
         dom = xml.dom.minidom.parseString(string)
         return dom.toprettyxml(indent='    ')
+

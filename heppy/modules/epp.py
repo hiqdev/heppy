@@ -1,5 +1,6 @@
-from ..Module import Module
+# -*- coding: utf-8 -*-
 
+from ..Module import Module
 
 class epp(Module):
     opmap = {

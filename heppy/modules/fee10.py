@@ -1,11 +1,11 @@
+# -*- coding: utf-8 -*-
+
 from ..Module import Module
 from ..TagData import TagData
 from pprint import pprint
 from fee09 import fee09
 
-
 class fee10(fee09):
-
     opmap = {
         'chkData':      'descend',
         'currency':     'set',

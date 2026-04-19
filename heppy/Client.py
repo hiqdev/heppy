@@ -1,12 +1,19 @@
+# -*- coding: utf-8 -*-
+
 import socket
 
 from heppy import Net
+from heppy.Error import Error
+from typing import Union
 
 
 class Client:
     def __init__(self, address):
-        self.socket  = None
+        self.socket = None
         self.address = address
+
+    def __del__(self):
+        self.disconnect()
 
     def _connect(self):
         self.socket = socket.socket(socket.AF_UNIX, socket.SOCK_STREAM)
@@ -14,35 +21,38 @@ class Client:
         self.socket.connect(self.address)
         self.socket.settimeout(None)
 
-    def connect(self):
+    def connect(self) -> None:
         if self.socket is None:
             self._connect()
 
-    def disconnect(self):
+    def disconnect(self) -> None:
+        if self.socket:
+            self.socket.close()  # Ensure the socket is properly closed
         self.socket = None
 
-    def write(self, data):
+    def write(self, data: Union[str, bytes]) -> int:
         self.connect()
-        Net.write(self.socket, data)
+        return Net.write(self.socket, data if isinstance(data, str) else data.decode('utf-8'))
 
-    def read(self):
+    def read(self) -> str:
         res = Net.read(self.socket)
         self.disconnect()
-        return res
+        return res if isinstance(res, str) else res.decode('utf-8')
 
-    def request(self, data):
+    def request(self, data: Union[str, bytes]) -> str:
         self.write(data)
-        return self.read()
+        response = self.read()
+        return response if isinstance(response , str) else response.decode('utf-8')
 
-    def get_greeting(self):
+    def get_greeting(self) -> str:
         return self.request('greeting')
 
     @staticmethod
-    def try_connect(address):
+    def try_connect(address) -> bool:
         try:
             client = Client(address)
             client.connect()
             return True
-        except:
+        except (socket.error, OSError):  # Catch specific exceptions
             return False
 

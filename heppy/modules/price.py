@@ -1,7 +1,7 @@
+# -*- coding: utf-8 -*-
+
 from ..Module import Module
 from ..TagData import TagData
-from pprint import pprint
-
 
 class price(Module):
     opmap = {

@@ -1,4 +1,5 @@
 #!/usr/bin/env python
+# -*- coding: utf-8 -*-
 
 import os
 import sys
@@ -13,7 +14,7 @@ class Systemd:
         self.work_dir = work_dir
 
     def dump(self):
-        print self.service_name(self.num)
+        print(self.service_name(self.num))
 
     def call(self, name, args):
         if hasattr(self, name):
@@ -52,7 +53,7 @@ class Systemd:
             raise Exception('failed ' + command)
 
     def unsafe(self, command):
-        print command
+        print(command)
         return os.system(command)
 
     def setup(self):
