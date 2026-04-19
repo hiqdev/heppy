@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from domain import domain
+from .domain import domain
 
 from ..TagData import TagData
 
