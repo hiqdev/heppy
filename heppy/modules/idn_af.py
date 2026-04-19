@@ -1,6 +1,6 @@
 from ..Module import Module
 from ..TagData import TagData
-from idn import idn
+from .idn import idn
 
 
 class idn_af(idn):

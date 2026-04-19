@@ -9,6 +9,7 @@ class idn(Module):
         'data': 'descend',
         'table': 'set',
         'uname': 'set',
+        'language': 'set',
     }
 
 ### RESPONSE parsing
@@ -29,4 +30,3 @@ class idn(Module):
             TagData('table', data.get('table', 'ru')),
             TagData('table', data.get('name'))
         ])
-

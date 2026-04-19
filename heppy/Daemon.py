@@ -145,16 +145,6 @@ class Daemon:
             Error.die(2, data['msg'] if error is None else error, data)
         pprint('LOGIN OK')
 
-
-    def logout(self, args):
-        if self.logout_query is None:
-            request = Logout.build(self.config)
-            self.logout_query = request.toxml()
-        query = self.logout_query
-        print Request.prettifyxml(query)
-        reply = self.request(query)
-        print Request.prettifyxml(reply)
-
     def get_login_query(self, args=None):
         if args is None:
             args = {}

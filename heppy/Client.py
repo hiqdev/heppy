@@ -27,7 +27,7 @@ class Client:
 
     def disconnect(self) -> None:
         if self.socket:
-            self.socket.close()  # Ensure the socket is properly closed
+            self.socket.close()
         self.socket = None
 
     def write(self, data: Union[str, bytes]) -> int:
@@ -42,7 +42,7 @@ class Client:
     def request(self, data: Union[str, bytes]) -> str:
         self.write(data)
         response = self.read()
-        return response if isinstance(response , str) else response.decode('utf-8')
+        return response if isinstance(response, str) else response.decode('utf-8')
 
     def get_greeting(self) -> str:
         return self.request('greeting')

@@ -12,7 +12,7 @@ class TestDomainTransfer(TestCase):
     <command>
         <transfer op="query">
             <domain:transfer xmlns:domain="urn:ietf:params:xml:ns:domain-1.0">
-                <domain:name>example.com</domain:name>
+                <domain:name>testdomain.test</domain:name>
             </domain:transfer>
         </transfer>
         <clTRID>XXXX-11</clTRID>
@@ -20,7 +20,7 @@ class TestDomainTransfer(TestCase):
 </epp>''', {
             'command':  'domain:transfer',
             'op':       'query',
-            'name':     'example.com',
+            'name':     'testdomain.test',
             'clTRID':   'XXXX-11',
         })
 
@@ -30,9 +30,9 @@ class TestDomainTransfer(TestCase):
     <command>
         <transfer op="query">
             <domain:transfer xmlns:domain="urn:ietf:params:xml:ns:domain-1.0">
-                <domain:name>example.com</domain:name>
+                <domain:name>testdomain.test</domain:name>
                 <domain:authInfo>
-                    <domain:pw roid="JD1234-REP">2fooBAR</domain:pw>
+                    <domain:pw roid="TST0002-REP">tR4!xPass</domain:pw>
                 </domain:authInfo>
             </domain:transfer>
         </transfer>
@@ -41,9 +41,9 @@ class TestDomainTransfer(TestCase):
 </epp>''', {
             'command':  'domain:transfer',
             'op':       'query',
-            'name':     'example.com',
-            'pw':       '2fooBAR',
-            'roid':     'JD1234-REP',
+            'name':     'testdomain.test',
+            'pw':       'tR4!xPass',
+            'roid':     'TST0002-REP',
             'clTRID':   'XXXX-11',
         })
 
@@ -53,7 +53,7 @@ class TestDomainTransfer(TestCase):
     <command>
         <transfer op="request">
             <domain:transfer xmlns:domain="urn:ietf:params:xml:ns:domain-1.0">
-                <domain:name>example.com</domain:name>
+                <domain:name>testdomain.test</domain:name>
                 <domain:authInfo>
                     <domain:pw/>
                 </domain:authInfo>
@@ -64,7 +64,7 @@ class TestDomainTransfer(TestCase):
 </epp>''', {
             'command':  'domain:transfer',
             'op':       'request',
-            'name':     'example.com',
+            'name':     'testdomain.test',
             'clTRID':   'XXXX-11',
         })
 
@@ -74,10 +74,10 @@ class TestDomainTransfer(TestCase):
     <command>
         <transfer op="request">
             <domain:transfer xmlns:domain="urn:ietf:params:xml:ns:domain-1.0">
-                <domain:name>example.com</domain:name>
+                <domain:name>testdomain.test</domain:name>
                 <domain:period unit="y">1</domain:period>
                 <domain:authInfo>
-                    <domain:pw roid="JD1234-REP">2fooBAR</domain:pw>
+                    <domain:pw roid="TST0002-REP">tR4!xPass</domain:pw>
                 </domain:authInfo>
             </domain:transfer>
         </transfer>
@@ -86,10 +86,10 @@ class TestDomainTransfer(TestCase):
 </epp>''', {
             'command':  'domain:transfer',
             'op':       'request',
-            'name':     'example.com',
+            'name':     'testdomain.test',
             'period':   1,
-            'pw':       '2fooBAR',
-            'roid':     'JD1234-REP',
+            'pw':       'tR4!xPass',
+            'roid':     'TST0002-REP',
             'clTRID':   'XXXX-11',
         })
 
@@ -99,7 +99,7 @@ class TestDomainTransfer(TestCase):
             'acID':         'ClientY',
             'clTRID':       'ABC-12345',
             'exDate':       '2002-09-08T22:00:00.0Z',
-            'name':         'example.com',
+            'name':         'testdomain.test',
             'reDate':       '2000-06-06T22:00:00.0Z',
             'reID':         'ClientX',
             'result_code':  '1000',
@@ -115,7 +115,7 @@ class TestDomainTransfer(TestCase):
         <resData>
                 <domain:trnData
              xmlns:domain="urn:ietf:params:xml:ns:domain-1.0">
-                <domain:name>example.com</domain:name>
+                <domain:name>testdomain.test</domain:name>
                 <domain:trStatus>pending</domain:trStatus>
                 <domain:reID>ClientX</domain:reID>
                 <domain:reDate>2000-06-06T22:00:00.0Z</domain:reDate>
@@ -138,7 +138,7 @@ class TestDomainTransfer(TestCase):
             'acID':         'ClientY',
             'clTRID':       'ABC-12345',
             'exDate':       '2002-09-08T22:00:00.0Z',
-            'name':         'example.com',
+            'name':         'testdomain.test',
             'reDate':       '2000-06-08T22:00:00.0Z',
             'reID':         'ClientX',
             'result_code':  '1001',
@@ -154,7 +154,7 @@ class TestDomainTransfer(TestCase):
         <resData>
             <domain:trnData
              xmlns:domain="urn:ietf:params:xml:ns:domain-1.0">
-                <domain:name>example.com</domain:name>
+                <domain:name>testdomain.test</domain:name>
                 <domain:trStatus>pending</domain:trStatus>
                 <domain:reID>ClientX</domain:reID>
                 <domain:reDate>2000-06-08T22:00:00.0Z</domain:reDate>

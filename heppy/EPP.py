@@ -9,10 +9,7 @@ from datetime import datetime
 from heppy import Net
 from heppy.Config import Config
 from heppy.Request import Request
-
-from pprint import pprint
-from typing import Union 
-
+from typing import Union
 
 
 class REPP:
@@ -90,8 +87,9 @@ class EPP:
 
     def write(self, xml: Union[str, bytes]) -> int:
         try:
-          return Net.write(self.ssl, xml.decode('utf-8') if isinstance(xml, bytes) else xml)
+            return Net.write(self.ssl, xml.decode('utf-8') if isinstance(xml, bytes) else xml)
         except socket.timeout:
+            raise
 
     def read(self) -> str:
         return Net.read(self.ssl)

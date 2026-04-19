@@ -12,8 +12,8 @@ class TestNamestoreExtDefault(TestCase):
     <command>
         <check>
             <domain:check xmlns:domain="urn:ietf:params:xml:ns:domain-1.0">
-                <domain:name>example.me</domain:name>
-                <domain:name>silverfire.me</domain:name>
+                <domain:name>testcheck.test</domain:name>
+                <domain:name>testfree.test</domain:name>
             </domain:check>
         </check>
         <extension>
@@ -26,8 +26,8 @@ class TestNamestoreExtDefault(TestCase):
 </epp>''', {
             'command':  'domain:check',
             'names': [
-                'example.me',
-                'silverfire.me',
+                'testcheck.test',
+                'testfree.test',
             ],
             'extensions': [
                 {
@@ -103,7 +103,6 @@ class TestNamestoreExtDefault(TestCase):
             'svTRID':       '54321-XYZ',
             'extensions': [
                 {
-                    'code':     '1',
                     'command':  'namestoreExt:nsExtErrData',
                     'msg':      'Invalid sub-product'
                 }
