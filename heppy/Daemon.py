@@ -164,7 +164,7 @@ class Daemon:
 
     def logout(self, args=None):
         if self.logout_query is None:
-            request = Logout.build(self.config)
+            request = Logout.build()
             self.logout_query = request.toxml()
         query = self.logout_query
         self.request(query)
