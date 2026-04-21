@@ -1,21 +1,18 @@
 # -*- coding: utf-8 -*-
-from ..Module import Module
 from ..TagData import TagData
 from .idn import idn
 
 
 class idn_af(idn):
+    # Afilias legacy IDN namespace; uses 'script' instead of 'table'/'uname'
+    opmap = {
+        **idn.opmap,
+        'script': 'set',
+    }
 
     def __init__(self, xmlns):
-        Module.__init__(self, xmlns)
+        super().__init__(xmlns)
         self.name = 'idn'
-
-### RESPONSE parsing
-
-    def parse_infData(self, response, tag):
-        response.put_extension_block(response, 'idn:info', tag, {
-            'script': [],
-        })
 
 ### REQUEST rendering
 
@@ -31,5 +28,5 @@ class idn_af(idn):
 
     def render_update(self, request, data):
         command = self.render_extension(request, 'update')
-        chg_element = request.add_subtag(command, 'idn:chg')
-        request.add_subtag(chg_element, 'idn:script', text=data.get('script'))
+        chg_element = request.add_subtag(command, self.name + ':chg')
+        request.add_subtag(chg_element, self.name + ':script', text=data.get('script'))

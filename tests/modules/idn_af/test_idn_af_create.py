@@ -1,19 +1,19 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 
 import unittest
 from ..TestCase import TestCase
 
 
-class TestIdnCreate(TestCase):
+class TestIdnAfCreate(TestCase):
 
-    def test_render_idn_data_request_for_create(self):
+    def test_render_idn_af_create_request(self):
         self.assertRequest('''<?xml version="1.0" ?>
 <epp xmlns="urn:ietf:params:xml:ns:epp-1.0">
     <command>
         <create>
             <domain:create xmlns:domain="urn:ietf:params:xml:ns:domain-1.0">
-                <domain:name>testfree.test</domain:name>
-                <domain:registrant>tst0002</domain:registrant>
+                <domain:name>xn--bq-uia.info</domain:name>
+                <domain:registrant>tst0001</domain:registrant>
                 <domain:ns>
                     <domain:hostObj>ns1.testns.test</domain:hostObj>
                     <domain:hostObj>ns2.testns.test</domain:hostObj>
@@ -24,18 +24,17 @@ class TestIdnCreate(TestCase):
             </domain:create>
         </create>
         <extension>
-            <idn:data xmlns:idn="urn:ietf:params:xml:ns:idn-1.0">
-                <idn:table>ua</idn:table>
-                <idn:uname>testfree.test</idn:uname>
-            </idn:data>
+            <idn:create xmlns:idn="urn:afilias:params:xml:ns:idn-1.0">
+                <idn:script>Cyrl</idn:script>
+            </idn:create>
         </extension>
         <clTRID>XXXX-11</clTRID>
     </command>
 </epp>
 ''', {
             'command':      'domain:create',
-            'name':         'testfree.test',
-            'registrant':   'tst0002',
+            'name':         'xn--bq-uia.info',
+            'registrant':   'tst0001',
             'nss': [
                 'ns1.testns.test',
                 'ns2.testns.test'
@@ -43,9 +42,8 @@ class TestIdnCreate(TestCase):
             'pw':           'tR4!xPass',
             'extensions': [
                 {
-                    'command': 'idn',
-                    'table':   'ua',
-                    'name':    'testfree.test',
+                    'command':  'idn_af:create',
+                    'script':   'Cyrl',
                 }
             ],
             'clTRID':       'XXXX-11',

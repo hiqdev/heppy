@@ -1,39 +1,39 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 
 import unittest
 from ..TestCase import TestCase
 
 
-class TestIdnUpdate(TestCase):
+class TestIdnAfUpdate(TestCase):
 
-    def test_render_idn_data_request_for_update(self):
+    def test_render_idn_af_update_request(self):
         self.assertRequest('''<?xml version="1.0" ?>
 <epp xmlns="urn:ietf:params:xml:ns:epp-1.0">
     <command>
         <update>
             <domain:update xmlns:domain="urn:ietf:params:xml:ns:domain-1.0">
-                <domain:name>testdomain.test</domain:name>
+                <domain:name>xn--bq-uia.info</domain:name>
                 <domain:chg/>
             </domain:update>
         </update>
         <extension>
-            <idn:data xmlns:idn="urn:ietf:params:xml:ns:idn-1.0">
-                <idn:table>fr</idn:table>
-                <idn:uname>testdomain.test</idn:uname>
-            </idn:data>
+            <idn:update xmlns:idn="urn:afilias:params:xml:ns:idn-1.0">
+                <idn:chg>
+                    <idn:script>Latn</idn:script>
+                </idn:chg>
+            </idn:update>
         </extension>
         <clTRID>XXXX-11</clTRID>
     </command>
 </epp>
 ''', {
             'command':  'domain:update',
-            'name':     'testdomain.test',
+            'name':     'xn--bq-uia.info',
             'chg': {},
             'extensions': [
                 {
-                    'command': 'idn',
-                    'table':   'fr',
-                    'name':    'testdomain.test',
+                    'command':  'idn_af:update',
+                    'script':   'Latn',
                 }
             ],
             'clTRID': 'XXXX-11',

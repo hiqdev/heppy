@@ -89,6 +89,7 @@ class EPP:
         try:
             return Net.write(self.ssl, xml.decode('utf-8') if isinstance(xml, bytes) else xml)
         except socket.timeout:
+            self.disconnect()
             raise
 
     def read(self) -> str:

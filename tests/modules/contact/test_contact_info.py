@@ -240,6 +240,7 @@ class TestContactInfo(TestCase):
                 'org': 'Private person',
                 'addr': {
                     'street': 'Test Blvd 10',
+                    'street1': 'Test Blvd 10',
                     'city': 'Testopol',
                     'sp': None,
                     'pc': '100002',
@@ -249,6 +250,7 @@ class TestContactInfo(TestCase):
             'name': 'Ivan Testenko',
             'org': 'Private person',
             'street': 'Test Blvd 10',
+            'street1': 'Test Blvd 10',
             'city': 'Testopol',
             'sp': None,
             'pc': '100002',

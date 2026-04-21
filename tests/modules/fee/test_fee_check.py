@@ -70,7 +70,7 @@ class TestFeeCheck(TestCase):
                     'phase':    'claims',
                     'subphase': 'landrush',
                     'period':   2,
-                    'unit':     'm'
+                    'unit':     'y'
                 },
                 {
                     'command':  'fee:check',

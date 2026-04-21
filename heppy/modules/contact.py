@@ -72,10 +72,13 @@ class contact(Module):
         return data
 
     def normalize_streets(self, data):
-        if 'street' in data and isinstance(data['street'], list):
-            for index, street in enumerate(data['street'], start=1):
-                data['street' + str(index)] = street
-            data['street'] = data['street'][-1]
+        if 'street' in data:
+            if isinstance(data['street'], list):
+                for index, street in enumerate(data['street'], start=1):
+                    data['street' + str(index)] = street
+                data['street'] = data['street'][-1]
+            elif 'street1' not in data:
+                data['street1'] = data['street']
         if 'addr' in data and isinstance(data['addr'], dict):
             self.normalize_streets(data['addr'])
 
