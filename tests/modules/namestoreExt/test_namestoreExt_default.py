@@ -104,7 +104,8 @@ class TestNamestoreExtDefault(TestCase):
             'extensions': [
                 {
                     'command':  'namestoreExt:nsExtErrData',
-                    'msg':      'Invalid sub-product'
+                    'msg':      'Invalid sub-product',
+                    'code':     '1',
                 }
             ],
         }, '''<?xml version="1.0" encoding="utf-8" standalone="no"?>

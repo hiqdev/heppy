@@ -21,14 +21,10 @@ class Login:
             Error.die(4, 'no greeting given')
         greeting = Response.parsexml(greeting)
         if not args.get('objURIs'):
-            args['objURIs'] = greeting.get('objURIs')
-            for uri in args['objURIs']:
-                if not uri in Request.modules:
-                    args['objURIs'].remove(uri)
+            uris = greeting.get('objURIs') or []
+            args['objURIs'] = [uri for uri in uris if greeting.get_module(uri) is not None]
         if not args.get('extURIs'):
-            args['extURIs'] = greeting.get('extURIs')
-            for uri in args['extURIs']:
-                if not uri in Request.modules:
-                    args['extURIs'].remove(uri)
+            uris = greeting.get('extURIs') or []
+            args['extURIs'] = [uri for uri in uris if greeting.get_module(uri) is not None]
         args['command'] = 'epp:login'
         return Request.build(args)

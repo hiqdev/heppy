@@ -56,9 +56,11 @@ def write(sock: socket, data: Union[bytes, str]) -> int:
     data_bytes = data.encode('utf-8')
     length = int_to_net(len(data_bytes) + 4)  # 4 bytes length
     sock.settimeout(20)
-    sock.sendall(length)
-    sock.sendall(data_bytes)
-    sock.settimeout(None)
+    try:
+        sock.sendall(length)
+        sock.sendall(data_bytes)
+    finally:
+        sock.settimeout(None)
     return length
 
 def read(sock: socket) -> str:

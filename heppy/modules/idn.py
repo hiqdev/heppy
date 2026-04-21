@@ -12,14 +12,6 @@ class idn(Module):
         'language': 'set',
     }
 
-### RESPONSE parsing
-
-    def parse_infData(self, response, tag):
-        response.put_extension_block(response, 'idn:info', tag, {
-            'table': [],
-
-        })
-
 ### REQUEST rendering
 
     def render_default(self, request, data):
@@ -27,6 +19,6 @@ class idn(Module):
 
     def render_data(self, request, data):
         self.render_extension_with_fields(request, 'data', [
-            TagData('table', data.get('table', 'ru')),
-            TagData('table', data.get('name'))
+            TagData('table', data.get('table')),
+            TagData('uname', data.get('name')),
         ])

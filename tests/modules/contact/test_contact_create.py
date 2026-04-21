@@ -86,6 +86,96 @@ class TestContactCreate(TestCase):
             'clTRID':   'XXXX-11',
         })
 
+    def test_render_contact_create_request_with_disclose(self):
+        self.assertRequest('''<?xml version="1.0" ?>
+<epp xmlns="urn:ietf:params:xml:ns:epp-1.0">
+    <command>
+        <create>
+            <contact:create xmlns:contact="urn:ietf:params:xml:ns:contact-1.0">
+                <contact:id>tst0001</contact:id>
+                <contact:postalInfo type="int">
+                    <contact:name>Test User</contact:name>
+                    <contact:addr>
+                        <contact:city>Testville</contact:city>
+                        <contact:cc>US</contact:cc>
+                    </contact:addr>
+                </contact:postalInfo>
+                <contact:email>test@example.test</contact:email>
+                <contact:authInfo>
+                    <contact:pw>tR4!xPass</contact:pw>
+                </contact:authInfo>
+                <contact:disclose flag="0">
+                    <contact:name type="int"/>
+                    <contact:name type="loc"/>
+                    <contact:org type="int"/>
+                    <contact:org type="loc"/>
+                    <contact:addr type="int"/>
+                    <contact:addr type="loc"/>
+                    <contact:voice/>
+                    <contact:fax/>
+                    <contact:email/>
+                </contact:disclose>
+            </contact:create>
+        </create>
+        <clTRID>XXXX-11</clTRID>
+    </command>
+</epp>''', {
+            'command':  'contact:create',
+            'id':       'tst0001',
+            'name':     'Test User',
+            'city':     'Testville',
+            'cc':       'US',
+            'email':    'test@example.test',
+            'pw':       'tR4!xPass',
+            'disclose': '0',
+            'clTRID':   'XXXX-11',
+        })
+
+    def test_render_contact_create_request_with_disclose_flag_1(self):
+        self.assertRequest('''<?xml version="1.0" ?>
+<epp xmlns="urn:ietf:params:xml:ns:epp-1.0">
+    <command>
+        <create>
+            <contact:create xmlns:contact="urn:ietf:params:xml:ns:contact-1.0">
+                <contact:id>tst0001</contact:id>
+                <contact:postalInfo type="int">
+                    <contact:name>Test User</contact:name>
+                    <contact:addr>
+                        <contact:city>Testville</contact:city>
+                        <contact:cc>US</contact:cc>
+                    </contact:addr>
+                </contact:postalInfo>
+                <contact:email>test@example.test</contact:email>
+                <contact:authInfo>
+                    <contact:pw>tR4!xPass</contact:pw>
+                </contact:authInfo>
+                <contact:disclose flag="1">
+                    <contact:name type="int"/>
+                    <contact:name type="loc"/>
+                    <contact:org type="int"/>
+                    <contact:org type="loc"/>
+                    <contact:addr type="int"/>
+                    <contact:addr type="loc"/>
+                    <contact:voice/>
+                    <contact:fax/>
+                    <contact:email/>
+                </contact:disclose>
+            </contact:create>
+        </create>
+        <clTRID>XXXX-11</clTRID>
+    </command>
+</epp>''', {
+            'command':  'contact:create',
+            'id':       'tst0001',
+            'name':     'Test User',
+            'city':     'Testville',
+            'cc':       'US',
+            'email':    'test@example.test',
+            'pw':       'tR4!xPass',
+            'disclose': '1',
+            'clTRID':   'XXXX-11',
+        })
+
     def test_parse_contact_create_response(self):
         self.assertResponse({
             'clTRID':       'XXXX-11',
