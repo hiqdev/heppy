@@ -59,10 +59,16 @@ class Daemon:
         self.consume()
 
     def consume(self):
-        rabbit_config = self.config.get('RabbitMQ', {})
-        rabbit_config.setdefault('queue', 'heppy-' + self.config['name'])
-        self.server = RPCServer(rabbit_config)
-        self.server.consume(self.smart_request, self.recheck, self.refreshSeconds)
+        socket_config = self.config.get('SocketServer')
+        if socket_config:
+            from heppy.SocketServer import SocketServer
+            self.server = SocketServer(socket_config['address'])
+            self.server.consume(self.smart_request, self.recheck, self.refreshSeconds)
+        else:
+            rabbit_config = self.config.get('RabbitMQ', {})
+            rabbit_config.setdefault('queue', 'heppy-' + self.config['name'])
+            self.server = RPCServer(rabbit_config)
+            self.server.consume(self.smart_request, self.recheck, self.refreshSeconds)
 
     def recheck(self):
         if self.needs_quit():
