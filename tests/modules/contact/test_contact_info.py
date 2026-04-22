@@ -78,7 +78,7 @@ class TestContactInfo(TestCase):
             'roid':         'C2775978-AGRS',
             'sp':           'VA',
             'statuses': {
-                'ok': None
+                'ok': 'ok'
             },
             'street':       'Apt 200',
             'street1':      '1 Test Ave',
@@ -134,8 +134,8 @@ class TestContactInfo(TestCase):
             'id': 'P-TST0001',
             'roid': '000000001_CONTACT-KEYSYS',
             'statuses': {
-                'linked': None,
-                'ok': None,
+                'linked': 'linked',
+                'ok': 'ok',
             },
             'loc': {
                 'name': 'Test Fakename',
@@ -232,8 +232,8 @@ class TestContactInfo(TestCase):
             'id': 'P-TST0002',
             'roid': '000000002_CONTACT-KEYSYS',
             'statuses': {
-                'linked': None,
-                'ok': None,
+                'linked': 'linked',
+                'ok': 'ok',
             },
             'int': {
                 'name': 'Ivan Testenko',

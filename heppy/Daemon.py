@@ -40,7 +40,7 @@ class Daemon:
         self.last_command = datetime.now()
         self.last_hello = self.last_command
         self.refreshSeconds = timedelta(**config.get('refreshInterval', {'seconds': 30})).total_seconds()
-        self.keepaliveDelta = timedelta(**config.get('keepaliveInterval', {'minutes': 5}))
+        self.keepaliveDelta = timedelta(**config.get('keepaliveInterval', {'minutes': 5}))  # override via keepaliveInterval in epp.json
         self.forcequitDelta = timedelta(**config.get('forcequitInterval', {'hours': 23}))
 
     def quit(self):

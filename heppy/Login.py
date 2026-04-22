@@ -21,11 +21,12 @@ class Login:
         if not greeting:
             Error.die(4, 'no greeting given')
         greeting = Response.parsexml(greeting)
+        supported = set(greeting.nsmap.values())
         if not args.get('objURIs'):
             uris = greeting.get('objURIs') or []
-            args['objURIs'] = [uri for uri in uris if greeting.get_module(uri) is not None]
+            args['objURIs'] = [uri for uri in uris if uri in supported]
         if not args.get('extURIs'):
             uris = greeting.get('extURIs') or []
-            args['extURIs'] = [uri for uri in uris if greeting.get_module(uri) is not None]
+            args['extURIs'] = [uri for uri in uris if uri in supported]
         args['command'] = 'epp:login'
         return Request.build(args)

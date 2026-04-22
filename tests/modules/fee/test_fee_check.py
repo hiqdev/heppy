@@ -185,5 +185,53 @@ class TestFeeCheck(TestCase):
         ''')
 
 
+    def test_parse_fee_check_attribute_collision(self):
+        # A registry that annotates <fee:fee> with a 'command' attribute would
+        # collide with the 'command' key already present in data. The guard must
+        # place it under data['attributes'] rather than overwriting data['command'].
+        self.assertResponse({
+            'result_code':  '1000',
+            'result_msg':   'Command completed successfully',
+            'svTRID':       '54322-XYZ',
+            'clTRID':       'ABC-12345',
+            'avails':       {'testdomain.test': '1'},
+            'extensions': [
+                {
+                    'command':    'fee:check',
+                    'domain':     'testdomain.test',
+                    'currency':   'USD',
+                    'fee':        '10.00',
+                    'attributes': {'command': 'create'},
+                }
+            ],
+        }, '''<?xml version="1.0" encoding="utf-8" standalone="no"?>
+<epp xmlns="urn:ietf:params:xml:ns:epp-1.0">
+    <response>
+        <result code="1000">
+            <msg>Command completed successfully</msg>
+        </result>
+        <resData>
+            <domain:chkData xmlns:domain="urn:ietf:params:xml:ns:domain-1.0">
+                <domain:cd>
+                    <domain:name avail="1">testdomain.test</domain:name>
+                </domain:cd>
+            </domain:chkData>
+        </resData>
+        <extension>
+            <fee:chkData xmlns:fee="urn:ietf:params:xml:ns:fee-0.5">
+                <fee:domain>testdomain.test</fee:domain>
+                <fee:currency>USD</fee:currency>
+                <fee:fee command="create">10.00</fee:fee>
+            </fee:chkData>
+        </extension>
+        <trID>
+            <clTRID>ABC-12345</clTRID>
+            <svTRID>54322-XYZ</svTRID>
+        </trID>
+    </response>
+</epp>
+''')
+
+
 if __name__ == '__main__':
     unittest.main()

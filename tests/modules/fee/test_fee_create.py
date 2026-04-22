@@ -14,11 +14,11 @@ class TestFeeCreate(TestCase):
             <domain:create xmlns:domain="urn:ietf:params:xml:ns:domain-1.0">
                 <domain:name>testdomain.test</domain:name>
                 <domain:period unit="y">2</domain:period>
-                <domain:registrant>tst0002</domain:registrant>
                 <domain:ns>
                     <domain:hostObj>ns1.testns.test</domain:hostObj>
                     <domain:hostObj>ns2.testns.test</domain:hostObj>
                 </domain:ns>
+                <domain:registrant>tst0002</domain:registrant>
                 <domain:contact type="admin">tst0001</domain:contact>
                 <domain:contact type="tech">sh8014</domain:contact>
                 <domain:contact type="billing">sh8015</domain:contact>

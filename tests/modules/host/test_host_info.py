@@ -40,7 +40,7 @@ class TestHostInfo(TestCase):
             'result_msg':   'Command completed successfully',
             'roid':         'H151302-AGRS',
             'statuses': {
-                'ok': None
+                'ok': 'ok'
             },
             'svTRID': 'SRO-1538734456408'
         }, '''<?xml version="1.0" ?>

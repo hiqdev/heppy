@@ -25,7 +25,7 @@ class Module:
             response.parse(child)
 
     def parse_status(self, response, tag):
-        response.put_to_dict('statuses', {tag.attrib['s']: None if tag.text is None else tag.text})
+        response.put_to_dict('statuses', {tag.attrib['s']: tag.attrib['s'] if tag.text is None else tag.text})
 
     def parse_cd_tag(self, response, tag):
         name = tag[0]

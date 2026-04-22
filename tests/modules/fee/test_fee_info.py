@@ -63,7 +63,7 @@ class TestFeeInfo(TestCase):
             'result_msg':   'Command completed successfully',
             'roid':         'EXAMPLE1-REP',
             'statuses': {
-                'ok': None
+                'ok': 'ok'
             },
             'svTRID':       '54322-XYZ',
             'tech':         ['tst0001'],

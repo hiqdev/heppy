@@ -25,7 +25,7 @@ class TestIdnAfInfo(TestCase):
             'result_msg':   'Command completed successfully',
             'roid':         'D224-LRMS',
             'statuses': {
-                'ok': None
+                'ok': 'ok'
             },
             'svTRID':       'SRO-1097604691524',
             'tech':         ['OTNE-C2'],

@@ -25,7 +25,7 @@ class TestIdnInfo(TestCase):
             'result_msg':   'Command completed successfully',
             'roid':         'D224-LRMS',
             'statuses': {
-                'ok': None
+                'ok': 'ok'
             },
             'svTRID':       'SRO-1097604691524',
             'tech':         ['OTNE-C2'],
@@ -83,8 +83,8 @@ class TestIdnInfo(TestCase):
             'name': 'xn--e1afmapc.xn--80akhbyknj4f',
             'roid': '10000000000001_DOMAIN-KEYSYS',
             'statuses': {
-                'clientTransferProhibited': None,
-                'clientDeleteProhibited': None,
+                'clientTransferProhibited': 'clientTransferProhibited',
+                'clientDeleteProhibited': 'clientDeleteProhibited',
             },
             'registrant': 'P-TEST01',
             'admin': ['P-TEST01'],

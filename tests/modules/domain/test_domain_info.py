@@ -55,9 +55,9 @@ class TestDomainInfo(TestCase):
             'name':         'evonames.info',
             'roid':         'D31051196-LRMS',
             'statuses':     {
-                'clientDeleteProhibited':   None,
-                'clientTransferProhibited': None,
-                'clientUpdateProhibited':   None,
+                'clientDeleteProhibited':   'clientDeleteProhibited',
+                'clientTransferProhibited': 'clientTransferProhibited',
+                'clientUpdateProhibited':   'clientUpdateProhibited',
             },
             'secDNS':       [
                 {

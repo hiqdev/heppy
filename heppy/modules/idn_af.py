@@ -27,6 +27,9 @@ class idn_af(idn):
         ])
 
     def render_update(self, request, data):
+        script = data.get('script')
+        if not script:
+            return
         command = self.render_extension(request, 'update')
         chg_element = request.add_subtag(command, self.name + ':chg')
-        request.add_subtag(chg_element, self.name + ':script', text=data.get('script'))
+        request.add_subtag(chg_element, self.name + ':script', text=script)

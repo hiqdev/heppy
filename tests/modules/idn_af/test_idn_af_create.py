@@ -13,11 +13,11 @@ class TestIdnAfCreate(TestCase):
         <create>
             <domain:create xmlns:domain="urn:ietf:params:xml:ns:domain-1.0">
                 <domain:name>xn--bq-uia.info</domain:name>
-                <domain:registrant>tst0001</domain:registrant>
                 <domain:ns>
                     <domain:hostObj>ns1.testns.test</domain:hostObj>
                     <domain:hostObj>ns2.testns.test</domain:hostObj>
                 </domain:ns>
+                <domain:registrant>tst0001</domain:registrant>
                 <domain:authInfo>
                     <domain:pw>tR4!xPass</domain:pw>
                 </domain:authInfo>

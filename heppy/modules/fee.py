@@ -71,7 +71,10 @@ class fee(Module):
                     continue
                 data[key] = child.text.strip() if child.text is not None else None
                 for attr_name, attr_value in child.attrib.items():
-                    data[attr_name] = attr_value
+                    if attr_name in data:
+                        data.setdefault('attributes', {})[attr_name] = attr_value
+                    else:
+                        data[attr_name] = attr_value
                 break
         response.put_to_list('extensions', data)
 
@@ -88,7 +91,7 @@ class fee(Module):
         if (data.get('subphase', None) != None) :
             commandprop.update({"subphase" : data.get('subphase')})
         request.add_subtag(domain, 'fee:command',   commandprop, data.get('action', 'create'))
-        request.add_subtag(domain, 'fee:period',    {'unit':'y'}, data.get('period', '1'))
+        request.add_subtag(domain, 'fee:period',    {'unit': data.get('unit', 'y')}, data.get('period', '1'))
 
     def render_info(self, request, data):
         self.render_extension_with_fields(request, 'info', [

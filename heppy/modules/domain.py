@@ -100,10 +100,10 @@ class domain(Module):
             TagData('period', data.get('period'), {'unit': 'y'}),
         ])
 
-        if 'registrant' in data:
-            request.add_subtag(command, 'domain:registrant', {}, data.get('registrant'))
         if 'nss' in data:
             self.render_nss(request, command, data.get('nss'))
+        if 'registrant' in data:
+            request.add_subtag(command, 'domain:registrant', {}, data.get('registrant'))
 
         if self.has_contacts(data):
             self.render_contacts(request, command, data)
