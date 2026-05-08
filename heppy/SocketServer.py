@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 
 import json
+import logging
 import os
 import socket as socket_module
 
@@ -41,6 +42,8 @@ class SocketServer:
                 except socket_module.timeout:
                     if recheck:
                         recheck()
+                except Exception:
+                    logging.exception('SocketServer: unhandled error in connection loop')
         finally:
             server.close()
             if os.path.exists(self.address):
