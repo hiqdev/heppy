@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 
+import logging
 import xml.dom.minidom
 import xml.etree.ElementTree as ET
 
@@ -53,6 +54,9 @@ class Request(Doc):
         request = Request()
         request.render(data['command'], data)
         for extension in data.get('extensions', {}):
+            if not isinstance(extension, dict) or 'command' not in extension:
+                logging.warning('Request: skipping invalid extension: %r', extension)
+                continue
             request.render(extension['command'], extension)
         request.render('epp:clTRID', data)
         return request
