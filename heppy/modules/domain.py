@@ -133,12 +133,7 @@ class domain(Module):
             self.render_update_section(request, data, command, 'rem')
 
         if 'chg' in data:
-            chg_element = request.add_subtag(command, 'domain:chg')
-            chg_data = data['chg']
-            if 'registrant' in chg_data:
-                request.add_subtag(chg_element, 'domain:registrant', text=chg_data['registrant'])
-            if 'pw' in chg_data:
-                self.render_auth_info(request, chg_element, chg_data.get('pw'))
+            self.render_update_section(request, data, command, 'chg')
 
     def render_restore(self, request, data):
         command = self.render_command_with_fields(request, 'update', [
@@ -149,7 +144,8 @@ class domain(Module):
     def render_update_section(self, request, data, command, operation):
         element = request.add_subtag(command, 'domain:' + operation)
         data = data.get(operation)
-        values = {}
+        if isinstance(data, dict):
+            data = [data]
         for d in data:
             if 'nss' in d:
                 self.render_nss(request, element, d['nss'])
@@ -157,6 +153,10 @@ class domain(Module):
                 self.render_contacts(request, element, d)
             if 'statuses' in d:
                 self.render_statuses(request, element, d['statuses'])
+            if 'registrant' in d:
+                request.add_subtag(element, 'domain:registrant', text=d['registrant'])
+            if 'pw' in d:
+                self.render_auth_info(request, element, d.get('pw'))
 
     def render_nss(self, request, parent, hosts):
         ns_element = request.add_subtag(parent, 'domain:ns')
@@ -164,8 +164,9 @@ class domain(Module):
 
 
     def render_contacts(self, request, parent, storage):
-        for contact_type in (set(self.CONTACT_TYPES) & set(storage.keys())):
-            self.render_multiple(request, parent, 'domain:contact', storage[contact_type], {'type': contact_type})
+        for contact_type in self.CONTACT_TYPES:
+            if contact_type in storage:
+                self.render_multiple(request, parent, 'domain:contact', storage[contact_type], {'type': contact_type})
 
     def has_contacts(self, storage):
         return any(contact_type in storage for contact_type in self.CONTACT_TYPES)

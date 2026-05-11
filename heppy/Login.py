@@ -9,26 +9,24 @@ from heppy.Response import Response
 class Login:
 
     @staticmethod
-    def build(config, greeting, args = {}):
+    def build(config, greeting, args=None):
+        args = {} if args is None else args
         if not args.get('login'):
             args['login'] = config['epp']['login']
         if not args.get('pw'):
             args['pw'] = config['epp']['password']
         if not args.get('newPassword'):
-            if config['epp'].get("newPassword", None) is not None :
+            if config['epp'].get('newPassword') is not None:
                 args['newPassword'] = config['epp']['newPassword']
         if not greeting:
             Error.die(4, 'no greeting given')
         greeting = Response.parsexml(greeting)
+        supported = set(greeting.nsmap.values())
         if not args.get('objURIs'):
-            args['objURIs'] = greeting.get('objURIs')
-            for uri in args['objURIs']:
-                if not uri in Request.modules:
-                    args['objURIs'].remove(uri)
+            uris = greeting.get('objURIs') or []
+            args['objURIs'] = [uri for uri in uris if uri in supported]
         if not args.get('extURIs'):
-            args['extURIs'] = greeting.get('extURIs')
-            for uri in args['extURIs']:
-                if not uri in Request.modules:
-                    args['extURIs'].remove(uri)
+            uris = greeting.get('extURIs') or []
+            args['extURIs'] = [uri for uri in uris if uri in supported]
         args['command'] = 'epp:login'
         return Request.build(args)

@@ -19,5 +19,3 @@ class sync(Module):
         self.render_extension_with_fields(request, 'update', [
             TagData('expMonthDay', data.get('expMonthDay'))
         ])
-
-

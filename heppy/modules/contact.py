@@ -48,6 +48,7 @@ class contact(Module):
         type = tag.attrib['type']
         data = self.parse_descend_local(response, tag)
         response.put_to_dict(type, data)
+        self.flatten_postal_info(response, data)
 
     def parse_set_local(self, response, tag):
         return tag.text
@@ -59,11 +60,40 @@ class contact(Module):
             if (self.opmap.get(tagname, None) != None):
                 if (self.opmap.get(tagname) == 'descend') :
                     d = self.parse_descend_local(response, child)
-                    data[tagname] = d
                 else :
-                    d = self.parse_descend_local(response, child)
-                    data[tagname] =  self.parse_set_local(response, child)
+                    d = self.parse_set_local(response, child)
+                if tagname in data:
+                    if not isinstance(data[tagname], list):
+                        data[tagname] = [data[tagname]]
+                    data[tagname].append(d)
+                else:
+                    data[tagname] = d
+        self.normalize_streets(data)
         return data
+
+    def normalize_streets(self, data):
+        if 'street' in data:
+            if isinstance(data['street'], list):
+                for index, street in enumerate(data['street'], start=1):
+                    data['street' + str(index)] = street
+                data['street'] = data['street'][-1]
+            elif 'street1' not in data:
+                data['street1'] = data['street']
+        if 'addr' in data and isinstance(data['addr'], dict):
+            self.normalize_streets(data['addr'])
+
+    def flatten_postal_info(self, response, data):
+        for key in ['name', 'org']:
+            if key in data and key not in response.data:
+                response.set(key, data[key])
+
+        addr = data.get('addr')
+        if not isinstance(addr, dict):
+            return
+
+        for key in ['street', 'street1', 'street2', 'street3', 'city', 'sp', 'pc', 'cc']:
+            if key in addr and key not in response.data:
+                response.set(key, addr[key])
 
     def parse_disclose(self, response, tag):
         flag = tag.attrib['flag']
@@ -187,4 +217,3 @@ class contact(Module):
         request.add_subtag(disclose, 'contact:fax')
         request.add_subtag(disclose, 'contact:email')
         return request
-

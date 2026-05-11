@@ -12,7 +12,7 @@ class TestIdnLangDefault(TestCase):
     <command>
         <create>
             <domain:create xmlns:domain="urn:ietf:params:xml:ns:domain-1.0">
-                <domain:name>silverfire.me</domain:name>
+                <domain:name>testfree.test</domain:name>
                 <domain:authInfo>
                     <domain:pw/>
                 </domain:authInfo>
@@ -25,7 +25,7 @@ class TestIdnLangDefault(TestCase):
     </command>
 </epp>''', {
             'command':  'domain:create',
-            'name':     'silverfire.me',
+            'name':     'testfree.test',
             'extensions': [
                 {
                     'command':  'idnLang',

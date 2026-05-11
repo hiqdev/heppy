@@ -12,7 +12,7 @@ class TestFeeTransfer(TestCase):
             'acID':         'ClientY',
             'clTRID':       'ABC-12345',
             'exDate':       '2002-09-08T22:00:00.0Z',
-            'name':         'example.com',
+            'name':         'testdomain.test',
             'reDate':       '2000-06-08T22:00:00.0Z',
             'reID':         'ClientX',
             'result_code':  '1001',
@@ -35,7 +35,7 @@ class TestFeeTransfer(TestCase):
         <resData>
             <domain:trnData
                 xmlns:domain="urn:ietf:params:xml:ns:domain-1.0">
-                <domain:name>example.com</domain:name>
+                <domain:name>testdomain.test</domain:name>
                 <domain:trStatus>pending</domain:trStatus>
                 <domain:reID>ClientX</domain:reID>
                 <domain:reDate>2000-06-08T22:00:00.0Z</domain:reDate>

@@ -40,7 +40,7 @@ class Daemon:
         self.last_command = datetime.now()
         self.last_hello = self.last_command
         self.refreshSeconds = timedelta(**config.get('refreshInterval', {'seconds': 30})).total_seconds()
-        self.keepaliveDelta = timedelta(**config.get('keepaliveInterval', {'minutes': 1}))
+        self.keepaliveDelta = timedelta(**config.get('keepaliveInterval', {'minutes': 5}))  # override via keepaliveInterval in epp.json
         self.forcequitDelta = timedelta(**config.get('forcequitInterval', {'hours': 23}))
 
     def quit(self):
@@ -59,10 +59,16 @@ class Daemon:
         self.consume()
 
     def consume(self):
-        rabbit_config = self.config.get('RabbitMQ', {})
-        rabbit_config.setdefault('queue', 'heppy-' + self.config['name'])
-        self.server = RPCServer(rabbit_config)
-        self.server.consume(self.smart_request, self.recheck, self.refreshSeconds)
+        socket_config = self.config.get('SocketServer')
+        if socket_config:
+            from heppy.SocketServer import SocketServer
+            self.server = SocketServer(socket_config['address'])
+            self.server.consume(self.smart_request, self.recheck, self.refreshSeconds)
+        else:
+            rabbit_config = self.config.get('RabbitMQ', {})
+            rabbit_config.setdefault('queue', 'heppy-' + self.config['name'])
+            self.server = RPCServer(rabbit_config)
+            self.server.consume(self.smart_request, self.recheck, self.refreshSeconds)
 
     def recheck(self):
         if self.needs_quit():
@@ -148,6 +154,7 @@ class Daemon:
     def get_login_query(self, args=None):
         if args is None:
             args = {}
+
         if self.login_query is None:
             greeting = self.client.get_greeting()
             greetobj = Response.parsexml(greeting)
@@ -163,7 +170,7 @@ class Daemon:
 
     def logout(self, args=None):
         if self.logout_query is None:
-            request = Logout.build(self.config)
+            request = Logout.build()
             self.logout_query = request.toxml()
         query = self.logout_query
         self.request(query)

@@ -12,23 +12,23 @@ class TestFeeCreate(TestCase):
     <command>
         <create>
             <domain:create xmlns:domain="urn:ietf:params:xml:ns:domain-1.0">
-                <domain:name>example.com</domain:name>
+                <domain:name>testdomain.test</domain:name>
                 <domain:period unit="y">2</domain:period>
-                <domain:registrant>jd1234</domain:registrant>
                 <domain:ns>
-                    <domain:hostObj>ns1.example.net</domain:hostObj>
-                    <domain:hostObj>ns2.example.net</domain:hostObj>
+                    <domain:hostObj>ns1.testns.test</domain:hostObj>
+                    <domain:hostObj>ns2.testns.test</domain:hostObj>
                 </domain:ns>
-                <domain:contact type="admin">sh8013</domain:contact>
+                <domain:registrant>tst0002</domain:registrant>
+                <domain:contact type="admin">tst0001</domain:contact>
                 <domain:contact type="tech">sh8014</domain:contact>
                 <domain:contact type="billing">sh8015</domain:contact>
                 <domain:authInfo>
-                    <domain:pw>2fooBAR</domain:pw>
+                    <domain:pw>tR4!xPass</domain:pw>
                 </domain:authInfo>
             </domain:create>
         </create>
         <extension>
-            <fee:create xmlns:fee="urn:ietf:params:xml:ns:fee-0.5">
+            <fee:create xmlns:fee="urn:ietf:params:xml:ns:fee-0.7">
                 <fee:currency>USD</fee:currency>
                 <fee:fee>42.42</fee:fee>
             </fee:create>
@@ -38,17 +38,17 @@ class TestFeeCreate(TestCase):
 </epp>
 ''', {
             'command':      'domain:create',
-            'name':         'example.com',
+            'name':         'testdomain.test',
             'period':       2,
-            'registrant':   'jd1234',
+            'registrant':   'tst0002',
             'nss': [
-                'ns1.example.net',
-                'ns2.example.net'
+                'ns1.testns.test',
+                'ns2.testns.test'
             ],
-            'admin':        'sh8013',
+            'admin':        'tst0001',
             'tech':         'sh8014',
             'billing':      'sh8015',
-            'pw':           '2fooBAR',
+            'pw':           'tR4!xPass',
             'extensions': [
                 {
                     'command':  'fee:create',
@@ -64,7 +64,7 @@ class TestFeeCreate(TestCase):
             'clTRID':       'ABC-12345',
             'crDate':       '1999-04-03T22:00:00.0Z',
             'exDate':       '2001-04-03T22:00:00.0Z',
-            'name':         'example.com',
+            'name':         'testdomain.test',
             'result_code':  '1000',
             'result_msg':   'Command completed successfully',
             'svTRID':       '54321-XYZ',
@@ -84,7 +84,7 @@ class TestFeeCreate(TestCase):
         <resData>
             <domain:creData
                 xmlns:domain="urn:ietf:params:xml:ns:domain-1.0">
-                <domain:name>example.com</domain:name>
+                <domain:name>testdomain.test</domain:name>
                 <domain:crDate>1999-04-03T22:00:00.0Z</domain:crDate>
                 <domain:exDate>2001-04-03T22:00:00.0Z</domain:exDate>
             </domain:creData>

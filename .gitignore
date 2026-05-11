@@ -16,6 +16,8 @@ nbproject
 
 # test coverage
 .coverage
+.claude
+
 
 # testing
 tests/modules/hidden_test.py

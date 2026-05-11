@@ -18,7 +18,7 @@ class SignalHandler:
             signal.signal(no, self.on_signal)
 
     def on_signal(self, signal, frame):
-        self.received = True
+        self.received = signal
         if not self.working:
             self.run_callback(signal)
 
@@ -35,5 +35,5 @@ class SignalHandler:
         finally:
             self.working = False
             if self.received:
-                self.run_callback()
+                self.run_callback(self.received)
 
