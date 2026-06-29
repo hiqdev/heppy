@@ -12,14 +12,14 @@ class TestContactDelete(TestCase):
     <command>
         <delete>
             <contact:delete xmlns:contact="urn:ietf:params:xml:ns:contact-1.0">
-                <contact:id>sh8013</contact:id>
+                <contact:id>tst0001</contact:id>
             </contact:delete>
         </delete>
         <clTRID>XXXX-11</clTRID>
     </command>
 </epp>''', {
             'command':  'contact:delete',
-            'id':       'sh8013',
+            'id':       'tst0001',
             'clTRID':   'XXXX-11',
         })
 

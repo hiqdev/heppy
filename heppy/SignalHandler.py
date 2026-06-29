@@ -1,10 +1,8 @@
 #!/usr/bin/env python
+# -*- coding: utf-8 -*-
 
 import signal
 from contextlib import contextmanager
-
-from pprint import pprint
-
 
 class SignalHandler:
     def __init__(self, callbacks):
@@ -14,13 +12,13 @@ class SignalHandler:
         self.working = False
         self.received = False
         self.callbacks = {}
-        for name, callback in callbacks.iteritems():
+        for name, callback in callbacks.items():
             no = getattr(signal, name)
             self.callbacks[str(no)] = callback
             signal.signal(no, self.on_signal)
 
     def on_signal(self, signal, frame):
-        self.received = True
+        self.received = signal
         if not self.working:
             self.run_callback(signal)
 
@@ -37,5 +35,5 @@ class SignalHandler:
         finally:
             self.working = False
             if self.received:
-                self.run_callback()
+                self.run_callback(self.received)
 

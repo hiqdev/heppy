@@ -1,62 +1,35 @@
+# -*- coding: utf-8 -*-
+
 from ..Module import Module
 from ..TagData import TagData
-from pprint import pprint
-from fee import fee
+from .fee09 import fee09
 
-
-class fee10(fee):
+class fee10(fee09):
     opmap = {
         'chkData':      'descend',
         'currency':     'set',
-        'objID':        'set',
-        'class':        'set',
-        'fee':          'set',
-        'command':      'descend',
         'period':       'set',
+        'fee':          'set',
     }
 
-    def __init__(self, xmlns):
-        Module.__init__(self, xmlns)
-        self.name = 'fee'
-
-### RESPONSE parsing
-
     def parse_cd(self, response, tag):
-        return self.parse_cd_tag_extension(response, tag)
+        data = {}
+        for child in tag:
+            tagname = child.tag.replace('{' + self.xmlns + '}', '')
+            if child.text is not None:
+                data.update({tagname: child.text.lower()})
+            for name, value in child.attrib.items():
+                if value is not None:
+                    data.update({name.lower(): value.lower()})
+            if tagname == 'command':
+                for cchild in child:
+                    if cchild.text is not None:
+                        ctagname = cchild.tag.replace('{' + self.xmlns + '}', '')
+                        data.update({ctagname: cchild.text.lower()})
 
-    def parse_infData(self, response, tag):
-        response.put_extension_block(response, 'fee:info', tag, {
-            'currency': [],
-            'fee':      [],
-            'action':   ['phase', 'subphase'],
-            'period':   ['unit'],
+        return response.put_to_dict(self.name, {
+            data.get('objID', 'domain'): data
         })
-
-    def parse_delData(self, response, tag):
-        response.put_extension_block(response, 'fee:delete', tag, {
-            'currency': [],
-            'credit':   [],
-        })
-
-    def parse_trnData(self, response, tag):
-        self.parse_typical_tag(response, tag, 'fee:transfer')
-
-    def parse_creData(self, response, tag):
-        self.parse_typical_tag(response, tag, 'fee:create')
-
-    def parse_renData(self, response, tag):
-        self.parse_typical_tag(response, tag, 'fee:renew')
-
-    def parse_updData(self, response, tag):
-        self.parse_typical_tag(response, tag, 'fee:update')
-
-    def parse_typical_tag(self, response, tag, command):
-        response.put_extension_block(response, command, tag, {
-            'currency': [],
-            'fee':      [],
-        })
-
-### REQUEST rendering
 
     def render_check(self, request, data):
         ext = self.render_extension(request, 'check')
@@ -72,7 +45,7 @@ class fee10(fee):
                 'subphase': data.get('subphase'),
             }),
             TagData('period', data.get('period', 1), {
-               'unit': data.get('unit', 'y')
+                'unit': data.get('unit', 'y')
             }),
         ])
 
@@ -93,5 +66,3 @@ class fee10(fee):
             TagData('currency', data.get('currency')),
             TagData('fee', data.get('fee')),
         ])
-
-

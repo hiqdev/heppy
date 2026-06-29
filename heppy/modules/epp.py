@@ -1,5 +1,6 @@
-from ..Module import Module
+# -*- coding: utf-8 -*-
 
+from ..Module import Module
 
 class epp(Module):
     opmap = {
@@ -22,7 +23,6 @@ class epp(Module):
         'svTRID':       'set',
         'resData':      'descend',
         'qDate':        'set',
-        'msg':          'set',
         'text':         'set',
     }
 

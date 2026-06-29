@@ -1,4 +1,6 @@
-from secDNS import secDNS
+# -*- coding: utf-8 -*-
+
+from .secDNS import secDNS
 
 class secDNShm(secDNS):
 ### RESPONSE parsing

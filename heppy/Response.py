@@ -1,6 +1,7 @@
+# -*- coding: utf-8 -*-
+
 import xml.etree.ElementTree as ET
-from Doc import Doc
-from pprint import pprint
+from heppy.Doc import Doc
 
 class Response(Doc):
     def __init__(self, root):
@@ -24,7 +25,8 @@ class Response(Doc):
         if attr_value:
             data[attr] = attr_value
 
-    def put_tag_data(self, dest, root, tag_name, attrs=[]):
+    def put_tag_data(self, dest, root, tag_name, attrs=None):
+        attrs = [] if attrs is None else attrs
         if '@' in tag_name:
             tag_name, key = tag_name.split('@')
         elif ':' in tag_name:
@@ -42,20 +44,22 @@ class Response(Doc):
         data = dict()
         data['command'] = command
         module_name = command.split(':')[0]
-        for tag_name, attrs in tags_data.iteritems():
+        for tag_name, attrs in tags_data.items():
             response.put_tag_data(data, root_tag, module_name + ':' + tag_name, attrs)
         response.put_to_list('extensions', data)
 
     def put_to_dict(self, name, values):
         if name not in self.data:
             self.data[name] = {}
-        for k, v in values.iteritems():
+        for k, v in values.items():
             self.data[name][k] = v
 
-    def put_to_list(self, name, value=[]):
+    def put_to_list(self, name, value=None):
+        if value is None:
+            value = []
         if name not in self.data:
             self.data[name] = []
-        if type(value) in [list, tuple]:
+        if isinstance(value, (list, tuple)):
             self.data[name].extend(value)
         else:
             self.data[name].append(value)
@@ -75,6 +79,9 @@ class Response(Doc):
 
     @staticmethod
     def parsexml(xml):
+        if isinstance(xml, bytes):
+            xml = xml.decode('utf-8')  # Handle UTF-8 with BOM
+        xml = xml.strip()
         root = ET.fromstring(xml)
         return Response(root)
 

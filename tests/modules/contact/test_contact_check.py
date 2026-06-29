@@ -1,7 +1,7 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 
 import unittest
-from ..TestCase import TestCase
+from ..TestCase import TestCase 
 
 
 class TestContactCheck(TestCase):
@@ -12,7 +12,7 @@ class TestContactCheck(TestCase):
     <command>
         <check>
             <contact:check xmlns:contact="urn:ietf:params:xml:ns:contact-1.0">
-                <contact:id>sh8013</contact:id>
+                <contact:id>tst0001</contact:id>
                 <contact:id>sah8013</contact:id>
                 <contact:id>8013sah</contact:id>
             </contact:check>
@@ -22,7 +22,7 @@ class TestContactCheck(TestCase):
 </epp>''', {
             'command': 'contact:check',
             'ids': [
-                'sh8013',
+                'tst0001',
                 'sah8013',
                 '8013sah'
             ],
@@ -34,7 +34,7 @@ class TestContactCheck(TestCase):
             'avails': {
                 '8013sah': '1',
                 'sah8013': '1',
-                'sh8013': '0'
+                'tst0001': '0'
             },
             'clTRID': 'XXXX-11',
             'result_code': '1000',
@@ -50,7 +50,7 @@ class TestContactCheck(TestCase):
         <resData>
             <contact:chkData xmlns:contact="urn:ietf:params:xml:ns:contact-1.0" xsi:schemaLocation="urn:ietf:params:xml:ns:contact-1.0 contact-1.0.xsd">
                 <contact:cd>
-                    <contact:id avail="0">sh8013</contact:id>
+                    <contact:id avail="0">tst0001</contact:id>
                 </contact:cd>
                 <contact:cd>
                     <contact:id avail="1">sah8013</contact:id>

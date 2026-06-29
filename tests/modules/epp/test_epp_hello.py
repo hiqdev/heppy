@@ -16,7 +16,7 @@ class TestEppHello(TestCase):
 
     def test_parse_epp_hello_response_min(self):
         self.assertResponse({
-            'svID':     'Example EPP server epp.example.com',
+            'svID':     'Test EPP server epp.testserver.test',
             'svDate':   '2000-06-08T22:00:00.0Z',
             'version':  '1.0',
             'lang':     'en',
@@ -24,7 +24,7 @@ class TestEppHello(TestCase):
         }, '''<?xml version="1.0" ?>
 <epp xmlns="urn:ietf:params:xml:ns:epp-1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="urn:ietf:params:xml:ns:epp-1.0 epp-1.0.xsd">
     <greeting>
-        <svID>Example EPP server epp.example.com</svID>
+        <svID>Test EPP server epp.testserver.test</svID>
         <svDate>2000-06-08T22:00:00.0Z</svDate>
         <svcMenu>
             <version>1.0</version>

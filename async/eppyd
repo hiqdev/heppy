@@ -54,11 +54,11 @@ class REPP(asyncore.dispatcher):
         return self.has_answer
 
     def readable(self):
-        print 'READABLE {0}'.format(self.is_reading)
+        print('READABLE {0}'.format(self.is_reading))
         return self.is_reading
 
     def writable(self):
-        print 'WRITEABLE {0}'.format(bool(not self.is_reading and self.query))
+        print('WRITEABLE {0}'.format(bool(not self.is_reading and self.query)))
         return not self.is_reading and self.query
 
     def handle_read(self):

@@ -12,13 +12,13 @@ class TestFeeInfo(TestCase):
     <command>
         <info>
             <domain:info xmlns:domain="urn:ietf:params:xml:ns:domain-1.0">
-                <domain:name hosts="all">silverfire.me</domain:name>
+                <domain:name hosts="all">testfree.test</domain:name>
             </domain:info>
         </info>
         <extension>
-            <fee:info xmlns:fee="urn:ietf:params:xml:ns:fee-0.5">
+            <fee:info xmlns:fee="urn:ietf:params:xml:ns:fee-0.7">
                 <fee:currency>USD</fee:currency>
-                <fee:action phase="sunrise">create</fee:action>
+                <fee:command phase="sunrise">create</fee:command>
                 <fee:period unit="y">1</fee:period>
             </fee:info>
         </extension>
@@ -27,7 +27,7 @@ class TestFeeInfo(TestCase):
 </epp>
 ''', {
             'command': 'domain:info',
-            'name': 'silverfire.me',
+            'name': 'testfree.test',
             'extensions': [
                 {
                     'command':  'fee:info',
@@ -42,31 +42,31 @@ class TestFeeInfo(TestCase):
 
     def test_parse_fee_info_response(self):
         self.assertResponse({
-            'admin':        'sh8013',
+            'admin':        ['tst0001'],
             'clID':         'ClientX',
             'clTRID':       'ABC-12345',
             'crDate':       '1999-04-03T22:00:00.0Z',
             'crID':         'ClientY',
             'exDate':       '2005-04-03T22:00:00.0Z',
             'hosts': [
-                'ns1.example.com',
-                'ns2.example.com'
+                'ns1.testdomain.test',
+                'ns2.testdomain.test'
             ],
-            'name':     'example.com',
+            'name':     'testdomain.test',
             'nss': [
-                'ns1.example.com',
-                'ns1.example.net'
+                'ns1.testdomain.test',
+                'ns1.testns.test'
             ],
-            'pw':           '2fooBAR',
-            'registrant':   'jd1234',
+            'pw':           'tR4!xPass',
+            'registrant':   'tst0002',
             'result_code':  '1000',
             'result_msg':   'Command completed successfully',
             'roid':         'EXAMPLE1-REP',
             'statuses': {
-                'ok': None
+                'ok': 'ok'
             },
             'svTRID':       '54322-XYZ',
-            'tech':         'sh8013',
+            'tech':         ['tst0001'],
             'trDate':       '2000-04-08T09:00:00.0Z',
             'upDate':       '1999-12-03T09:00:00.0Z',
             'upID':         'ClientX',
@@ -90,18 +90,18 @@ class TestFeeInfo(TestCase):
         <resData>
             <domain:infData
                 xmlns:domain="urn:ietf:params:xml:ns:domain-1.0">
-                <domain:name>example.com</domain:name>
+                <domain:name>testdomain.test</domain:name>
                 <domain:roid>EXAMPLE1-REP</domain:roid>
                 <domain:status s="ok" />
-                <domain:registrant>jd1234</domain:registrant>
-                <domain:contact type="admin">sh8013</domain:contact>
-                <domain:contact type="tech">sh8013</domain:contact>
+                <domain:registrant>tst0002</domain:registrant>
+                <domain:contact type="admin">tst0001</domain:contact>
+                <domain:contact type="tech">tst0001</domain:contact>
                 <domain:ns>
-                    <domain:hostObj>ns1.example.com</domain:hostObj>
-                    <domain:hostObj>ns1.example.net</domain:hostObj>
+                    <domain:hostObj>ns1.testdomain.test</domain:hostObj>
+                    <domain:hostObj>ns1.testns.test</domain:hostObj>
                 </domain:ns>
-                <domain:host>ns1.example.com</domain:host>
-                <domain:host>ns2.example.com</domain:host>
+                <domain:host>ns1.testdomain.test</domain:host>
+                <domain:host>ns2.testdomain.test</domain:host>
                 <domain:clID>ClientX</domain:clID>
                 <domain:crID>ClientY</domain:crID>
                 <domain:crDate>1999-04-03T22:00:00.0Z</domain:crDate>
@@ -110,7 +110,7 @@ class TestFeeInfo(TestCase):
                 <domain:exDate>2005-04-03T22:00:00.0Z</domain:exDate>
                 <domain:trDate>2000-04-08T09:00:00.0Z</domain:trDate>
                 <domain:authInfo>
-                    <domain:pw>2fooBAR</domain:pw>
+                    <domain:pw>tR4!xPass</domain:pw>
                 </domain:authInfo>
             </domain:infData>
         </resData>

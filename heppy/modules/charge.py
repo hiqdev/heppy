@@ -1,6 +1,7 @@
+# -*- coding: utf-8 -*-
+
 from ..Module import Module
 from ..TagData import TagData
-from pprint import pprint
 
 class charge(Module):
     opmap = {
@@ -24,7 +25,7 @@ class charge(Module):
 ### RESPONSE parsing
 
     def parse_cd(self, response, tag):
-        return self.parse_cd_tag(response, tag)
+        return self.parse_cd_tag_extension(response, tag)
 
     def parse_category(self, response, tag):
         response.set('category', tag.text.lower())
