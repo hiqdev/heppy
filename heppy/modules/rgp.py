@@ -32,6 +32,6 @@ class rgp(Module):
         request.add_subtag(report, 'rgp:delTime', {}, data.get('delTime'))
         request.add_subtag(report, 'rgp:resTime', {}, data.get('resTime'))
         request.add_subtag(report, 'rgp:resReason', {}, data.get('resReason', 'Registrant Error'))
-        request.add_subtag(report, 'rgp:statement', {}, data.get('statement1', 'This registrar has not restored the Registered Name in order to assume the rights to use or sell the Registered Name for itself or for any third party'))
+        request.add_subtag(report, 'rgp:statement', {}, data.get('statement1') or data.get('statement') or 'This registrar has not restored the Registered Name in order to assume the rights to use or sell the Registered Name for itself or for any third party')
         request.add_subtag(report, 'rgp:statement', {}, data.get('statement2', 'The information in this report is true to best of this registrar\'s knowledge, and this registrar acknowledges that intentionally supplying false information in this report shall constitute an incurable material breach of the Registry-Registrar Agreement'))
 

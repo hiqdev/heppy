@@ -54,7 +54,7 @@ class secDNS(Module):
 
     def render_allData(self, request, parent, values):
         if values.get('all')=='true':
-            request.add_subtag(parent, 'secDNS:all')
+            request.add_subtag(parent, 'secDNS:all', {}, 'true')
             return
         if values.get('maxSigLife'):
             request.add_subtag(parent, 'secDNS:maxSigLife', {}, values.get('maxSigLife'))
