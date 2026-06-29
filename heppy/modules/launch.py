@@ -6,13 +6,15 @@ from pprint import pprint
 
 class launch(Module):
     opmap = {
-        'chkData':      'descend',
-        'creData':      'descend',
-        'notice':       'descend',
-        'phase':        'set',
-        'noticeID':     'set',
-        'notAfter':     'set',
-        'acceptedDate': 'set',
+        'chkData':       'descend',
+        'creData':       'descend',
+        'infData':       'descend',
+        'notice':        'descend',
+        'phase':         'set',
+        'applicationID': 'set',
+        'noticeID':      'set',
+        'notAfter':      'set',
+        'acceptedDate':  'set',
     }
 
     def __init__(self, xmlns):
@@ -31,7 +33,17 @@ class launch(Module):
         request.add_subtag(ext, 'launch:phase', {}, data.get('phase', 'claims'))
 
     def render_info(self, request, data):
-        pass
+        attrs = {'includeMark': 'true'} if data.get('include_mark') else {}
+        ext = self.render_extension(request, 'info', attrs)
+        request.add_subtag(ext, 'launch:phase', {}, data.get('phase', 'sunrise'))
+        if 'application_id' in data:
+            request.add_subtag(ext, 'launch:applicationID', {}, data.get('application_id'))
+
+    def render_delete(self, request, data):
+        ext = self.render_extension(request, 'delete')
+        request.add_subtag(ext, 'launch:phase', {}, data.get('phase', 'sunrise'))
+        if 'application_id' in data:
+            request.add_subtag(ext, 'launch:applicationID', {}, data.get('application_id'))
 
     def render_create(self, request, data):
         ext = self.render_extension(request, 'create')

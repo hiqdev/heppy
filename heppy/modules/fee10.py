@@ -60,12 +60,9 @@ class fee10(fee):
 
     def render_check(self, request, data):
         ext = self.render_extension(request, 'check')
-        request.add_subtag(ext, 'fee:currency',  {}, data.get('currency', 'USD'))
-        create_command = request.add_subtag(ext, 'fee:command', {'name': 'create'})
-        request.add_subtag(create_command, 'fee:period', {'unit': 'y'}, 1)
-#        request.add_subtag(ext, 'fee:command', {'name':'renew'})
-#        request.add_subtag(ext, 'fee:command', {'name':'transfer'})
-#        request.add_subtag(ext, 'fee:command', {'name':'restore'})
+        request.add_subtag(ext, 'fee:currency', {}, data.get('currency', 'USD'))
+        command = request.add_subtag(ext, 'fee:command', {'name': data.get('action', 'create')})
+        request.add_subtag(command, 'fee:period', {'unit': data.get('unit', 'y')}, data.get('period', 1))
 
     def render_info(self, request, data):
         self.render_extension_with_fields(request, 'info', [

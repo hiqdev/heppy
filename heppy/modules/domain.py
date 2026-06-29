@@ -54,14 +54,24 @@ class domain(Module):
     def parse_hostObj(self, response, tag):
         response.put_to_list('nss', tag.text.lower())
 
+    def parse_hostAttr(self, response, tag):
+        host = {}
+        for child in tag:
+            localname = child.tag.split('}')[1] if '}' in child.tag else child.tag
+            if localname == 'hostName':
+                host['name'] = child.text.lower()
+            elif localname == 'hostAddr':
+                ver = child.attrib.get('ip', 'v4')
+                host.setdefault(ver, []).append(child.text)
+        response.put_to_list('nss', host['name'])
+        if 'v4' in host or 'v6' in host:
+            response.put_to_list('hostAttrs', host)
+
     def parse_host(self, response, tag):
         response.put_to_list('hosts', tag.text.lower())
 
     def parse_contact(self, response, tag):
-        if (tag.attrib['type'] == 'registrant'):
-            response.set(tag.attrib['type'], tag.text)
-        else:
-            response.put_to_list(tag.attrib['type'], tag.text)
+        response.put_to_list(tag.attrib['type'], tag.text)
 
     def parse_panData(self, response, tag):
         pass
@@ -159,7 +169,18 @@ class domain(Module):
 
     def render_nss(self, request, parent, hosts):
         ns_element = request.add_subtag(parent, 'domain:ns')
-        return self.render_multiple(request, ns_element, 'domain:hostObj', hosts, {})
+        for host in hosts:
+            if isinstance(host, dict):
+                self.render_host_attr(request, ns_element, host)
+            else:
+                request.add_subtag(ns_element, 'domain:hostObj', {}, host)
+
+    def render_host_attr(self, request, parent, host):
+        attr = request.add_subtag(parent, 'domain:hostAttr')
+        request.add_subtag(attr, 'domain:hostName', {}, host['name'])
+        for ver in ('v4', 'v6'):
+            for addr in host.get(ver, []):
+                request.add_subtag(attr, 'domain:hostAddr', {'ip': ver}, addr)
 
 
     def render_contacts(self, request, parent, storage):

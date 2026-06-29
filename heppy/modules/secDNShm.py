@@ -27,5 +27,3 @@ class secDNShm(secDNS):
             'keyAlg':       response.find_text(tag, 'secDNShm:alg'),
             'pubKey':       response.find_text(tag, 'secDNShm:pubKey'),
         })
-
-

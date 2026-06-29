@@ -14,7 +14,7 @@ class fee11(fee):
         return self.parse_cd_tag_extension(response, tag)
 
     def parse_object(self, response, tag):
-        return response
+        self.parse_descend(response, tag)
 
     def render_check(self, request, data):
         ext = self.render_extension(request, 'check')

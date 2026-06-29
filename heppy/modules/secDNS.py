@@ -40,9 +40,9 @@ class secDNS(Module):
 
 ### REQUEST rendering
 
-    def render_create(self, request):
+    def render_create(self, request, data):
         ext = self.render_extension(request, 'create')
-        self.render_allData(request, ext, request)
+        self.render_allData(request, ext, data)
 
     def render_update(self, request, data):
         ext = self.render_extension(request, 'update')
@@ -53,7 +53,7 @@ class secDNS(Module):
 
     def render_allData(self, request, parent, values):
         if values.get('all')=='true':
-            request.add_subtag(parent, 'secDNS:all', {}, 'true')
+            request.add_subtag(parent, 'secDNS:all')
             return
         if values.get('maxSigLife'):
             request.add_subtag(parent, 'secDNS:maxSigLife', {}, values.get('maxSigLife'))
