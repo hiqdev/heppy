@@ -45,13 +45,13 @@ class EPP:
             self.socket.bind((self.config['bind'], 0))
         self.socket.connect((self.config['host'], self.config['port']))
 
-        if hasattr(ssl, 'wrap_socket'):
+        try:
             self.ssl = ssl.wrap_socket(self.socket,
                 keyfile  = self.get_path('keyfile'),
                 certfile = self.get_path('certfile'),
                 ca_certs = self.get_path('ca_certs'),
             )
-        else:
+        except AttributeError:
             context = ssl.create_default_context(ssl.Purpose.SERVER_AUTH, cafile=self.get_path('ca_certs'))
             context.load_cert_chain(
                 certfile=self.get_path('certfile'),
