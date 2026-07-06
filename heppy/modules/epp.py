@@ -23,7 +23,6 @@ class epp(Module):
         'svTRID':       'set',
         'resData':      'descend',
         'qDate':        'set',
-        'value':        'descend',
         'text':         'set',
     }
 

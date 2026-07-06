@@ -12,7 +12,7 @@ class charge(Module):
         'infData':  'descend',
         'upData':   'descend',
         'agreement':'descend',
-        'cd':       'descend',
+
         'set':      'descend',
         'name':     'set',
         'type':     'set',

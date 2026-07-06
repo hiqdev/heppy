@@ -41,9 +41,9 @@ class secDNS(Module):
 
 ### REQUEST rendering
 
-    def render_create(self, request):
+    def render_create(self, request, data):
         ext = self.render_extension(request, 'create')
-        self.render_allData(request, ext, request)
+        self.render_allData(request, ext, data)
 
     def render_update(self, request, data):
         ext = self.render_extension(request, 'update')

@@ -1,17 +1,8 @@
 # -*- coding: utf-8 -*-
 
-from .fee import fee
+from .fee11 import fee11
 
-class fee11(fee):
-    opmap = {
-        'chkData':      'descend',
-        'currency':     'set',
-        'class':        'set',
-        'fee':          'set',
-        'command':      'set',
-        'period':       'set',
-    }
-
+class fee12(fee11):
     def parse_cd(self, response, tag):
         data = {}
         domain_xmlns = 'urn:ietf:params:xml:ns:domain-1.0'
@@ -30,13 +21,16 @@ class fee11(fee):
                         data[cmd_tagname] = cmd_child.text.strip()
                     for attr_name, attr_value in cmd_child.attrib.items():
                         if attr_value is not None:
-                            data[attr_name.lower()] = attr_value
+                            data[attr_name.lower()] = attr_value.lower()
             elif child.text is not None:
                 data[tagname] = child.text.strip()
+                for attr_name, attr_value in child.attrib.items():
+                    if attr_value is not None:
+                        data[attr_name.lower()] = attr_value.lower()
             else:
                 for attr_name, attr_value in child.attrib.items():
                     if attr_value is not None:
-                        data[attr_name.lower()] = attr_value
+                        data[attr_name.lower()] = attr_value.lower()
         if 'avail' in tag.attrib:
             data['avail'] = tag.attrib['avail'].lower()
         if 'name' in data:
@@ -44,6 +38,6 @@ class fee11(fee):
 
     def render_check(self, request, data):
         ext = self.render_extension(request, 'check')
-        request.add_subtag(ext, 'fee:command',   {},             data.get('action', 'create'))
-        request.add_subtag(ext, 'fee:currency',  {},             data.get('currency', 'USD'))
-#        request.add_subtag(ext, 'fee:period',    {'unit':'y'},   data.get('period', 1))
+        request.add_subtag(ext, 'fee:currency', {}, data.get('currency', 'USD'))
+        command = request.add_subtag(ext, 'fee:command', {'name': data.get('action', 'create')})
+        request.add_subtag(command, 'fee:period', {'unit': data.get('unit', 'y')}, data.get('period', 1))

@@ -31,4 +31,4 @@ class uaepp(Module):
         ])
 
     def render_info(self, request, data):
-        return self.render_default(request, data)
+        pass

@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from .contact import contact
+from .contact_hm import contact_hm
 
-class contacthm(contact):
+class contacthm(contact_hm):
     pass
