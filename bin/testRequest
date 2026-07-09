@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 
 from heppy.Args import Args
 from heppy.Request import Request
