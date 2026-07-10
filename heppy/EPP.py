@@ -43,6 +43,10 @@ class EPP:
     def __init__(self, config):
         self.config = config
         self.socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        # bound below covers both TCP connect and the TLS handshake, which
+        # would otherwise block forever (no OS-level timeout) against a
+        # host that's unreachable or silently drops packets.
+        self.socket.settimeout(20)
         if ('bind' in self.config and self.config.get('bind', None) is not None):
             self.socket.bind((self.config['bind'], 0))
         self.socket.connect((self.config['host'], self.config['port']))
@@ -61,6 +65,7 @@ class EPP:
             )
             self.ssl = context.wrap_socket(self.socket, server_hostname=self.config['host'])
 
+        self.ssl.settimeout(None)
         self.greeting = self.read()
         self.config['start_time'] = datetime.now().isoformat(' ')
 
