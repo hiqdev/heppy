@@ -75,6 +75,11 @@ def make_handler(epp, state):
             await write_answer(writer, answer)
         except (asyncio.IncompleteReadError, ConnectionError):
             pass
+        except Exception as exc:
+            try:
+                await write_answer(writer, 'Error: {0}'.format(exc))
+            except (asyncio.IncompleteReadError, ConnectionError, OSError):
+                pass
         finally:
             writer.close()
             state['busy'] = False
