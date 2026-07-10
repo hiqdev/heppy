@@ -59,6 +59,12 @@ class EPP:
             )
         except AttributeError:
             context = ssl.create_default_context(ssl.Purpose.SERVER_AUTH, cafile=self.get_path('ca_certs'))
+            if self.config.get('check_hostname') is False:
+                # A handful of registries serve a cert whose CN/SAN doesn't
+                # match their EPP hostname (e.g. ZDNS/.top's cert names its
+                # host "ZDNS GTLD EPPServer"). The CA chain is still fully
+                # verified above; this only skips the hostname/SAN match.
+                context.check_hostname = False
             context.load_cert_chain(
                 certfile=self.get_path('certfile'),
                 keyfile=self.get_path('keyfile')
