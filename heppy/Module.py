@@ -42,10 +42,10 @@ class Module:
             tagname = child.tag.replace('{' + self.xmlns + '}', '')
 
             if child.text is not None:
-                data.update({tagname: child.text.lower()})
+                data.update({tagname: child.text})
             for name, value in child.attrib.items():
                 if value is not None:
-                    data.update({name.lower() : value.lower()})
+                    data.update({name.lower() : value})
 
         response.put_to_dict(self.name, {
             data[key] : data

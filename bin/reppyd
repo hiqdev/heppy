@@ -1,11 +1,17 @@
-#!/usr/bin/python -u
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
 
 # Unix socket listening version.
 
+import sys
 from heppy.Args import Args
 from heppy.Error import Error
 from heppy.Config import Config
 from heppy.Daemon import Daemon
+
+# Keep stdout line-buffered regardless of how the daemon is launched
+# (systemd, Docker, or a plain redirected shell invocation).
+sys.stdout.reconfigure(line_buffering=True)
 
 args = Args()
 config = Config(args.get('path'))

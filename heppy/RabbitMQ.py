@@ -1,4 +1,3 @@
-#!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
 import pika
@@ -34,7 +33,10 @@ class RPCServer:
             recheck()
 
     def on_request(self, ch, method, props, body) -> None:
-        reply = self.response(body.decode('utf-8') if isinstance(body, bytes) else body)
+        try:
+            reply = self.response(body.decode('utf-8') if isinstance(body, bytes) else body)
+        except Exception as e:
+            reply = str(e)
         ch.basic_publish(
             exchange='',
             routing_key=props.reply_to if props.reply_to is not None else method.routing_key,

@@ -1,6 +1,8 @@
-#!/usr/bin/python3 -u
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
 
 # Message queue subscribing version based on RabbitMQ and pika.
+import sys
 import sentry_sdk
 from heppy.Args import Args
 from heppy.Error import Error
@@ -8,6 +10,9 @@ from heppy.Config import Config
 from heppy.Daemon import Daemon
 from heppy.RabbitMQ import RPCServer
 
+# Keep stdout line-buffered regardless of how the daemon is launched
+# (systemd, Docker, or a plain redirected shell invocation).
+sys.stdout.reconfigure(line_buffering=True)
 
 args = Args()
 config = Config(args.get('path'))
