@@ -16,6 +16,20 @@ This package provides:
 
 In production use since 2016.
 
+## Requirements
+
+- **Python**: developed on 3.6, actively maintained through 3.14 (see `#57 python-3.14-migration`). Two spots in the code branch on the interpreter version to bridge that whole range:
+  - `bin/heppyd`/`bin/heppyc` reconfigure `stdout` to be line-buffered via `TextIOWrapper.reconfigure()` (3.7+) with a manual `io.TextIOWrapper` fallback for 3.6.
+  - `heppy/EPP.py` uses `ssl.wrap_socket()` where available and falls back to `ssl.create_default_context().wrap_socket()` on 3.12+, where `wrap_socket()` was removed.
+- **Unix-like OS only** — relies on `fcntl` (`heppy/Config.py`), Unix signals `SIGHUP`/`SIGUSR1`/`SIGUSR2` (`heppy/SignalHandler.py`), and, for the socket-based daemons, Unix domain sockets (`local.address`). Not expected to run on Windows.
+- **Third-party packages** — not declared in `setup.py` (no `install_requires`), so install them yourself:
+  - [`pika`](https://pypi.org/project/pika/) — required by the RabbitMQ-based `bin/heppyd`/`bin/heppyc`.
+  - [`sentry-sdk`](https://pypi.org/project/sentry-sdk/) — imported unconditionally at the top of `bin/heppyd`/`bin/heppyc` even if you don't set `sentry_dsn` in the config (it's only *initialized* then, but the import itself is not optional).
+
+  ```sh
+  pip install pika sentry-sdk
+  ```
+
 ## Configuration
 
 ### etc/verisign/epp.json
