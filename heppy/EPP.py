@@ -65,6 +65,14 @@ class EPP:
                 # host "ZDNS GTLD EPPServer"). The CA chain is still fully
                 # verified above; this only skips the hostname/SAN match.
                 context.check_hostname = False
+            if self.config.get('insecure_skip_verify') is True:
+                # Deliberate, per-registry security downgrade: this server's
+                # own certificate is expired (an operational fault on their
+                # end, not something a CA bundle or hostname override can
+                # fix). Named loudly on purpose - do not set this anywhere
+                # except a registry that's actually in this state.
+                context.check_hostname = False
+                context.verify_mode = ssl.CERT_NONE
             context.load_cert_chain(
                 certfile=self.get_path('certfile'),
                 keyfile=self.get_path('keyfile')
