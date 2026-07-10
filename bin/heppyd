@@ -18,7 +18,8 @@ from heppy.RabbitMQ import RPCServer
 if hasattr(sys.stdout, 'reconfigure'):
     sys.stdout.reconfigure(line_buffering=True)
 else:
-    sys.stdout = io.TextIOWrapper(sys.stdout.buffer, line_buffering=True)
+    stdout_encoding = sys.stdout.encoding
+    sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding=stdout_encoding, line_buffering=True)
 
 args = Args()
 config = Config(args.get('path'))
