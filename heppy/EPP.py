@@ -21,7 +21,9 @@ class REPP:
         self.disconnect()
 
     def disconnect(self):
-        self.epp.disconnect()
+        epp = getattr(self, 'epp', None)
+        if epp is not None:
+            epp.disconnect()
 
     def connect(self):
         self.epp = EPP(self.config)
@@ -66,8 +68,9 @@ class EPP:
         self.disconnect()
 
     def disconnect(self):
-        if self.socket:
-            self.socket.close()
+        sock = getattr(self, 'socket', None)
+        if sock:
+            sock.close()
         self.socket = None
 
     def get_path(self, name: str) -> str:
