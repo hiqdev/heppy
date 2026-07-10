@@ -88,7 +88,9 @@ class RPCClient:
         return self.reply if isinstance(self.reply, str) else (self.reply).decode('utf-8')
 
     def __del__(self):
-        self.connection.close()
+        connection = getattr(self, 'connection', None)
+        if connection is not None:
+            connection.close()
 
 def connection_parameters(config):
     args = {

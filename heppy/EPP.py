@@ -20,7 +20,9 @@ class REPP:
         self.disconnect()
 
     def disconnect(self):
-        self.epp.disconnect()
+        epp = getattr(self, 'epp', None)
+        if epp is not None:
+            epp.disconnect()
 
     def connect(self):
         self.epp = EPP(self.config)
@@ -40,6 +42,10 @@ class EPP:
     def __init__(self, config):
         self.config = config
         self.socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        # bound below covers both TCP connect and the TLS handshake, which
+        # would otherwise block forever (no OS-level timeout) against a
+        # host that's unreachable or silently drops packets.
+        self.socket.settimeout(20)
         if ('bind' in self.config and self.config.get('bind', None) is not None):
             self.socket.bind((self.config['bind'], 0))
         self.socket.connect((self.config['host'], self.config['port']))
@@ -52,12 +58,27 @@ class EPP:
             )
         except AttributeError:
             context = ssl.create_default_context(ssl.Purpose.SERVER_AUTH, cafile=self.get_path('ca_certs'))
+            if self.config.get('check_hostname') is False:
+                # A handful of registries serve a cert whose CN/SAN doesn't
+                # match their EPP hostname (e.g. ZDNS/.top's cert names its
+                # host "ZDNS GTLD EPPServer"). The CA chain is still fully
+                # verified above; this only skips the hostname/SAN match.
+                context.check_hostname = False
+            if self.config.get('insecure_skip_verify') is True:
+                # Deliberate, per-registry security downgrade: this server's
+                # own certificate is expired (an operational fault on their
+                # end, not something a CA bundle or hostname override can
+                # fix). Named loudly on purpose - do not set this anywhere
+                # except a registry that's actually in this state.
+                context.check_hostname = False
+                context.verify_mode = ssl.CERT_NONE
             context.load_cert_chain(
                 certfile=self.get_path('certfile'),
                 keyfile=self.get_path('keyfile')
             )
             self.ssl = context.wrap_socket(self.socket, server_hostname=self.config['host'])
 
+        self.ssl.settimeout(None)
         self.greeting = self.read()
         self.config['start_time'] = datetime.now().isoformat(' ')
 
@@ -65,8 +86,9 @@ class EPP:
         self.disconnect()
 
     def disconnect(self):
-        if self.socket:
-            self.socket.close()
+        sock = getattr(self, 'socket', None)
+        if sock:
+            sock.close()
         self.socket = None
 
     def get_path(self, name: str) -> str:

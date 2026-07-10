@@ -2,6 +2,7 @@
 # -*- coding: utf-8 -*-
 
 # Message queue subscribing version based on RabbitMQ and pika.
+import io
 import sys
 import sentry_sdk
 from heppy.Args import Args
@@ -10,9 +11,15 @@ from heppy.Config import Config
 from heppy.Daemon import Daemon
 from heppy.RabbitMQ import RPCServer
 
-# Keep stdout line-buffered regardless of how the daemon is launched
-# (systemd, Docker, or a plain redirected shell invocation).
-sys.stdout.reconfigure(line_buffering=True)
+# -u only unbuffers the binary layer on Python 3.6 — the text-mode stdout
+# wrapper on top of it still isn't line-buffered there, so journal/log
+# output can lag behind by a full block. TextIOWrapper.reconfigure() would
+# do this in one call, but only exists since Python 3.7.
+if hasattr(sys.stdout, 'reconfigure'):
+    sys.stdout.reconfigure(line_buffering=True)
+else:
+    stdout_encoding = sys.stdout.encoding
+    sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding=stdout_encoding, line_buffering=True)
 
 args = Args()
 config = Config(args.get('path'))
