@@ -1,8 +1,10 @@
-#!/usr/bin/python -u
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
 
 # This is message queue subscribing version based on RabbitMQ and pika.
 
 import os
+import sys
 
 from pprint import pprint
 
@@ -13,6 +15,9 @@ from heppy.Config import Config
 from heppy.Daemon import Daemon
 from heppy.RabbitMQ import RPCServer
 from heppy.SignalHandler import SignalHandler
+
+# Keep stdout line-buffered regardless of how this is launched.
+sys.stdout.reconfigure(line_buffering=True)
 
 args = Args()
 config = Config(args.get('path'))

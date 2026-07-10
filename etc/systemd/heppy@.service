@@ -5,6 +5,7 @@ After=rabbitmq-server.service
 
 [Service]
 WorkingDirectory=/home/sol/prj/hiqdev/heppy/etc
+Environment=PYTHONUNBUFFERED=1
 ExecStart=/home/sol/prj/hiqdev/heppy/bin/heppyd %i start
 Restart=always
 User=heppy

@@ -33,6 +33,9 @@ class fee11(fee):
                             data[attr_name.lower()] = attr_value
             elif child.text is not None:
                 data[tagname] = child.text.strip()
+                for attr_name, attr_value in child.attrib.items():
+                    if attr_value is not None:
+                        data[attr_name.lower()] = attr_value
             else:
                 for attr_name, attr_value in child.attrib.items():
                     if attr_value is not None:

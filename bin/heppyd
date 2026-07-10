@@ -1,9 +1,9 @@
-#!/usr/bin/python3 -u
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
 
 # Message queue subscribing version based on RabbitMQ and pika.
 import io
 import sys
-
 import sentry_sdk
 from heppy.Args import Args
 from heppy.Error import Error
