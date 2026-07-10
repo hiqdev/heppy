@@ -1,6 +1,9 @@
 #!/usr/bin/python3 -u
 
 # Message queue subscribing version based on RabbitMQ and pika.
+import io
+import sys
+
 import sentry_sdk
 from heppy.Args import Args
 from heppy.Error import Error
@@ -8,6 +11,14 @@ from heppy.Config import Config
 from heppy.Daemon import Daemon
 from heppy.RabbitMQ import RPCServer
 
+# -u only unbuffers the binary layer on Python 3.6 — the text-mode stdout
+# wrapper on top of it still isn't line-buffered there, so journal/log
+# output can lag behind by a full block. TextIOWrapper.reconfigure() would
+# do this in one call, but only exists since Python 3.7.
+if hasattr(sys.stdout, 'reconfigure'):
+    sys.stdout.reconfigure(line_buffering=True)
+else:
+    sys.stdout = io.TextIOWrapper(sys.stdout.buffer, line_buffering=True)
 
 args = Args()
 config = Config(args.get('path'))
