@@ -89,6 +89,7 @@ After=rabbitmq-server.service
 
 [Service]
 WorkingDirectory={work_dir}
+Environment=PYTHONUNBUFFERED=1
 ExecStart={exec_start}
 Restart=always
 User=root
