@@ -36,6 +36,10 @@ command = args.get('command')
 method = getattr(daemon, command, None)
 
 if callable(method):
-    method(args)
+    try:
+        method(args)
+    except Exception as e:
+        sentry_sdk.capture_exception(e)
+        Error.die(5, e)
 else:
     print('Wrong command: ' + command)
