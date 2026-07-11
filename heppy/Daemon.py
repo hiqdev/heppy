@@ -148,7 +148,7 @@ class Daemon:
         if error is not None and data['result_code'] != '2002':
             Error.die(2, 'bad login response', data)
         if data['result_code'] in ['2200', '2500', '2501', '2502']:
-            Error.die(2, data['msg'] if error is None else error, data)
+            Error.die(2, data.get('result_msg', data.get('msg')) if error is None else error, data)
         pprint('LOGIN OK')
 
     def get_login_query(self, args=None):
