@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 
+import logging
 import pika
 import uuid
 
@@ -36,6 +37,7 @@ class RPCServer:
         try:
             reply = self.response(body.decode('utf-8') if isinstance(body, bytes) else body)
         except Exception as e:
+            logging.exception('RabbitMQ: unhandled error in on_request')
             reply = str(e)
         ch.basic_publish(
             exchange='',
