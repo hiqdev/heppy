@@ -19,6 +19,7 @@ class Doc:
         'fee08':        'urn:ietf:params:xml:ns:fee-0.8',
         'fee09':        'urn:ietf:params:xml:ns:fee-0.9',
         'fee10':        'urn:ietf:params:xml:ns:epp:fee-1.0',
+        'fee10pre':     'urn:ietf:params:xml:ns:fee-1.0',
         'fee11':        'urn:ietf:params:xml:ns:fee-0.11',
         'fee12':        'urn:ietf:params:xml:ns:fee-0.12',
         'fee21':        'urn:ietf:params:xml:ns:fee-0.21',
