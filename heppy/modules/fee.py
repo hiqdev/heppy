@@ -77,11 +77,40 @@ class fee(Module):
                     data['command'] = child.text.strip()
                 for cmd_child in child:
                     cmd_tagname = cmd_child.tag.replace('{' + self.xmlns + '}', '')
+                    if cmd_tagname in ('fee', 'credit'):
+                        # RFC 8748's commandDataType allows <fee:fee> and
+                        # <fee:credit> to repeat (maxOccurs="unbounded") —
+                        # e.g. separate registration/premium fee lines.
+                        # Collect every occurrence instead of letting later
+                        # siblings silently overwrite earlier ones.
+                        entry = {}
+                        if cmd_child.text is not None:
+                            entry['value'] = cmd_child.text.strip()
+                        for attr_name, attr_value in cmd_child.attrib.items():
+                            if attr_value is not None:
+                                entry[attr_name.lower()] = norm(attr_value)
+                        data.setdefault(cmd_tagname + 's', []).append(entry)
+                        continue
                     if cmd_child.text is not None:
                         data[cmd_tagname] = cmd_child.text.strip()
                     for attr_name, attr_value in cmd_child.attrib.items():
                         if attr_value is not None:
                             data[attr_name.lower()] = norm(attr_value)
+                for key in ('fee', 'credit'):
+                    entries = data.pop(key + 's', None)
+                    if not entries:
+                        continue
+                    if len(entries) == 1:
+                        # single occurrence: keep the existing flat shape
+                        # (data['fee']/'credit' plus its attrs merged in)
+                        entry = entries[0]
+                        if 'value' in entry:
+                            data[key] = entry['value']
+                        for attr_name, attr_value in entry.items():
+                            if attr_name != 'value':
+                                data[attr_name] = attr_value
+                    else:
+                        data[key] = entries
             elif child.text is not None:
                 data[tagname] = child.text.strip()
                 for attr_name, attr_value in child.attrib.items():
