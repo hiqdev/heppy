@@ -1,7 +1,5 @@
 # -*- coding: utf-8 -*-
 
-from ..Module import Module
-from ..TagData import TagData
 from .fee09 import fee09
 
 class fee10(fee09):
@@ -22,32 +20,6 @@ class fee10(fee09):
         command = request.add_subtag(ext, 'fee:command', {'name': data.get('action', 'create')})
         request.add_subtag(command, 'fee:period', {'unit': data.get('unit', 'y')}, data.get('period', 1))
 
-    def render_info(self, request, data):
-        self.render_extension_with_fields(request, 'info', [
-            TagData('currency', data.get('currency')),
-            TagData('command', data.get('action', 'create'), {
-                'phase': data.get('phase'),
-                'subphase': data.get('subphase'),
-            }),
-            TagData('period', data.get('period', 1), {
-                'unit': data.get('unit', 'y')
-            }),
-        ])
-
-    def render_create(self, request, data):
-        self.render_extension_with_fields(request, 'create', [
-            TagData('currency', data.get('currency')),
-            TagData('fee', data.get('fee'))
-        ])
-
-    def render_renew(self, request, data):
-        self.render_extension_with_fields(request, 'renew', [
-            TagData('currency', data.get('currency')),
-            TagData('fee', data.get('fee')),
-        ])
-
-    def render_transfer(self, request, data):
-        self.render_extension_with_fields(request, 'transfer', [
-            TagData('currency', data.get('currency')),
-            TagData('fee', data.get('fee')),
-        ])
+    # render_info/render_create/render_renew/render_transfer: no override
+    # needed, fee.py's versions (inherited via fee09) already match — these
+    # used to be duplicated here verbatim.
