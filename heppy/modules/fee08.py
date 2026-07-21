@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from .fee import fee
+from .fee07 import fee07
 
-class fee08(fee):
+class fee08(fee07):
     pass

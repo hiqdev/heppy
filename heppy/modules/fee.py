@@ -4,17 +4,25 @@ from ..Module import Module
 from ..TagData import TagData
 
 class fee(Module):
+    # This is the modern (RFC 8748 / urn:ietf:params:xml:ns:epp:fee-1.0)
+    # shape: <fee:check> per-object identification via <fee:objID>, price
+    # fields nested inside <fee:command name="...">, no <fee:info> extension
+    # at all (confirmed rejected by a real registry: "no declaration ... for
+    # element 'fee:info'"). Pre-RFC-8748 draft behaviour (roughly fee-0.5
+    # through fee-0.9, including the <fee:info> extension those drafts still
+    # had) lives in fee07 — see fee05/06/07/08/09.
     opmap = {
         'domain':       'set',
         'currency':     'set',
         'action':       'set',
         'period':       'set',
         'fee':          'set',
-        # Per draft-brown-epp-fees (fee-0.5 through at least fee-0.12), a
-        # <fee:chkData> response MUST contain one <fee:cd> per checked
-        # object, mirroring domain:chkData/domain:cd — never fields directly
-        # under chkData. Descend into each <fee:cd> and dispatch to parse_cd
-        # instead of trying (and failing) to read fields off chkData itself.
+        # Per every draft-brown-epp-fees / draft-ietf-regext-epp-fees
+        # revision checked (fee-0.5 through RFC 8748), a <fee:chkData>
+        # response MUST contain one <fee:cd> per checked object, mirroring
+        # domain:chkData/domain:cd — never fields directly under chkData.
+        # Descend into each <fee:cd> and dispatch to parse_cd instead of
+        # trying (and failing) to read fields off chkData itself.
         'chkData':      'descend',
     }
 
@@ -25,26 +33,27 @@ class fee(Module):
 ### RESPONSE parsing
 
     def parse_cd(self, response, tag):
-        return self.parse_cd_tag_extension(response, tag)
+        return self.parse_cd_nested_command(
+            response, tag, object_id=True, lowercase=True, always_store=True)
 
     def parse_cd_nested_command(self, response, tag, object_id=False,
                                  command_text_fallback=False, lowercase=False,
                                  always_store=False):
         """Shared parser for the <fee:cd> shape where price fields nest
-        inside <fee:command name="..."> (fee10-fee12, fee21/fee23) — each
-        draft revision differs only in how the checked object is identified
-        and whether attribute values get lowercased.
+        inside <fee:command name="..."> (fee itself, fee11/fee12,
+        fee21/fee23) — each draft revision differs only in how the checked
+        object is identified and whether attribute values get lowercased.
 
-        object_id: True for a plain-text <fee:objID> (fee10, fee21); False
-            for <fee:object><domain:name>...</domain:name></fee:object>
+        object_id: True for a plain-text <fee:objID> (fee itself, fee21);
+            False for <fee:object><domain:name>...</domain:name></fee:object>
             (fee11, fee12).
         command_text_fallback: also accept <fee:command>name-as-text</fee:command>
             with no "name" attribute — confirmed against a real registry for
             fee-0.11's response; other versions only ever send the
             name-attribute form.
-        lowercase: lowercase captured attribute values (fee10, fee12).
+        lowercase: lowercase captured attribute values (fee itself, fee12).
         always_store: always call put_to_dict, defaulting the key to
-            'domain' if no identifier was found (fee10's historical
+            'domain' if no identifier was found (this class's historical
             behaviour); other versions skip storing when the identifier is
             missing.
         """
@@ -88,14 +97,6 @@ class fee(Module):
             response.put_to_dict(self.name, {data.get(key_field, 'domain'): data})
         elif key_field in data:
             response.put_to_dict(self.name, {data[key_field]: data})
-
-    def parse_infData(self, response, tag):
-        self.parse_extension_block(response, 'fee:info', tag, {
-            'currency': ['currency'],
-            'fee':      ['fee'],
-            'action':   ['action'],
-            'period':   ['period'],
-        })
 
     def parse_delData(self, response, tag):
         self.parse_extension_block(response, 'fee:delete', tag, {
@@ -141,28 +142,9 @@ class fee(Module):
 
     def render_check(self, request, data):
         ext = self.render_extension(request, 'check')
-        domain = request.add_subtag(ext, 'fee:domain')
-        request.add_subtag(domain, 'fee:name',      {}, data.get('name'))
-        request.add_subtag(domain, 'fee:currency',  {}, data.get('currency', 'USD'))
-        commandprop = {}
-        if (data.get('phase', None) != None) :
-            commandprop.update({"phase" : data.get('phase')})
-        if (data.get('subphase', None) != None) :
-            commandprop.update({"subphase" : data.get('subphase')})
-        request.add_subtag(domain, 'fee:command',   commandprop, data.get('action', 'create'))
-        request.add_subtag(domain, 'fee:period',    {'unit': data.get('unit', 'y')}, data.get('period', '1'))
-
-    def render_info(self, request, data):
-        self.render_extension_with_fields(request, 'info', [
-            TagData('currency', data.get('currency')),
-            TagData('command', data.get('action', 'create'), {
-                'phase': data.get('phase'),
-                'subphase': data.get('subphase'),
-            }),
-            TagData('period', data.get('period', 1), {
-               'unit': data.get('unit', 'y')
-            }),
-        ])
+        request.add_subtag(ext, 'fee:currency', {}, data.get('currency', 'USD'))
+        command = request.add_subtag(ext, 'fee:command', {'name': data.get('action', 'create')})
+        request.add_subtag(command, 'fee:period', {'unit': data.get('unit', 'y')}, data.get('period', 1))
 
     def render_create(self, request, data):
         self.render_extension_with_fields(request, 'create', [

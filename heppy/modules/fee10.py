@@ -1,25 +1,9 @@
 # -*- coding: utf-8 -*-
 
-from .fee09 import fee09
+from .fee import fee
 
-class fee10(fee09):
-    opmap = {
-        'chkData':      'descend',
-        'currency':     'set',
-        'period':       'set',
-        'fee':          'set',
-    }
-
-    def parse_cd(self, response, tag):
-        return self.parse_cd_nested_command(
-            response, tag, object_id=True, lowercase=True, always_store=True)
-
-    def render_check(self, request, data):
-        ext = self.render_extension(request, 'check')
-        request.add_subtag(ext, 'fee:currency', {}, data.get('currency', 'USD'))
-        command = request.add_subtag(ext, 'fee:command', {'name': data.get('action', 'create')})
-        request.add_subtag(command, 'fee:period', {'unit': data.get('unit', 'y')}, data.get('period', 1))
-
-    # render_info/render_create/render_renew/render_transfer: no override
-    # needed, fee.py's versions (inherited via fee09) already match — these
-    # used to be duplicated here verbatim.
+class fee10(fee):
+    # fee IS the RFC 8748 / epp:fee-1.0 behaviour now (see fee.py) — this
+    # exists only so callers that explicitly type "fee10:" (rather than the
+    # bare "fee:" that also resolves here) keep working the same way.
+    pass
