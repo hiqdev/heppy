@@ -12,7 +12,20 @@ class Doc:
         'contact':      'urn:ietf:params:xml:ns:contact-1.0',
         'secDNS':       'urn:ietf:params:xml:ns:secDNS-1.1',
         'launch':       'urn:ietf:params:xml:ns:launch-1.0',
-        'fee':          'urn:ietf:params:xml:ns:fee-0.7',
+        # Registries now expect the latest fee version (epp:fee-1.0 / RFC
+        # 8748) for actual operations — the bare "fee" prefix (used when a
+        # caller doesn't specify a version, e.g. -extensions.0.command=fee:check)
+        # should resolve there, not to the old fee-0.7 draft. Since Doc's
+        # namespace -> module reverse map is built by iterating this dict and
+        # letting the last entry for a given URI win, and 'fee10' (defined
+        # below) already owns urn:ietf:params:xml:ns:epp:fee-1.0, pointing
+        # 'fee' at the same URI makes it resolve to the fee10 class without
+        # touching Python class inheritance — fee05-fee23 still inherit fee's
+        # own (older) render/parse behaviour unchanged, they just aren't
+        # reachable through the bare "fee" prefix anymore (use fee07 for
+        # fee-0.7 explicitly instead, same as before this only ever aliased
+        # to fee07 through this same last-entry-wins mechanism).
+        'fee':          'urn:ietf:params:xml:ns:epp:fee-1.0',
         'fee05':        'urn:ietf:params:xml:ns:fee-0.5',
         'fee06':        'urn:ietf:params:xml:ns:fee-0.6',
         'fee07':        'urn:ietf:params:xml:ns:fee-0.7',

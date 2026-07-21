@@ -55,7 +55,7 @@ class TestFeeCheck(TestCase):
             ],
             'extensions': [
                 {
-                    'command':  'fee:check',
+                    'command':  'fee07:check',
                     'name':     'testfree.test',
                     'action':   'create',
                     'currency': 'USD',
@@ -63,7 +63,7 @@ class TestFeeCheck(TestCase):
                     'period':   1
                 },
                 {
-                    'command':  'fee:check',
+                    'command':  'fee07:check',
                     'name':     'testcheck.test',
                     'action':   'renew',
                     'currency': 'EUR',
@@ -73,7 +73,7 @@ class TestFeeCheck(TestCase):
                     'unit':     'y'
                 },
                 {
-                    'command':  'fee:check',
+                    'command':  'fee07:check',
                     'name':     'almostempty.me'
                 }
             ],

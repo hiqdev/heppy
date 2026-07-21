@@ -30,7 +30,7 @@ class TestFeeInfo(TestCase):
             'name': 'testfree.test',
             'extensions': [
                 {
-                    'command':  'fee:info',
+                    'command':  'fee07:info',
                     'action':   'create',
                     'currency': 'USD',
                     'phase':    'sunrise',

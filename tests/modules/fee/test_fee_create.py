@@ -51,7 +51,7 @@ class TestFeeCreate(TestCase):
             'pw':           'tR4!xPass',
             'extensions': [
                 {
-                    'command':  'fee:create',
+                    'command':  'fee07:create',
                     'currency': 'USD',
                     'fee':      42.42
                 },
