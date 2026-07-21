@@ -10,6 +10,12 @@ class fee(Module):
         'action':       'set',
         'period':       'set',
         'fee':          'set',
+        # Per draft-brown-epp-fees (fee-0.5 through at least fee-0.12), a
+        # <fee:chkData> response MUST contain one <fee:cd> per checked
+        # object, mirroring domain:chkData/domain:cd — never fields directly
+        # under chkData. Descend into each <fee:cd> and dispatch to parse_cd
+        # instead of trying (and failing) to read fields off chkData itself.
+        'chkData':      'descend',
     }
 
     def __init__(self, xmlns):
@@ -20,15 +26,6 @@ class fee(Module):
 
     def parse_cd(self, response, tag):
         return self.parse_cd_tag_extension(response, tag)
-
-    def parse_chkData(self, response, tag):
-        self.parse_extension_block(response, 'fee:check', tag, {
-            'domain':   ['domain'],
-            'currency': ['currency'],
-            'action':   ['action'],
-            'period':   ['period'],
-            'fee':      ['fee'],
-        })
 
     def parse_infData(self, response, tag):
         self.parse_extension_block(response, 'fee:info', tag, {
