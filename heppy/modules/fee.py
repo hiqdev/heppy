@@ -27,6 +27,68 @@ class fee(Module):
     def parse_cd(self, response, tag):
         return self.parse_cd_tag_extension(response, tag)
 
+    def parse_cd_nested_command(self, response, tag, object_id=False,
+                                 command_text_fallback=False, lowercase=False,
+                                 always_store=False):
+        """Shared parser for the <fee:cd> shape where price fields nest
+        inside <fee:command name="..."> (fee10-fee12, fee21/fee23) — each
+        draft revision differs only in how the checked object is identified
+        and whether attribute values get lowercased.
+
+        object_id: True for a plain-text <fee:objID> (fee10, fee21); False
+            for <fee:object><domain:name>...</domain:name></fee:object>
+            (fee11, fee12).
+        command_text_fallback: also accept <fee:command>name-as-text</fee:command>
+            with no "name" attribute — confirmed against a real registry for
+            fee-0.11's response; other versions only ever send the
+            name-attribute form.
+        lowercase: lowercase captured attribute values (fee10, fee12).
+        always_store: always call put_to_dict, defaulting the key to
+            'domain' if no identifier was found (fee10's historical
+            behaviour); other versions skip storing when the identifier is
+            missing.
+        """
+        data = {}
+        domain_xmlns = 'urn:ietf:params:xml:ns:domain-1.0'
+
+        def norm(value):
+            return value.lower() if lowercase else value
+
+        key_field = 'objID' if object_id else 'name'
+        for child in tag:
+            tagname = child.tag.replace('{' + self.xmlns + '}', '')
+            if not object_id and tagname == 'object':
+                name_el = child.find('{%s}name' % domain_xmlns)
+                if name_el is not None and name_el.text:
+                    data['name'] = name_el.text.strip()
+            elif tagname == 'command':
+                if 'name' in child.attrib:
+                    data['command'] = child.attrib['name']
+                elif command_text_fallback and child.text is not None and child.text.strip():
+                    data['command'] = child.text.strip()
+                for cmd_child in child:
+                    cmd_tagname = cmd_child.tag.replace('{' + self.xmlns + '}', '')
+                    if cmd_child.text is not None:
+                        data[cmd_tagname] = cmd_child.text.strip()
+                    for attr_name, attr_value in cmd_child.attrib.items():
+                        if attr_value is not None:
+                            data[attr_name.lower()] = norm(attr_value)
+            elif child.text is not None:
+                data[tagname] = child.text.strip()
+                for attr_name, attr_value in child.attrib.items():
+                    if attr_value is not None:
+                        data[attr_name.lower()] = norm(attr_value)
+            else:
+                for attr_name, attr_value in child.attrib.items():
+                    if attr_value is not None:
+                        data[attr_name.lower()] = norm(attr_value)
+        if 'avail' in tag.attrib:
+            data['avail'] = tag.attrib['avail'].lower()
+        if always_store:
+            response.put_to_dict(self.name, {data.get(key_field, 'domain'): data})
+        elif key_field in data:
+            response.put_to_dict(self.name, {data[key_field]: data})
+
     def parse_infData(self, response, tag):
         self.parse_extension_block(response, 'fee:info', tag, {
             'currency': ['currency'],

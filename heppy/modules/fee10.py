@@ -13,32 +13,8 @@ class fee10(fee09):
     }
 
     def parse_cd(self, response, tag):
-        data = {}
-        for child in tag:
-            tagname = child.tag.replace('{' + self.xmlns + '}', '')
-            if tagname == 'command':
-                if 'name' in child.attrib:
-                    data['command'] = child.attrib['name']
-                for cchild in child:
-                    ctagname = cchild.tag.replace('{' + self.xmlns + '}', '')
-                    if cchild.text is not None:
-                        data[ctagname] = cchild.text.strip()
-                    for attr_name, attr_value in cchild.attrib.items():
-                        if attr_value is not None:
-                            data[attr_name.lower()] = attr_value.lower()
-            elif child.text is not None:
-                data[tagname] = child.text.strip()
-                for attr_name, attr_value in child.attrib.items():
-                    if attr_value is not None:
-                        data[attr_name.lower()] = attr_value.lower()
-            else:
-                for attr_name, attr_value in child.attrib.items():
-                    if attr_value is not None:
-                        data[attr_name.lower()] = attr_value.lower()
-
-        return response.put_to_dict(self.name, {
-            data.get('objID', 'domain'): data
-        })
+        return self.parse_cd_nested_command(
+            response, tag, object_id=True, lowercase=True, always_store=True)
 
     def render_check(self, request, data):
         ext = self.render_extension(request, 'check')

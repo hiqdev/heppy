@@ -11,32 +11,7 @@ class fee21(fee):
     # neither finds objID under 'name' nor descends into <command> — it must
     # not be inherited unchanged here.
     def parse_cd(self, response, tag):
-        data = {}
-        for child in tag:
-            tagname = child.tag.replace('{' + self.xmlns + '}', '')
-            if tagname == 'command':
-                if 'name' in child.attrib:
-                    data['command'] = child.attrib['name']
-                for cmd_child in child:
-                    cmd_tagname = cmd_child.tag.replace('{' + self.xmlns + '}', '')
-                    if cmd_child.text is not None:
-                        data[cmd_tagname] = cmd_child.text.strip()
-                    for attr_name, attr_value in cmd_child.attrib.items():
-                        if attr_value is not None:
-                            data[attr_name.lower()] = attr_value
-            elif child.text is not None:
-                data[tagname] = child.text.strip()
-                for attr_name, attr_value in child.attrib.items():
-                    if attr_value is not None:
-                        data[attr_name.lower()] = attr_value
-            else:
-                for attr_name, attr_value in child.attrib.items():
-                    if attr_value is not None:
-                        data[attr_name.lower()] = attr_value
-        if 'avail' in tag.attrib:
-            data['avail'] = tag.attrib['avail'].lower()
-        if 'objID' in data:
-            response.put_to_dict(self.name, {data['objID']: data})
+        return self.parse_cd_nested_command(response, tag, object_id=True)
 
     def render_check(self, request, data):
         ext = self.render_extension(request, 'check')
