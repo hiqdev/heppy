@@ -6,6 +6,40 @@ from ..TestCase import TestCase
 
 class TestFeeRenew(TestCase):
 
+    def test_render_fee_renew_request(self):
+        self.assertRequest('''<?xml version="1.0" ?>
+<epp xmlns="urn:ietf:params:xml:ns:epp-1.0">
+    <command>
+        <renew>
+            <domain:renew xmlns:domain="urn:ietf:params:xml:ns:domain-1.0">
+                <domain:name>testdomain.test</domain:name>
+                <domain:curExpDate>2020-04-03</domain:curExpDate>
+                <domain:period unit="y">5</domain:period>
+            </domain:renew>
+        </renew>
+        <extension>
+            <fee:renew xmlns:fee="urn:ietf:params:xml:ns:fee-0.7">
+                <fee:currency>USD</fee:currency>
+                <fee:fee>5.00</fee:fee>
+            </fee:renew>
+        </extension>
+        <clTRID>XXXX-11</clTRID>
+    </command>
+</epp>''', {
+            'command':      'domain:renew',
+            'name':         'testdomain.test',
+            'curExpDate':   '2020-04-03',
+            'period':       5,
+            'extensions': [
+                {
+                    'command':  'fee07:renew',
+                    'currency': 'USD',
+                    'fee':      '5.00'
+                },
+            ],
+            'clTRID':       'XXXX-11',
+        })
+
     def test_parse_fee_renew_response(self):
         self.assertResponse({
             'clTRID':       'ABC-12345',
