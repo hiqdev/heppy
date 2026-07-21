@@ -30,9 +30,9 @@ class fee07(fee):
         request.add_subtag(domain, 'fee:name',      {}, data.get('name'))
         request.add_subtag(domain, 'fee:currency',  {}, data.get('currency', 'USD'))
         commandprop = {}
-        if (data.get('phase', None) != None) :
+        if data.get('phase', None) is not None:
             commandprop.update({"phase" : data.get('phase')})
-        if (data.get('subphase', None) != None) :
+        if data.get('subphase', None) is not None:
             commandprop.update({"subphase" : data.get('subphase')})
         request.add_subtag(domain, 'fee:command',   commandprop, data.get('action', 'create'))
         request.add_subtag(domain, 'fee:period',    {'unit': data.get('unit', 'y')}, data.get('period', '1'))
