@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 
-from .fee import fee
+from .fee07 import fee07
 
-class fee09(fee):
+class fee09(fee07):
 #   PARSE
     def parse_cd(self, response, tag):
         return self.parse_cd_tag_extension(response, tag, 'objID')
