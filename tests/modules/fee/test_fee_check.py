@@ -81,6 +81,10 @@ class TestFeeCheck(TestCase):
         })
 
     def test_parse_fee_check_response(self):
+        # Per draft-brown-epp-fees (fee-0.5 onward), <fee:chkData> MUST wrap
+        # each checked object in its own <fee:cd>, mirroring domain:cd — never
+        # fields directly under chkData. Confirmed against a real registry
+        # (Google's registry-sandbox OTE) for fee-0.6/0.10/0.11/0.12.
         self.assertResponse({
             'avails': {
                 'testdomain.test': '1',
@@ -95,38 +99,36 @@ class TestFeeCheck(TestCase):
             'result_code':  '1000',
             'result_msg':   'Command completed successfully',
             'svTRID':       '54322-XYZ',
-            'extensions': [
-                {
-                    'action':   'create',
-                    'command':  'fee:check',
+            'extensions':   [],
+            'fee': {
+                'testdomain.test': {
+                    'name':     'testdomain.test',
                     'currency': 'USD',
-                    'domain':   'testdomain.test',
-                    'fee':      '10.00',
-                    'period':   '1',
+                    'command':  'create',
                     'phase':    'sunrise',
-                    'unit':     'y'
+                    'period':   '1',
+                    'unit':     'y',
+                    'fee':      '10.00',
                 },
-                {
-                    'action':   'create',
-                    'command':  'fee:check',
+                'example.net': {
+                    'name':     'example.net',
                     'currency': 'EUR',
-                    'domain':   'example.net',
-                    'fee':      '5.00',
-                    'period':   '2',
+                    'command':  'create',
                     'phase':    'claims',
                     'subphase': 'landrush',
-                    'unit':     'y'
-                },
-                {
-                    'action':   'transfer',
-                    'command':  'fee:check',
-                    'currency': 'EUR',
-                    'domain':   'example.org',
-                    'fee':      '2.50',
                     'period':   '2',
-                    'unit':     'y'
-                }
-            ],
+                    'unit':     'y',
+                    'fee':      '5.00',
+                },
+                'example.org': {
+                    'name':     'example.org',
+                    'currency': 'EUR',
+                    'command':  'transfer',
+                    'period':   '2',
+                    'unit':     'y',
+                    'fee':      '2.50',
+                },
+            },
         }, '''<?xml version="1.0" encoding="utf-8" standalone="no"?>
 <epp xmlns="urn:ietf:params:xml:ns:epp-1.0">
     <response>
@@ -150,30 +152,28 @@ class TestFeeCheck(TestCase):
             </domain:chkData>
         </resData>
         <extension>
-            <fee:chkData
-                xmlns:fee="urn:ietf:params:xml:ns:fee-0.5">
-                <fee:domain>testdomain.test</fee:domain>
-                <fee:currency>USD</fee:currency>
-                <fee:action phase="sunrise">create</fee:action>
-                <fee:period unit="y">1</fee:period>
-                <fee:fee>10.00</fee:fee>
-            </fee:chkData>
-            <fee:chkData
-                xmlns:fee="urn:ietf:params:xml:ns:fee-0.5">
-                <fee:domain>example.net</fee:domain>
-                <fee:currency>EUR</fee:currency>
-                <fee:action phase="claims" subphase="landrush">
-                create</fee:action>
-                <fee:period unit="y">2</fee:period>
-                <fee:fee>5.00</fee:fee>
-            </fee:chkData>
-            <fee:chkData
-                xmlns:fee="urn:ietf:params:xml:ns:fee-0.5">
-                <fee:domain>example.org</fee:domain>
-                <fee:currency>EUR</fee:currency>
-                <fee:action>transfer</fee:action>
-                <fee:period unit="y">2</fee:period>
-                <fee:fee>2.50</fee:fee>
+            <fee:chkData xmlns:fee="urn:ietf:params:xml:ns:fee-0.5">
+                <fee:cd>
+                    <fee:name>testdomain.test</fee:name>
+                    <fee:currency>USD</fee:currency>
+                    <fee:command phase="sunrise">create</fee:command>
+                    <fee:period unit="y">1</fee:period>
+                    <fee:fee>10.00</fee:fee>
+                </fee:cd>
+                <fee:cd>
+                    <fee:name>example.net</fee:name>
+                    <fee:currency>EUR</fee:currency>
+                    <fee:command phase="claims" subphase="landrush">create</fee:command>
+                    <fee:period unit="y">2</fee:period>
+                    <fee:fee>5.00</fee:fee>
+                </fee:cd>
+                <fee:cd>
+                    <fee:name>example.org</fee:name>
+                    <fee:currency>EUR</fee:currency>
+                    <fee:command>transfer</fee:command>
+                    <fee:period unit="y">2</fee:period>
+                    <fee:fee>2.50</fee:fee>
+                </fee:cd>
             </fee:chkData>
         </extension>
         <trID>
@@ -183,54 +183,6 @@ class TestFeeCheck(TestCase):
     </response>
 </epp>
         ''')
-
-
-    def test_parse_fee_check_attribute_collision(self):
-        # A registry that annotates <fee:fee> with a 'command' attribute would
-        # collide with the 'command' key already present in data. The guard must
-        # place it under data['attributes'] rather than overwriting data['command'].
-        self.assertResponse({
-            'result_code':  '1000',
-            'result_msg':   'Command completed successfully',
-            'svTRID':       '54322-XYZ',
-            'clTRID':       'ABC-12345',
-            'avails':       {'testdomain.test': '1'},
-            'extensions': [
-                {
-                    'command':    'fee:check',
-                    'domain':     'testdomain.test',
-                    'currency':   'USD',
-                    'fee':        '10.00',
-                    'attributes': {'command': 'create'},
-                }
-            ],
-        }, '''<?xml version="1.0" encoding="utf-8" standalone="no"?>
-<epp xmlns="urn:ietf:params:xml:ns:epp-1.0">
-    <response>
-        <result code="1000">
-            <msg>Command completed successfully</msg>
-        </result>
-        <resData>
-            <domain:chkData xmlns:domain="urn:ietf:params:xml:ns:domain-1.0">
-                <domain:cd>
-                    <domain:name avail="1">testdomain.test</domain:name>
-                </domain:cd>
-            </domain:chkData>
-        </resData>
-        <extension>
-            <fee:chkData xmlns:fee="urn:ietf:params:xml:ns:fee-0.5">
-                <fee:domain>testdomain.test</fee:domain>
-                <fee:currency>USD</fee:currency>
-                <fee:fee command="create">10.00</fee:fee>
-            </fee:chkData>
-        </extension>
-        <trID>
-            <clTRID>ABC-12345</clTRID>
-            <svTRID>54322-XYZ</svTRID>
-        </trID>
-    </response>
-</epp>
-''')
 
 
 if __name__ == '__main__':

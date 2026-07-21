@@ -24,6 +24,13 @@ class fee11(fee):
             elif tagname == 'command':
                 if 'name' in child.attrib:
                     data['command'] = child.attrib['name']
+                elif child.text is not None and child.text.strip():
+                    # Real registries (confirmed against Google's
+                    # registry-sandbox OTE) send <fee:command>create</fee:command>
+                    # as plain text, with period/fee as siblings of it inside
+                    # <fee:cd> rather than nested children — not the
+                    # name-attribute form assumed above.
+                    data['command'] = child.text.strip()
                 for cmd_child in child:
                     cmd_tagname = cmd_child.tag.replace('{' + self.xmlns + '}', '')
                     if cmd_child.text is not None:
