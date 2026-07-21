@@ -6,6 +6,40 @@ from ..TestCase import TestCase
 
 class TestFeeTransfer(TestCase):
 
+    def test_render_fee_transfer_request(self):
+        self.assertRequest('''<?xml version="1.0" ?>
+<epp xmlns="urn:ietf:params:xml:ns:epp-1.0">
+    <command>
+        <transfer op="request">
+            <domain:transfer xmlns:domain="urn:ietf:params:xml:ns:domain-1.0">
+                <domain:name>testdomain.test</domain:name>
+                <domain:authInfo>
+                    <domain:pw/>
+                </domain:authInfo>
+            </domain:transfer>
+        </transfer>
+        <extension>
+            <fee:transfer xmlns:fee="urn:ietf:params:xml:ns:fee-0.7">
+                <fee:currency>USD</fee:currency>
+                <fee:fee>5.00</fee:fee>
+            </fee:transfer>
+        </extension>
+        <clTRID>XXXX-11</clTRID>
+    </command>
+</epp>''', {
+            'command':  'domain:transfer',
+            'op':       'request',
+            'name':     'testdomain.test',
+            'extensions': [
+                {
+                    'command':  'fee07:transfer',
+                    'currency': 'USD',
+                    'fee':      '5.00'
+                },
+            ],
+            'clTRID':   'XXXX-11',
+        })
+
     def test_parse_fee_transfer_response(self):
         self.assertResponse({
             'acDate':       '2000-06-13T22:00:00.0Z',

@@ -163,3 +163,13 @@ class fee(Module):
             TagData('currency', data.get('currency', 'USD')),
             TagData('fee', data.get('fee')),
         ])
+
+    def render_update(self, request, data):
+        # RFC 8748 §5.2.5 (and fee-0.5 draft-brown-epp-fees-02) both define
+        # <fee:update> as a command extension with the same currency+fee
+        # shape as create/renew/transfer — used e.g. when domain:update
+        # carries an rgp:restore that a premium domain charges a fee for.
+        self.render_extension_with_fields(request, 'update', [
+            TagData('currency', data.get('currency', 'USD')),
+            TagData('fee', data.get('fee')),
+        ])
