@@ -5,6 +5,22 @@ from unittest.mock import MagicMock, patch
 from heppy.RabbitMQ import RPCServer
 
 
+class TestRPCServerInit(unittest.TestCase):
+    def test_declares_queue_as_durable(self):
+        config = {'queue': 'heppy-afilias.srs-ote1'}
+        mock_channel = MagicMock()
+        mock_connection = MagicMock()
+        mock_connection.channel.return_value = mock_channel
+
+        with patch('heppy.RabbitMQ.pika.BlockingConnection', return_value=mock_connection):
+            RPCServer(config)
+
+        mock_channel.queue_declare.assert_called_once_with(
+            queue='heppy-afilias.srs-ote1',
+            durable=True,
+        )
+
+
 class TestRPCServerOnRequest(unittest.TestCase):
     def setUp(self):
         self.server = RPCServer.__new__(RPCServer)

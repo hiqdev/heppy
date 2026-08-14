@@ -16,8 +16,15 @@ class RPCServer:
         self.connection = pika.BlockingConnection(connection_parameters(config))
 
         self.channel = self.connection.channel()
+        # RabbitMQ 4.x disables the transient_nonexcl_queues deprecated feature by
+        # default — a non-durable + non-exclusive queue_declare (pika's defaults)
+        # gets rejected outright (541 INTERNAL_ERROR) on connect. durable=True also
+        # matches this queue's real semantics: it's a shared, named queue multiple
+        # RPCServer instances/restarts reconnect to over time, unlike RPCClient's
+        # per-connection anonymous reply queue below (exclusive=True).
         self.channel.queue_declare(
             queue=self.queue,
+            durable=True,
         )
         self.channel.basic_qos(prefetch_count=1)
 

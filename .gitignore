@@ -40,3 +40,4 @@ dist
 
 # pip
 heppy.egg-info
+.venv/
