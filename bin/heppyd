@@ -10,6 +10,7 @@ from heppy.Error import Error
 from heppy.Config import Config
 from heppy.Daemon import Daemon
 from heppy.RabbitMQ import RPCServer
+from heppy.RabbitMQConfig import RabbitMQConfig
 
 # -u only unbuffers the binary layer on Python 3.6 — the text-mode stdout
 # wrapper on top of it still isn't line-buffered there, so journal/log
@@ -31,7 +32,7 @@ if (config.get('sentry_dsn', None) is not None):
         enable_tracing=True,
     )
 
-daemon = Daemon(config)
+daemon = Daemon(config, RabbitMQConfig(config).resolve())
 command = args.get('command')
 method = getattr(daemon, command, None)
 

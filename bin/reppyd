@@ -8,6 +8,7 @@ from heppy.Args import Args
 from heppy.Error import Error
 from heppy.Config import Config
 from heppy.Daemon import Daemon
+from heppy.RabbitMQConfig import RabbitMQConfig
 
 # Keep stdout line-buffered regardless of how the daemon is launched
 # (systemd, Docker, or a plain redirected shell invocation).
@@ -17,7 +18,7 @@ args = Args()
 config = Config(args.get('path'))
 config.merge(args)
 
-daemon = Daemon(config)
+daemon = Daemon(config, RabbitMQConfig(config).resolve())
 daemon.is_external = True
 
 method = getattr(daemon, args.get('command'), None)

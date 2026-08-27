@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 
 import logging
-import os
 import pika
 import uuid
 
@@ -102,12 +101,9 @@ def connection_parameters(config):
         'port': config.get('port', ConnectionParameters._DEFAULT),
         'virtual_host': config.get('virtual_host', ConnectionParameters._DEFAULT),
     }
-    # RABBITMQ_USERNAME/PASSWORD win over the config file when set, so a
-    # broker credential rotation only needs the env var updated (e.g. from
-    # the same Kubernetes Secret the broker itself reads) instead of
-    # resealing every worker's config to match a copy of the password.
-    username = os.environ.get('RABBITMQ_USERNAME') or config.get('username')
-    if username is not None:
-        password = os.environ.get('RABBITMQ_PASSWORD') or config.get('password', Parameters.DEFAULT_PASSWORD)
-        args['credentials'] = pika.PlainCredentials(username, password)
+    if 'username' in config:
+        args['credentials'] = pika.PlainCredentials(
+            config.get('username', Parameters.DEFAULT_USERNAME),
+            config.get('password', Parameters.DEFAULT_PASSWORD)
+        )
     return ConnectionParameters(**args)

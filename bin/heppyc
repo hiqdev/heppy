@@ -14,6 +14,7 @@ from heppy.Config import Config
 from heppy.Request import Request
 from heppy.Response import Response
 from heppy.RabbitMQ import RPCClient
+from heppy.RabbitMQConfig import RabbitMQConfig
 from heppy.Net import remove_bom
 
 args = Args()
@@ -34,8 +35,7 @@ else:
     query = remove_bom(request.decode('utf-8') if isinstance(request, bytes) else str(request))
     print(Request.prettifyxml(query))
 
-rabbit_config = config.get('RabbitMQ', {})
-rabbit_config.setdefault('queue', 'heppy-' + config['name'])
+rabbit_config = RabbitMQConfig(config).resolve()
 client = RPCClient(rabbit_config)
 reply = client.request(query)
 

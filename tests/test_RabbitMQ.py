@@ -1,9 +1,8 @@
 # -*- coding: utf-8 -*-
 
-import os
 import unittest
 from unittest.mock import MagicMock, patch
-from heppy.RabbitMQ import RPCServer, connection_parameters
+from heppy.RabbitMQ import RPCServer
 
 
 class FakeConfig(dict):
@@ -23,46 +22,6 @@ class TestRPCServerInit(unittest.TestCase):
             RPCServer(config)
 
         channel.queue_declare.assert_called_once_with(queue='heppy-test', durable=True)
-
-
-class TestConnectionParametersCredentials(unittest.TestCase):
-    def setUp(self):
-        self._env = dict(os.environ)
-
-    def tearDown(self):
-        os.environ.clear()
-        os.environ.update(self._env)
-
-    def test_env_vars_override_config_credentials(self):
-        os.environ['RABBITMQ_USERNAME'] = 'env-user'
-        os.environ['RABBITMQ_PASSWORD'] = 'env-pass'
-        config = FakeConfig({'username': 'file-user', 'password': 'file-pass'})
-
-        params = connection_parameters(config)
-
-        self.assertEqual(params.credentials.username, 'env-user')
-        self.assertEqual(params.credentials.password, 'env-pass')
-
-    def test_falls_back_to_config_when_env_vars_unset(self):
-        os.environ.pop('RABBITMQ_USERNAME', None)
-        os.environ.pop('RABBITMQ_PASSWORD', None)
-        config = FakeConfig({'username': 'file-user', 'password': 'file-pass'})
-
-        params = connection_parameters(config)
-
-        self.assertEqual(params.credentials.username, 'file-user')
-        self.assertEqual(params.credentials.password, 'file-pass')
-
-    def test_env_username_alone_still_sets_credentials(self):
-        # Covers workers whose config has no RabbitMQ.username at all
-        # (e.g. verisign-ctldepp) -- env injection should still authenticate.
-        os.environ['RABBITMQ_USERNAME'] = 'env-user'
-        os.environ.pop('RABBITMQ_PASSWORD', None)
-        config = FakeConfig({})
-
-        params = connection_parameters(config)
-
-        self.assertEqual(params.credentials.username, 'env-user')
 
 
 class TestRPCServerOnRequest(unittest.TestCase):
