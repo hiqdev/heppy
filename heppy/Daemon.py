@@ -183,7 +183,20 @@ class Daemon:
             time.sleep(2)
             self.client = Client(self.config['local']['address'])
 
+    def reconnect(self):
+        pprint('RECONNECT: connection to registry was lost')
+        self.client = None
+        self.login_query = None
+        self.connect()
+        self.login()
+
     def request(self, query) -> str:
+        # EPP drops a broken connection (timeout/SSL error) and the failed
+        # request is reported as an error, not retried: it may already have
+        # been executed by the registry. The next request reconnects.
+        is_connected = getattr(self.client, 'is_connected', None)
+        if is_connected is not None and not is_connected():
+            self.reconnect()
         with self.handler.block_signals():
             self.last_command = datetime.now()
             reply = self.client.request(query if isinstance(query, bytes) else query.encode('utf-8'))

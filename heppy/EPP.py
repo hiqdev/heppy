@@ -31,6 +31,10 @@ class REPP:
     def get_greeting(self) -> str:
         return self.greeting
 
+    def is_connected(self) -> bool:
+        epp = getattr(self, 'epp', None)
+        return epp is not None and epp.is_connected()
+
     def request(self, xml: Union[str, bytes]) -> str:
         res = self.epp.request(xml)
         if not res:
@@ -86,10 +90,19 @@ class EPP:
         self.disconnect()
 
     def disconnect(self):
-        sock = getattr(self, 'socket', None)
-        if sock:
-            sock.close()
-        self.socket = None
+        # wrap_socket() detaches the plain socket, so closing it alone leaves
+        # the TLS connection (and any half-written record) alive: close both.
+        for name in ('ssl', 'socket'):
+            sock = getattr(self, name, None)
+            if sock:
+                try:
+                    sock.close()
+                except OSError:
+                    pass
+            setattr(self, name, None)
+
+    def is_connected(self) -> bool:
+        return getattr(self, 'ssl', None) is not None
 
     def get_path(self, name: str) -> str:
         return self.find_path(self.config[name])
@@ -109,10 +122,18 @@ class EPP:
     def write(self, xml: Union[str, bytes]) -> int:
         try:
             return Net.write(self.ssl, xml.decode('utf-8') if isinstance(xml, bytes) else xml)
-        except socket.timeout:
+        except OSError:
+            # Timeouts and SSL errors (socket.timeout and ssl.SSLError are
+            # OSError) leave the TLS stream in an unknown state - e.g. a
+            # partially sent record makes every later write fail with
+            # "[SSL: BAD_LENGTH] bad length". Drop the connection instead.
             self.disconnect()
             raise
 
     def read(self) -> str:
-        return Net.read(self.ssl)
+        try:
+            return Net.read(self.ssl)
+        except OSError:
+            self.disconnect()
+            raise
 
