@@ -76,6 +76,20 @@ class TestDaemonReconnect(unittest.TestCase):
         self.assertEqual('<epp/>', daemon.request('<hello/>'))
         daemon.reconnect.assert_not_called()
 
+    def test_reconnect_keeps_start_login_overrides(self):
+        daemon = Daemon.__new__(Daemon)
+        daemon.login_args = {}
+        daemon.connect = mock.Mock()
+        daemon.login = mock.Mock()
+        with mock.patch.object(Daemon, 'consume'):
+            daemon.start({'login': 'override', 'pw': 'secret'})
+        daemon.login.reset_mock()
+
+        daemon.reconnect()
+
+        daemon.login.assert_called_once_with({'login': 'override', 'pw': 'secret'})
+        self.assertIsNone(daemon.login_query)
+
 
 if __name__ == '__main__':
     unittest.main()

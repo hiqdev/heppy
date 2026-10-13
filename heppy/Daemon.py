@@ -32,6 +32,7 @@ class Daemon:
             'SIGUSR1': self.hello,
             'SIGUSR2': self.hello,
         })
+        self.login_args = {}
         self.login_query = None
         self.logout_query = None
         self.force_quit = False
@@ -55,6 +56,9 @@ class Daemon:
 
     def start(self, args=None):
         args = {} if args is None else args
+        # Copy: Login.build() fills objURIs/extURIs from the greeting in place,
+        # and a reconnect must build them from the new greeting.
+        self.login_args = dict(args)
         self.connect()
         self.login(args)
         self.consume()
@@ -188,7 +192,7 @@ class Daemon:
         self.client = None
         self.login_query = None
         self.connect()
-        self.login()
+        self.login(dict(self.login_args))
 
     def request(self, query) -> str:
         # EPP drops a broken connection (timeout/SSL error) and the failed
