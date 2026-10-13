@@ -197,9 +197,10 @@ class Daemon:
     def request(self, query) -> str:
         # EPP drops a broken connection (timeout/SSL error) and the failed
         # request is reported as an error, not retried: it may already have
-        # been executed by the registry. The next request reconnects.
+        # been executed by the registry. The next request reconnects, also
+        # after a reconnect that failed and left no client.
         is_connected = getattr(self.client, 'is_connected', None)
-        if is_connected is not None and not is_connected():
+        if self.client is None or (is_connected is not None and not is_connected()):
             self.reconnect()
         with self.handler.block_signals():
             self.last_command = datetime.now()

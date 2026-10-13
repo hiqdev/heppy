@@ -76,6 +76,18 @@ class TestDaemonReconnect(unittest.TestCase):
         self.assertEqual('<epp/>', daemon.request('<hello/>'))
         daemon.reconnect.assert_not_called()
 
+    def test_request_reconnects_after_failed_reconnect(self):
+        daemon = self.make_daemon(connected=True)
+        client = daemon.client
+        daemon.client = None
+
+        def reconnect():
+            daemon.client = client
+        daemon.reconnect.side_effect = reconnect
+
+        self.assertEqual('<epp/>', daemon.request('<hello/>'))
+        daemon.reconnect.assert_called_once()
+
     def test_reconnect_keeps_start_login_overrides(self):
         daemon = Daemon.__new__(Daemon)
         daemon.login_args = {}
