@@ -48,6 +48,36 @@ class TestEPP(unittest.TestCase):
                 epp.read()
         self.assertFalse(epp.is_connected())
 
+    def test_read_truncated_frame_drops_connection(self):
+        epp = make_epp()
+        with mock.patch('heppy.Net.read', side_effect=ConnectionError('connection closed inside EPP frame')):
+            with self.assertRaises(ConnectionError):
+                epp.read()
+        self.assertFalse(epp.is_connected())
+
+    def test_request_returns_reply_with_matching_cltrid(self):
+        epp = make_epp()
+        reply = '<epp><response><trID><clTRID>AA-1</clTRID><svTRID>S-1</svTRID></trID></response></epp>'
+        with mock.patch('heppy.Net.write'), mock.patch('heppy.Net.read', return_value=reply):
+            self.assertEqual(reply, epp.request('<epp><command><info/><clTRID>AA-1</clTRID></command></epp>'))
+        self.assertTrue(epp.is_connected())
+
+    def test_request_drops_connection_on_other_requests_reply(self):
+        epp = make_epp()
+        reply = '<epp><response><trID><clTRID>AA-0</clTRID><svTRID>S-0</svTRID></trID></response></epp>'
+        with mock.patch('heppy.Net.write'), mock.patch('heppy.Net.read', return_value=reply):
+            with self.assertRaisesRegex(ConnectionError, 'clTRID AA-0 does not match request clTRID AA-1'):
+                epp.request(b'<epp><command><info/><clTRID>AA-1</clTRID></command></epp>')
+        self.assertFalse(epp.is_connected())
+
+    def test_request_accepts_reply_without_cltrid(self):
+        epp = make_epp()
+        greeting = '<epp><greeting><svID>Test</svID></greeting></epp>'
+        with mock.patch('heppy.Net.write'), mock.patch('heppy.Net.read', return_value=greeting):
+            self.assertEqual(greeting, epp.request('<epp><hello/></epp>'))
+            self.assertEqual(greeting, epp.request('<epp><command><info/><clTRID>AA-1</clTRID></command></epp>'))
+        self.assertTrue(epp.is_connected())
+
     def test_non_socket_error_keeps_connection(self):
         epp = make_epp()
         with mock.patch('heppy.Net.write', side_effect=ValueError('bad data')):

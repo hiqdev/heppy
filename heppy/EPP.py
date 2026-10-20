@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 
 import os
+import re
 import ssl
 import socket
 from datetime import datetime
@@ -9,6 +10,16 @@ from heppy import Net
 from heppy.Config import Config
 from heppy.Request import Request
 from typing import Union
+
+
+CLTRID_RE = re.compile(r'<(?:[\w-]+:)?clTRID>\s*(.*?)\s*</(?:[\w-]+:)?clTRID>', re.DOTALL)
+
+
+def find_cltrid(xml: Union[str, bytes]):
+    if isinstance(xml, bytes):
+        xml = xml.decode('utf-8', 'replace')
+    match = CLTRID_RE.search(xml or '')
+    return match.group(1) if match else None
 
 
 class REPP:
@@ -117,7 +128,19 @@ class EPP:
 
     def request(self, xml: Union[str, bytes]) -> str:
         self.write(xml)
-        return self.read()
+        reply = self.read()
+        self.check_cltrid(xml, reply)
+        return reply
+
+    def check_cltrid(self, xml: Union[str, bytes], reply: str) -> None:
+        # The server echoes the clTRID it was sent. A different one means this
+        # reply belongs to another request (the stream is out of step), so it
+        # must not be returned as this request's answer: drop the connection.
+        sent = find_cltrid(xml)
+        got = find_cltrid(reply)
+        if sent is not None and got is not None and got != sent:
+            self.disconnect()
+            raise ConnectionError('EPP reply clTRID %s does not match request clTRID %s, connection dropped' % (got, sent))
 
     def write(self, xml: Union[str, bytes]) -> int:
         try:
