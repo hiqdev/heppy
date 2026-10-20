@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 
 import unittest
+from unittest import mock
 
 from heppy import Net
 
@@ -21,7 +22,7 @@ class FakeSocket:
         return chunk
 
     def settimeout(self, timeout):
-        pass
+        self.timeouts = getattr(self, 'timeouts', []) + [timeout]
 
 
 def frame(xml):
@@ -60,6 +61,29 @@ class TestNetRead(unittest.TestCase):
         sock = FakeSocket(frame('<first/>') + frame('<second/>'))
         self.assertEqual('<first/>', Net.read(sock))
         self.assertEqual('<second/>', Net.read(sock))
+
+
+
+class TestNetReadTimeout(unittest.TestCase):
+    def test_deadline_covers_the_whole_frame(self):
+        # Each recv() is fast enough on its own, but together they take longer
+        # than the timeout: a trickling reply must not get a fresh timeout per recv.
+        data = frame('<epp/>')
+        sock = FakeSocket(data[:4], data[4:6], data[6:])
+        with mock.patch('heppy.Net.time.monotonic', side_effect=[0, 1, 9, 16]):
+            with self.assertRaises(TimeoutError):
+                Net.read(sock, timeout=15)
+
+    def test_recv_gets_only_the_time_left(self):
+        sock = FakeSocket(frame('<epp/>'))
+        with mock.patch('heppy.Net.time.monotonic', side_effect=[100, 100, 104]):
+            self.assertEqual('<epp/>', Net.read(sock, timeout=15))
+        self.assertEqual([15, 11, None], sock.timeouts)
+
+    def test_write_uses_given_timeout(self):
+        sock = mock.Mock()
+        Net.write(sock, '<epp/>', timeout=7)
+        self.assertEqual([mock.call(7), mock.call(None)], sock.settimeout.call_args_list)
 
 
 if __name__ == '__main__':

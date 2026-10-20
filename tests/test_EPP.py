@@ -78,6 +78,22 @@ class TestEPP(unittest.TestCase):
             self.assertEqual(greeting, epp.request('<epp><command><info/><clTRID>AA-1</clTRID></command></epp>'))
         self.assertTrue(epp.is_connected())
 
+    def test_request_timeout_names_the_request(self):
+        epp = make_epp()
+        epp.config = {'host': 'epp.example', 'timeout': 7}
+        with mock.patch('heppy.Net.write') as write, \
+                mock.patch('heppy.Net.read', side_effect=socket.timeout('timed out')) as read, \
+                mock.patch('builtins.print') as out:
+            with self.assertRaisesRegex(TimeoutError, r'^EPP: no reply from epp.example in 7.0s to clTRID AA-1, connection dropped$'):
+                epp.request('<epp><command><info/><clTRID>AA-1</clTRID></command></epp>')
+        self.assertEqual(7.0, write.call_args.args[2])
+        self.assertEqual(7.0, read.call_args.args[1])
+        out.assert_called_once()
+        self.assertFalse(epp.is_connected())
+
+    def test_default_timeout_is_below_hiapi_wait(self):
+        self.assertLess(make_epp().get_timeout(), 20)
+
     def test_non_socket_error_keeps_connection(self):
         epp = make_epp()
         with mock.patch('heppy.Net.write', side_effect=ValueError('bad data')):

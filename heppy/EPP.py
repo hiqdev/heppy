@@ -126,9 +126,20 @@ class EPP:
     def get_greeting(self) -> str:
         return self.greeting
 
+    def get_timeout(self) -> float:
+        return float(self.config.get('timeout', Net.DEFAULT_TIMEOUT))
+
     def request(self, xml: Union[str, bytes]) -> str:
         self.write(xml)
-        reply = self.read()
+        try:
+            reply = self.read()
+        except TimeoutError:
+            # read() has dropped the connection. Name the request, so a stuck
+            # registry reply can be found in the pod log and the registry's.
+            message = 'EPP: no reply from %s in %ss to clTRID %s, connection dropped' % (
+                self.config.get('host'), self.get_timeout(), find_cltrid(xml))
+            print(message, flush=True)
+            raise TimeoutError(message)
         self.check_cltrid(xml, reply)
         return reply
 
@@ -144,7 +155,7 @@ class EPP:
 
     def write(self, xml: Union[str, bytes]) -> int:
         try:
-            return Net.write(self.ssl, xml.decode('utf-8') if isinstance(xml, bytes) else xml)
+            return Net.write(self.ssl, xml.decode('utf-8') if isinstance(xml, bytes) else xml, self.get_timeout())
         except OSError:
             # Timeouts and SSL errors (socket.timeout and ssl.SSLError are
             # OSError) leave the TLS stream in an unknown state - e.g. a
@@ -155,7 +166,7 @@ class EPP:
 
     def read(self) -> str:
         try:
-            return Net.read(self.ssl)
+            return Net.read(self.ssl, self.get_timeout())
         except OSError:
             self.disconnect()
             raise
