@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 
 import os
+import re
 import ssl
 import socket
 from datetime import datetime
@@ -9,6 +10,16 @@ from heppy import Net
 from heppy.Config import Config
 from heppy.Request import Request
 from typing import Union
+
+
+CLTRID_RE = re.compile(r'<(?:[\w-]+:)?clTRID>\s*(.*?)\s*</(?:[\w-]+:)?clTRID>', re.DOTALL)
+
+
+def find_cltrid(xml: Union[str, bytes]):
+    if isinstance(xml, bytes):
+        xml = xml.decode('utf-8', 'replace')
+    match = CLTRID_RE.search(xml or '')
+    return match.group(1) if match else None
 
 
 class REPP:
@@ -115,13 +126,36 @@ class EPP:
     def get_greeting(self) -> str:
         return self.greeting
 
+    def get_timeout(self) -> float:
+        return float(self.config.get('timeout', Net.DEFAULT_TIMEOUT))
+
     def request(self, xml: Union[str, bytes]) -> str:
         self.write(xml)
-        return self.read()
+        try:
+            reply = self.read()
+        except TimeoutError:
+            # read() has dropped the connection. Name the request, so a stuck
+            # registry reply can be found in the pod log and the registry's.
+            message = 'EPP: no reply from %s in %ss to clTRID %s, connection dropped' % (
+                self.config.get('host'), self.get_timeout(), find_cltrid(xml))
+            print(message, flush=True)
+            raise TimeoutError(message)
+        self.check_cltrid(xml, reply)
+        return reply
+
+    def check_cltrid(self, xml: Union[str, bytes], reply: str) -> None:
+        # The server echoes the clTRID it was sent. A different one means this
+        # reply belongs to another request (the stream is out of step), so it
+        # must not be returned as this request's answer: drop the connection.
+        sent = find_cltrid(xml)
+        got = find_cltrid(reply)
+        if sent is not None and got is not None and got != sent:
+            self.disconnect()
+            raise ConnectionError('EPP reply clTRID %s does not match request clTRID %s, connection dropped' % (got, sent))
 
     def write(self, xml: Union[str, bytes]) -> int:
         try:
-            return Net.write(self.ssl, xml.decode('utf-8') if isinstance(xml, bytes) else xml)
+            return Net.write(self.ssl, xml.decode('utf-8') if isinstance(xml, bytes) else xml, self.get_timeout())
         except OSError:
             # Timeouts and SSL errors (socket.timeout and ssl.SSLError are
             # OSError) leave the TLS stream in an unknown state - e.g. a
@@ -132,7 +166,7 @@ class EPP:
 
     def read(self) -> str:
         try:
-            return Net.read(self.ssl)
+            return Net.read(self.ssl, self.get_timeout())
         except OSError:
             self.disconnect()
             raise
