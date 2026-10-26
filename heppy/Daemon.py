@@ -135,7 +135,8 @@ class Daemon:
             args = {}
         try:
             query = self.get_login_query(args)
-            pprint(Request.prettifyxml(query))
+            # stdout is the pod log: never print the registrar password
+            pprint(Request.mask_passwords(Request.prettifyxml(query)))
             reply = self.request(query)
             pprint(Request.prettifyxml(reply))
         except Error:

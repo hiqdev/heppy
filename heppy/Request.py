@@ -1,11 +1,16 @@
 # -*- coding: utf-8 -*-
 
+import re
 import logging
 import xml.dom.minidom
 import xml.etree.ElementTree as ET
 
 from heppy.Doc import Doc
 from typing import Union
+
+# <pw>/<newPW> in any namespace: login credentials and authInfo passwords.
+PASSWORD_TAG_RE = re.compile(r'(<((?:[\w.-]+:)?(?:pw|newPW))\b[^>]*>).*?(</\2>)', re.DOTALL)
+
 
 class Request(Doc):
 
@@ -82,3 +87,7 @@ class Request(Doc):
         dom = xml.dom.minidom.parseString(string)
         return dom.toprettyxml(indent='    ')
 
+    @staticmethod
+    def mask_passwords(xml: str) -> str:
+        """Replace password element values, for output that ends up in logs."""
+        return PASSWORD_TAG_RE.sub(r'\1***\3', xml)
