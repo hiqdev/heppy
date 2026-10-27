@@ -70,13 +70,46 @@ class TestEPP(unittest.TestCase):
                 epp.request(b'<epp><command><info/><clTRID>AA-1</clTRID></command></epp>')
         self.assertFalse(epp.is_connected())
 
-    def test_request_accepts_reply_without_cltrid(self):
+    def test_request_accepts_greeting_as_hello_reply(self):
         epp = make_epp()
         greeting = '<epp><greeting><svID>Test</svID></greeting></epp>'
         with mock.patch('heppy.Net.write'), mock.patch('heppy.Net.read', return_value=greeting):
             self.assertEqual(greeting, epp.request('<epp><hello/></epp>'))
-            self.assertEqual(greeting, epp.request('<epp><command><info/><clTRID>AA-1</clTRID></command></epp>'))
         self.assertTrue(epp.is_connected())
+
+    def test_request_accepts_command_reply_without_cltrid(self):
+        epp = make_epp()
+        reply = '<epp><response><result code="1000"/></response></epp>'
+        with mock.patch('heppy.Net.write'), mock.patch('heppy.Net.read', return_value=reply):
+            self.assertEqual(reply, epp.request('<epp><command><info/><clTRID>AA-1</clTRID></command></epp>'))
+        self.assertTrue(epp.is_connected())
+
+    def test_request_rejects_greeting_reply_to_non_hello_command(self):
+        epp = make_epp()
+        greeting = '<epp><greeting><svID>Test</svID></greeting></epp>'
+        with mock.patch('heppy.Net.write'), mock.patch('heppy.Net.read', return_value=greeting):
+            with self.assertRaisesRegex(ConnectionError, 'got a greeting in reply to a non-hello request'):
+                epp.request('<epp><command><info/><clTRID>AA-1</clTRID></command></epp>')
+        self.assertFalse(epp.is_connected())
+
+    def test_request_matches_cltrid_with_namespace_attribute(self):
+        epp = make_epp()
+        reply = ('<epp><response><trID>'
+                 '<clTRID xmlns="urn:ietf:params:xml:ns:epp-1.0">AA-1</clTRID>'
+                 '<svTRID>S-1</svTRID></trID></response></epp>')
+        with mock.patch('heppy.Net.write'), mock.patch('heppy.Net.read', return_value=reply):
+            self.assertEqual(reply, epp.request('<epp><command><info/><clTRID>AA-1</clTRID></command></epp>'))
+        self.assertTrue(epp.is_connected())
+
+    def test_request_drops_connection_on_mismatched_cltrid_with_namespace_attribute(self):
+        epp = make_epp()
+        reply = ('<epp><response><trID>'
+                 '<clTRID xmlns="urn:ietf:params:xml:ns:epp-1.0">AA-0</clTRID>'
+                 '<svTRID>S-0</svTRID></trID></response></epp>')
+        with mock.patch('heppy.Net.write'), mock.patch('heppy.Net.read', return_value=reply):
+            with self.assertRaisesRegex(ConnectionError, 'clTRID AA-0 does not match request clTRID AA-1'):
+                epp.request('<epp><command><info/><clTRID>AA-1</clTRID></command></epp>')
+        self.assertFalse(epp.is_connected())
 
     def test_request_timeout_names_the_request(self):
         epp = make_epp()

@@ -1,9 +1,9 @@
 # -*- coding: utf-8 -*-
 
 import os
-import re
 import ssl
 import socket
+import xml.etree.ElementTree as ET
 from datetime import datetime
 
 from heppy import Net
@@ -12,14 +12,43 @@ from heppy.Request import Request
 from typing import Union
 
 
-CLTRID_RE = re.compile(r'<(?:[\w-]+:)?clTRID>\s*(.*?)\s*</(?:[\w-]+:)?clTRID>', re.DOTALL)
+def _local_name(tag: str) -> str:
+    return tag.rsplit('}', 1)[-1]
+
+
+def _parse(xml: Union[str, bytes]):
+    try:
+        return ET.fromstring(xml) if xml else None
+    except ET.ParseError:
+        return None
 
 
 def find_cltrid(xml: Union[str, bytes]):
-    if isinstance(xml, bytes):
-        xml = xml.decode('utf-8', 'replace')
-    match = CLTRID_RE.search(xml or '')
-    return match.group(1) if match else None
+    # Matched by local name only, regardless of namespace (default,
+    # prefixed, or re-declared with xmlns= on the clTRID element itself) -
+    # a registry's reply is not ours to dictate the exact shape of.
+    root = _parse(xml)
+    if root is None:
+        return None
+    for tag in root.iter():
+        if _local_name(tag.tag) == 'clTRID':
+            return tag.text.strip() if tag.text else None
+    return None
+
+
+def _has_direct_child(xml: Union[str, bytes], name: str) -> bool:
+    root = _parse(xml)
+    if root is None:
+        return False
+    return any(_local_name(child.tag) == name for child in root)
+
+
+def is_greeting(xml: Union[str, bytes]) -> bool:
+    return _has_direct_child(xml, 'greeting')
+
+
+def is_hello(xml: Union[str, bytes]) -> bool:
+    return _has_direct_child(xml, 'hello')
 
 
 class REPP:
@@ -140,8 +169,18 @@ class EPP:
                 self.config.get('host'), self.get_timeout(), find_cltrid(xml))
             print(message, flush=True)
             raise TimeoutError(message)
-        self.check_cltrid(xml, reply)
+        self.check_reply(xml, reply)
         return reply
+
+    def check_reply(self, xml: Union[str, bytes], reply: str) -> None:
+        if is_greeting(reply) and not is_hello(xml):
+            # A greeting answers only hello. Getting one back for any other
+            # command means the stream is out of step (e.g. a stray re-send
+            # of the server's own banner) - don't hand it to the caller as
+            # if it were that command's response.
+            self.disconnect()
+            raise ConnectionError('EPP: got a greeting in reply to a non-hello request, connection dropped')
+        self.check_cltrid(xml, reply)
 
     def check_cltrid(self, xml: Union[str, bytes], reply: str) -> None:
         # The server echoes the clTRID it was sent. A different one means this
