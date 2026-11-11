@@ -35,8 +35,13 @@ class Client:
         return Net.write(self.socket, data if isinstance(data, str) else data.decode('utf-8'))
 
     def read(self) -> str:
-        res = Net.read(self.socket)
-        self.disconnect()
+        # disconnect() must run even when Net.read() raises (a truncated
+        # frame leaves the socket mid-record): otherwise connect() sees a
+        # stale non-None self.socket and reuses the broken connection.
+        try:
+            res = Net.read(self.socket)
+        finally:
+            self.disconnect()
         return res if isinstance(res, str) else res.decode('utf-8')
 
     def request(self, data: Union[str, bytes]) -> str:
