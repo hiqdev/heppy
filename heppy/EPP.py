@@ -16,10 +16,25 @@ def _local_name(tag: str) -> str:
     return tag.rsplit('}', 1)[-1]
 
 
+class MalformedXML(ValueError):
+    """The data is not well-formed XML."""
+
+
 def _parse(xml: Union[str, bytes]):
+    # None for no data; MalformedXML for data that is not XML, so a garbled
+    # reply is not mistaken for a valid one that just lacks some element.
+    if not xml:
+        return None
     try:
-        return ET.fromstring(xml) if xml else None
-    except ET.ParseError:
+        return ET.fromstring(xml)
+    except ET.ParseError as e:
+        raise MalformedXML(str(e)) from e
+
+
+def _parse_or_none(xml: Union[str, bytes]):
+    try:
+        return _parse(xml)
+    except MalformedXML:
         return None
 
 
@@ -27,7 +42,7 @@ def find_cltrid(xml: Union[str, bytes]):
     # Matched by local name only, regardless of namespace (default,
     # prefixed, or re-declared with xmlns= on the clTRID element itself) -
     # a registry's reply is not ours to dictate the exact shape of.
-    root = _parse(xml)
+    root = _parse_or_none(xml)
     if root is None:
         return None
     for tag in root.iter():
@@ -37,7 +52,7 @@ def find_cltrid(xml: Union[str, bytes]):
 
 
 def _has_direct_child(xml: Union[str, bytes], name: str) -> bool:
-    root = _parse(xml)
+    root = _parse_or_none(xml)
     if root is None:
         return False
     return any(_local_name(child.tag) == name for child in root)
@@ -173,6 +188,13 @@ class EPP:
         return reply
 
     def check_reply(self, xml: Union[str, bytes], reply: str) -> None:
+        try:
+            _parse(reply)
+        except MalformedXML as e:
+            # Not XML at all: the frame is garbled or the stream is out of
+            # step. Its clTRID can't be checked, so don't return it.
+            self.disconnect()
+            raise ConnectionError('EPP: malformed XML reply (%s), connection dropped' % e) from e
         if is_greeting(reply) and not is_hello(xml):
             # A greeting answers only hello. Getting one back for any other
             # command means the stream is out of step (e.g. a stray re-send

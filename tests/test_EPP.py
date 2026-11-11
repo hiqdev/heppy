@@ -84,6 +84,14 @@ class TestEPP(unittest.TestCase):
             self.assertEqual(reply, epp.request('<epp><command><info/><clTRID>AA-1</clTRID></command></epp>'))
         self.assertTrue(epp.is_connected())
 
+    def test_request_drops_connection_on_malformed_reply(self):
+        epp = make_epp()
+        reply = '<epp><response><trID><clTRID>AA-1</clTRID>'
+        with mock.patch('heppy.Net.write'), mock.patch('heppy.Net.read', return_value=reply):
+            with self.assertRaisesRegex(ConnectionError, 'malformed XML reply'):
+                epp.request('<epp><command><info/><clTRID>AA-1</clTRID></command></epp>')
+        self.assertFalse(epp.is_connected())
+
     def test_request_rejects_greeting_reply_to_non_hello_command(self):
         epp = make_epp()
         greeting = '<epp><greeting><svID>Test</svID></greeting></epp>'
