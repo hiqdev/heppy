@@ -152,16 +152,17 @@ class TestREPP(unittest.TestCase):
         repp.connect = mock.Mock()
         return repp
 
-    def test_request_retries_once_on_a_new_connection_after_an_empty_reply(self):
-        repp = self.make_repp(['', '<epp/>'])
-        self.assertEqual('<epp/>', repp.request('<hello/>'))
-        repp.connect.assert_called_once()
-
-    def test_request_without_a_reply_after_the_retry_drops_the_connection(self):
-        repp = self.make_repp(['', ''])
+    def test_request_without_a_reply_drops_the_connection_without_opening_another(self):
+        repp = self.make_repp([''])
         with self.assertRaisesRegex(ConnectionError, r'^EPP: epp.example closed the connection without a reply, connection dropped$'):
             repp.request('<hello/>')
         self.assertFalse(repp.is_connected())
+        repp.connect.assert_not_called()
+
+    def test_request_returns_the_reply(self):
+        repp = self.make_repp(['<epp/>'])
+        self.assertEqual('<epp/>', repp.request('<hello/>'))
+        repp.connect.assert_not_called()
 
 
 class TestDaemonReconnect(unittest.TestCase):
