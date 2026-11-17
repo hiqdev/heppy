@@ -5,6 +5,9 @@ from enum import Enum
 from heppy.Request import Request
 from heppy.Response import Response
 
+ERROR_KIND_KEY = '_error_kind'
+CONNECTION_ERROR = 'connection'
+
 
 class SmartRequest():
 
@@ -77,10 +80,12 @@ class SmartRequest():
         return False
 
     def prepare_error(self, error):
-        error = str(error)
+        message = str(error)
         if self.is_xml():
-            return error
-        data = {'_error': error}
+            return message
+        data = {'_error': message}
+        if isinstance(error, OSError):
+            data[ERROR_KIND_KEY] = CONNECTION_ERROR
         if self.is_dict():
             return data
         if self.is_json():
