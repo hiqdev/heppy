@@ -56,6 +56,55 @@ class TestSmartRequest(unittest.TestCase):
         reply = SmartRequest(json.dumps(data)).perform(self.raise_error, self.relogin)
         self.assertEqual(json.dumps({'_error': self.TEST_ERROR}), reply)
 
+    def test_relogin_on_unauthorized_tld(self):
+        replies = [self.authorization_error('Unauthorized TLD'), self.GREETING]
+        relogins = []
+        reply = SmartRequest(self.HELLO_DATA).perform(lambda query: replies.pop(0), lambda: relogins.append(1))
+        self.assertEqual(1, len(relogins))
+        self.assertEqual({'svID': 'test'}, reply)
+
+    def test_relogin_on_unauthorized_tld_in_msg(self):
+        replies = [self.authorization_error(None, 'Authorization error: TLD not authorized'), self.GREETING]
+        relogins = []
+        reply = SmartRequest(self.HELLO_DATA).perform(lambda query: replies.pop(0), lambda: relogins.append(1))
+        self.assertEqual(1, len(relogins))
+        self.assertEqual({'svID': 'test'}, reply)
+
+    def test_relogin_only_once_on_unauthorized_tld(self):
+        error = self.authorization_error('Unauthorized TLD')
+        relogins = []
+        reply = SmartRequest(self.HELLO_DATA).perform(lambda query: error, lambda: relogins.append(1))
+        self.assertEqual(1, len(relogins))
+        self.assertEqual('2201', reply['result_code'])
+
+    def test_no_relogin_on_other_authorization_error(self):
+        relogins = []
+        for reason in [None, 'Object is not sponsored by you', 'Domain is sponsored by another registrar']:
+            error = self.authorization_error(reason)
+            reply = SmartRequest(self.HELLO_DATA).perform(lambda query: error, lambda: relogins.append(1))
+            self.assertEqual('2201', reply['result_code'])
+        self.assertEqual([], relogins)
+
+    def authorization_error(self, reason, msg='Authorization error'):
+        ext = ''
+        if reason is not None:
+            ext = '''
+            <extValue>
+                <value><text>x</text></value>
+                <reason>%s</reason>
+            </extValue>''' % reason
+        return '''<?xml version="1.0" encoding="UTF-8"?>
+<epp xmlns="urn:ietf:params:xml:ns:epp-1.0">
+    <response>
+        <result code="2201">
+            <msg>%s</msg>%s
+        </result>
+        <trID>
+            <svTRID>sv-1</svTRID>
+        </trID>
+    </response>
+</epp>''' % (msg, ext)
+
     HELLO_DATA = {'command':  'epp:hello'}
 
     HELLO = str(Request.build(HELLO_DATA))
