@@ -3,7 +3,7 @@
 import json
 import unittest
 from heppy.Request import Request
-from heppy.SmartRequest import SmartRequest
+from heppy.SmartRequest import SmartRequest, ERROR_KIND_KEY, CONNECTION_ERROR
 
 class TestSmartRequest(unittest.TestCase):
     def test_get_xml_from_xml(self):
@@ -56,6 +56,18 @@ class TestSmartRequest(unittest.TestCase):
         reply = SmartRequest(json.dumps(data)).perform(self.raise_error, self.relogin)
         self.assertEqual(json.dumps({'_error': self.TEST_ERROR}), reply)
 
+    def test_perform_dict_connection_error_has_connection_kind(self):
+        reply = SmartRequest(self.HELLO_DATA).perform(self.raise_connection_error, self.relogin)
+        self.assertEqual({'_error': self.TEST_ERROR, ERROR_KIND_KEY: CONNECTION_ERROR}, reply)
+
+    def test_perform_json_connection_error_has_connection_kind(self):
+        reply = SmartRequest(json.dumps(self.HELLO_DATA)).perform(self.raise_connection_error, self.relogin)
+        self.assertEqual(json.dumps({'_error': self.TEST_ERROR, ERROR_KIND_KEY: CONNECTION_ERROR}), reply)
+
+    def test_perform_xml_connection_error_is_its_message(self):
+        reply = SmartRequest('test').perform(self.raise_connection_error, self.relogin)
+        self.assertEqual(self.TEST_ERROR, reply)
+
     HELLO_DATA = {'command':  'epp:hello'}
 
     HELLO = str(Request.build(HELLO_DATA))
@@ -79,6 +91,9 @@ class TestSmartRequest(unittest.TestCase):
 
     def raise_error(self, query):
         raise Exception(self.TEST_ERROR)
+
+    def raise_connection_error(self, query):
+        raise TimeoutError(self.TEST_ERROR)
 
 if __name__ == '__main__':
     unittest.main()
