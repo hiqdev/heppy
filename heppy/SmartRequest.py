@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 
 import json
-import re
 from enum import Enum
 from heppy.Request import Request
 from heppy.Response import Response
@@ -72,29 +71,10 @@ class SmartRequest():
         except Exception as e:
             return self.prepare_error(e)
 
-    RELOGIN_CODES = ['2002', '2200', '2500', '2501', '2502']
-
     def needs_relogin(self, response):
-        code = response.data.get('result_code', '0')
-        if code in self.RELOGIN_CODES:
+        if (response.data.get('result_code', '0') in ['2002', '2200', '2500', '2501', '2502']) :
             return True
-        return code == '2201' and self.is_tld_authorization_error(response.data)
-
-    @staticmethod
-    def is_tld_authorization_error(data):
-        """2201 that blames the TLD, not the object.
-
-        A registry may drop a TLD from a live session's authorization
-        (seen after maintenance: "Authorization error" / "Unauthorized TLD"
-        for a TLD the account has served for years) while hello keeps
-        working, so the session stays broken until the daemon restarts.
-        A fresh login gets the TLD back. Any other 2201 (e.g. an object
-        sponsored by another registrar) is a real answer and is returned
-        as is. The rejected command was not executed, so it is safe to
-        send it again once.
-        """
-        text = ' '.join(str(data.get(key) or '') for key in ('result_msg', 'result_reason'))
-        return re.search(r'\btlds?\b', text, re.IGNORECASE) is not None
+        return False
 
     def prepare_error(self, error):
         error = str(error)
