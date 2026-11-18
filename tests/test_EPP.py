@@ -143,6 +143,28 @@ class TestEPP(unittest.TestCase):
         self.assertTrue(epp.is_connected())
 
 
+class TestREPP(unittest.TestCase):
+    def make_repp(self, replies):
+        repp = REPP.__new__(REPP)
+        repp.config = {'host': 'epp.example'}
+        repp.epp = make_epp()
+        repp.epp.request = mock.Mock(side_effect=replies)
+        repp.connect = mock.Mock()
+        return repp
+
+    def test_request_without_a_reply_drops_the_connection_without_opening_another(self):
+        repp = self.make_repp([''])
+        with self.assertRaisesRegex(ConnectionError, r'^EPP: epp.example closed the connection without a reply, connection dropped$'):
+            repp.request('<hello/>')
+        self.assertFalse(repp.is_connected())
+        repp.connect.assert_not_called()
+
+    def test_request_returns_the_reply(self):
+        repp = self.make_repp(['<epp/>'])
+        self.assertEqual('<epp/>', repp.request('<hello/>'))
+        repp.connect.assert_not_called()
+
+
 class TestDaemonReconnect(unittest.TestCase):
     def make_daemon(self, connected):
         daemon = Daemon.__new__(Daemon)

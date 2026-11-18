@@ -93,8 +93,8 @@ class REPP:
     def request(self, xml: Union[str, bytes]) -> str:
         res = self.epp.request(xml)
         if not res:
-            self.connect()
-            res = self.epp.request(xml)
+            self.disconnect()
+            raise ConnectionError('EPP: %s closed the connection without a reply, connection dropped' % self.config.get('host'))
         return res
 
 class EPP:
