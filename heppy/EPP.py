@@ -77,15 +77,15 @@ def is_read_only(xml: Union[str, bytes]) -> bool:
     """Whether the request only reads (hello, check, info, poll req,
     transfer query), so it is safe to send again after a lost connection."""
     root = _parse_or_none(xml)
-    if root is None:
+    if root is None or len(root) != 1:
         return False
-    for child in root:
-        name = _local_name(child.tag)
-        if name == 'hello':
-            return True
-        if name == 'command':
-            operations = [op for op in child if _local_name(op.tag) not in NON_OPERATION_ELEMENTS]
-            return len(operations) == 1 and _is_read_only_operation(operations[0])
+    child = root[0]
+    name = _local_name(child.tag)
+    if name == 'hello':
+        return True
+    if name == 'command':
+        operations = [op for op in child if _local_name(op.tag) not in NON_OPERATION_ELEMENTS]
+        return len(operations) == 1 and _is_read_only_operation(operations[0])
     return False
 
 

@@ -323,6 +323,13 @@ class TestIsReadOnly(unittest.TestCase):
     def test_not_read_only_without_operation(self):
         self.assertFalse(is_read_only(self.wrap('')))
 
+    def test_not_read_only_with_more_than_one_top_level_element(self):
+        epp = '<epp xmlns="urn:ietf:params:xml:ns:epp-1.0">%s</epp>'
+        for elements in ['<command><info/></command><command><update/></command>',
+                         '<hello/><command><update/></command>',
+                         '<command><info/></command><hello/>']:
+            self.assertFalse(is_read_only(epp % elements), elements)
+
 
 if __name__ == '__main__':
     unittest.main()
