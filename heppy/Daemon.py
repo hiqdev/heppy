@@ -18,6 +18,10 @@ from heppy.RabbitMQ import RPCServer
 from heppy.SmartRequest import SmartRequest
 from heppy.SignalHandler import SignalHandler
 
+QUIT_MESSAGE = 'Daemon is quitting...'
+EXIT_PLANNED = 0
+EXIT_SESSION_REJECTED = 1
+
 
 class Daemon:
     def __init__(self, config, rabbit_config):
@@ -49,11 +53,12 @@ class Daemon:
         self.sessionCheckDelta = timedelta(**config.get('sessionCheckInterval', {'minutes': 5}))
         self.last_session_check = self.last_command
 
-    def quit(self):
+    def quit(self, code=EXIT_PLANNED):
         if self.client is not None:
             self.logout()
             self.client.disconnect()
-        raise SystemExit("Daemon is quitting...")
+        print(QUIT_MESSAGE, flush=True)
+        raise SystemExit(code)
 
     def hello(self):
         pprint("HELLO")
@@ -85,7 +90,7 @@ class Daemon:
             response = self.smart_request({'command': 'epp:hello'})
             code = response.get('result_code', None)
             if code in ['2002', '2200', '2500', '2501', '2502']:
-                self.quit()
+                self.quit(EXIT_SESSION_REJECTED)
             self.last_hello = datetime.now()
         if self.needs_session_check():
             self.check_session()
