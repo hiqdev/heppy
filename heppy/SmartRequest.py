@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 
 import json
+import logging
 from enum import Enum
 from heppy.Request import Request
 from heppy.Response import Response
@@ -66,6 +67,7 @@ class SmartRequest():
                 return self.prepare_response(reply)
 
             response = Response.parsexml(reply)
+            self.log_authorization_error(query, reply, response)
             if self.needs_relogin(response):
                 response = None
                 relogin()
@@ -73,6 +75,25 @@ class SmartRequest():
             return self.prepare_response(reply, response)
         except Exception as e:
             return self.prepare_error(e)
+
+    @staticmethod
+    def log_authorization_error(query, reply, response):
+        """Log a 2201 with the request (passwords masked) and the raw reply.
+
+        A registry may answer 2201 for reasons that are not about the object
+        (e.g. a session or account restriction), and the reason is often only
+        in the reply's extValue. Callers get just result_code and msg, so the
+        raw reply (with svTRID, to quote to the registry) is kept here.
+        """
+        if response.data.get('result_code') != '2201':
+            return
+        logging.warning(
+            'EPP 2201 %s: %s\nrequest:\n%s\nreply:\n%s',
+            response.data.get('svTRID', '-'),
+            ' / '.join(str(response.data.get(key)) for key in ('result_msg', 'result_reason') if response.data.get(key)),
+            Request.mask_passwords(query if isinstance(query, str) else query.decode('utf-8')),
+            reply if isinstance(reply, str) else reply.decode('utf-8'),
+        )
 
     def needs_relogin(self, response):
         if (response.data.get('result_code', '0') in ['2002', '2200', '2500', '2501', '2502']) :
