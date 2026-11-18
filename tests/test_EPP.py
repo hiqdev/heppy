@@ -5,7 +5,7 @@ import socket
 import unittest
 from unittest import mock
 
-from heppy.EPP import EPP, REPP
+from heppy.EPP import EPP, REPP, is_read_only
 from heppy.Daemon import Daemon
 
 
@@ -210,6 +210,64 @@ class TestDaemonReconnect(unittest.TestCase):
 
         daemon.login.assert_called_once_with({'login': 'override', 'pw': 'secret'})
         self.assertIsNone(daemon.login_query)
+
+
+class TestDaemonRetry(unittest.TestCase):
+    INFO = '<epp xmlns="urn:ietf:params:xml:ns:epp-1.0"><command><info><domain:info xmlns:domain="urn:ietf:params:xml:ns:domain-1.0"><domain:name>example.com</domain:name></domain:info></info><clTRID>c1</clTRID></command></epp>'
+    CREATE = '<epp xmlns="urn:ietf:params:xml:ns:epp-1.0"><command><create><domain:create xmlns:domain="urn:ietf:params:xml:ns:domain-1.0"><domain:name>example.com</domain:name></domain:create></create><clTRID>c2</clTRID></command></epp>'
+
+    def make_daemon(self, replies):
+        daemon = Daemon.__new__(Daemon)
+        daemon.handler = mock.MagicMock()
+        daemon.client = mock.Mock(spec=REPP)
+        daemon.client.is_connected.return_value = True
+        daemon.client.request.side_effect = replies
+        daemon.reconnect = mock.Mock()
+        return daemon
+
+    def test_read_only_request_is_retried_on_a_new_logged_in_connection(self):
+        daemon = self.make_daemon([ConnectionError('no reply'), '<epp/>'])
+        self.assertEqual('<epp/>', daemon.request(self.INFO))
+        daemon.reconnect.assert_called_once()
+        self.assertEqual(2, daemon.client.request.call_count)
+
+    def test_read_only_request_is_retried_only_once(self):
+        daemon = self.make_daemon([ConnectionError('no reply'), ConnectionError('no reply again')])
+        with self.assertRaisesRegex(ConnectionError, 'no reply again'):
+            daemon.request(self.INFO)
+        daemon.reconnect.assert_called_once()
+
+    def test_other_request_is_not_retried(self):
+        daemon = self.make_daemon([ConnectionError('no reply'), '<epp/>'])
+        with self.assertRaises(ConnectionError):
+            daemon.request(self.CREATE)
+        daemon.reconnect.assert_not_called()
+        self.assertEqual(1, daemon.client.request.call_count)
+
+    def test_timeout_is_not_retried(self):
+        daemon = self.make_daemon([TimeoutError('no reply in 15s'), '<epp/>'])
+        with self.assertRaises(TimeoutError):
+            daemon.request(self.INFO)
+        daemon.reconnect.assert_not_called()
+
+
+class TestIsReadOnly(unittest.TestCase):
+    def wrap(self, command):
+        return '<epp xmlns="urn:ietf:params:xml:ns:epp-1.0"><command>%s<clTRID>x</clTRID></command></epp>' % command
+
+    def test_read_only(self):
+        self.assertTrue(is_read_only('<epp xmlns="urn:ietf:params:xml:ns:epp-1.0"><hello/></epp>'))
+        self.assertTrue(is_read_only(self.wrap('<check/>')))
+        self.assertTrue(is_read_only(self.wrap('<info/>')))
+        self.assertTrue(is_read_only(self.wrap('<poll op="req"/>')))
+        self.assertTrue(is_read_only(self.wrap('<transfer op="query"/>')))
+
+    def test_not_read_only(self):
+        for command in ['<create/>', '<renew/>', '<update/>', '<delete/>', '<login/>', '<logout/>',
+                        '<poll op="ack" msgID="1"/>', '<transfer op="request"/>', '<transfer op="approve"/>']:
+            self.assertFalse(is_read_only(self.wrap(command)), command)
+        self.assertFalse(is_read_only(''))
+        self.assertFalse(is_read_only('not xml'))
 
 
 if __name__ == '__main__':

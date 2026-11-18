@@ -6,7 +6,7 @@ import socket
 from pprint import pprint
 from datetime import datetime, timedelta
 
-from heppy.EPP import REPP
+from heppy.EPP import REPP, is_read_only
 from heppy.Error import Error
 from heppy.Login import Login
 from heppy.Logout import Logout
@@ -196,13 +196,29 @@ class Daemon:
         self.login(dict(self.login_args))
 
     def request(self, query) -> str:
-        # EPP drops a broken connection (timeout/SSL error) and the failed
-        # request is reported as an error, not retried: it may already have
-        # been executed by the registry. The next request reconnects, also
-        # after a reconnect that failed and left no client.
+        # EPP drops a broken connection (timeout/SSL error, no reply) and the
+        # next request reconnects and logs in, also after a reconnect that
+        # failed and left no client. A lost connection (ConnectionError) is
+        # retried once on a new, logged-in connection, but only for a command
+        # that just reads: any other may already have been executed by the
+        # registry, so it is reported, not sent again. A timeout is never
+        # retried: the registry may still be working on the command.
+        self.ensure_connected()
+        try:
+            return self.send(query)
+        except ConnectionError as e:
+            if not is_read_only(query):
+                raise
+            pprint('RETRY after lost connection (%s)' % e)
+            self.reconnect()
+            return self.send(query)
+
+    def ensure_connected(self):
         is_connected = getattr(self.client, 'is_connected', None)
         if self.client is None or (is_connected is not None and not is_connected()):
             self.reconnect()
+
+    def send(self, query) -> str:
         with self.handler.block_signals():
             self.last_command = datetime.now()
             reply = self.client.request(query if isinstance(query, bytes) else query.encode('utf-8'))
