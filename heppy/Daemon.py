@@ -6,7 +6,7 @@ import socket
 from pprint import pprint
 from datetime import datetime, timedelta
 
-from heppy.EPP import REPP
+from heppy.EPP import REPP, is_read_only
 from heppy.Error import Error
 from heppy.Login import Login
 from heppy.Logout import Logout
@@ -47,6 +47,11 @@ class Daemon:
         self.refreshSeconds = timedelta(**config.get('refreshInterval', {'seconds': 30})).total_seconds()
         self.keepaliveDelta = timedelta(**config.get('keepaliveInterval', {'minutes': 5}))  # override via keepaliveInterval in epp.json
         self.forcequitDelta = timedelta(**config.get('forcequitInterval', {'hours': 23}))
+        # hello is answered without a login too, so it can't tell a session
+        # that lost its login. poll req needs one and changes nothing (only
+        # ack dequeues). {} or zero disables the check.
+        self.sessionCheckDelta = timedelta(**config.get('sessionCheckInterval', {'minutes': 5}))
+        self.last_session_check = self.last_command
 
     def quit(self, code=EXIT_PLANNED):
         if self.client is not None:
@@ -87,6 +92,8 @@ class Daemon:
             if code in ['2002', '2200', '2500', '2501', '2502']:
                 self.quit(EXIT_SESSION_REJECTED)
             self.last_hello = datetime.now()
+        if self.needs_session_check():
+            self.check_session()
 
     def basic_loop(self):
         while True:
@@ -104,6 +111,33 @@ class Daemon:
             self.force_hello = False
             return True
         return datetime.now() > self.last_hello + self.keepaliveDelta
+
+    def needs_session_check(self):
+        if not self.sessionCheckDelta:
+            return False
+        return datetime.now() > self.last_session_check + self.sessionCheckDelta
+
+    SESSION_OK_CODES = ['1300', '1301']
+
+    def check_session(self):
+        """poll req on the live session; if the registry refuses it (e.g. 2201
+        on a connection that lost its login), reconnect and log in again.
+
+        SmartRequest has already re-logged in on the session-error codes.
+        A reply with no result code (connection lost, timeout) needs nothing
+        here: the connection is dropped and the next request reconnects.
+        """
+        self.last_session_check = datetime.now()
+        response = self.smart_request({'command': 'epp:poll', 'op': 'req'})
+        code = response.get('result_code') if isinstance(response, dict) else None
+        if code is None or code in self.SESSION_OK_CODES:
+            return
+        pprint('SESSION CHECK: poll req answered %s %s, reconnecting' % (code, response.get('result_msg', '')))
+        try:
+            self.reconnect()
+        except Exception as e:
+            # No client is left, so the next request reconnects again.
+            pprint('SESSION CHECK: reconnect failed: %s' % e)
 
     def stop_consuming(self):
         self.server.channel.stop_consuming()
@@ -201,13 +235,29 @@ class Daemon:
         self.login(dict(self.login_args))
 
     def request(self, query) -> str:
-        # EPP drops a broken connection (timeout/SSL error) and the failed
-        # request is reported as an error, not retried: it may already have
-        # been executed by the registry. The next request reconnects, also
-        # after a reconnect that failed and left no client.
+        # EPP drops a broken connection (timeout/SSL error, no reply) and the
+        # next request reconnects and logs in, also after a reconnect that
+        # failed and left no client. A lost connection (ConnectionError) is
+        # retried once on a new, logged-in connection, but only for a command
+        # that just reads: any other may already have been executed by the
+        # registry, so it is reported, not sent again. A timeout is never
+        # retried: the registry may still be working on the command.
+        self.ensure_connected()
+        try:
+            return self.send(query)
+        except ConnectionError as e:
+            if not is_read_only(query):
+                raise
+            pprint('RETRY after lost connection (%s)' % e)
+            self.reconnect()
+            return self.send(query)
+
+    def ensure_connected(self):
         is_connected = getattr(self.client, 'is_connected', None)
         if self.client is None or (is_connected is not None and not is_connected()):
             self.reconnect()
+
+    def send(self, query) -> str:
         with self.handler.block_signals():
             self.last_command = datetime.now()
             reply = self.client.request(query if isinstance(query, bytes) else query.encode('utf-8'))
