@@ -43,6 +43,11 @@ class Daemon:
         self.refreshSeconds = timedelta(**config.get('refreshInterval', {'seconds': 30})).total_seconds()
         self.keepaliveDelta = timedelta(**config.get('keepaliveInterval', {'minutes': 5}))  # override via keepaliveInterval in epp.json
         self.forcequitDelta = timedelta(**config.get('forcequitInterval', {'hours': 23}))
+        # hello is answered without a login too, so it can't tell a session
+        # that lost its login. poll req needs one and changes nothing (only
+        # ack dequeues). {} or zero disables the check.
+        self.sessionCheckDelta = timedelta(**config.get('sessionCheckInterval', {'minutes': 5}))
+        self.last_session_check = self.last_command
 
     def quit(self):
         if self.client is not None:
@@ -82,6 +87,8 @@ class Daemon:
             if code in ['2002', '2200', '2500', '2501', '2502']:
                 self.quit()
             self.last_hello = datetime.now()
+        if self.needs_session_check():
+            self.check_session()
 
     def basic_loop(self):
         while True:
@@ -99,6 +106,33 @@ class Daemon:
             self.force_hello = False
             return True
         return datetime.now() > self.last_hello + self.keepaliveDelta
+
+    def needs_session_check(self):
+        if not self.sessionCheckDelta:
+            return False
+        return datetime.now() > self.last_session_check + self.sessionCheckDelta
+
+    SESSION_OK_CODES = ['1300', '1301']
+
+    def check_session(self):
+        """poll req on the live session; if the registry refuses it (e.g. 2201
+        on a connection that lost its login), reconnect and log in again.
+
+        SmartRequest has already re-logged in on the session-error codes.
+        A reply with no result code (connection lost, timeout) needs nothing
+        here: the connection is dropped and the next request reconnects.
+        """
+        self.last_session_check = datetime.now()
+        response = self.smart_request({'command': 'epp:poll', 'op': 'req'})
+        code = response.get('result_code') if isinstance(response, dict) else None
+        if code is None or code in self.SESSION_OK_CODES:
+            return
+        pprint('SESSION CHECK: poll req answered %s %s, reconnecting' % (code, response.get('result_msg', '')))
+        try:
+            self.reconnect()
+        except Exception as e:
+            # No client is left, so the next request reconnects again.
+            pprint('SESSION CHECK: reconnect failed: %s' % e)
 
     def stop_consuming(self):
         self.server.channel.stop_consuming()

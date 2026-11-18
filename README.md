@@ -41,6 +41,9 @@ In production use since 2016.
     "forcequitInterval": {
         "hours":    23
     },
+    "sessionCheckInterval": {
+        "minutes":  5
+    },
     "epp": {
         "host":         "epp.verisign-grs.com",
         "port":         700,
@@ -62,7 +65,7 @@ In production use since 2016.
 
 `name` is required — it's used to derive the RabbitMQ queue name (`heppy-<name>`, override with an explicit `RabbitMQ.queue`) and the systemd service name. `certfile`/`keyfile`/`ca_certs` are resolved relative to the directory of the config file itself.
 
-`keepaliveInterval` (default shown above — 5 minutes) controls how often an `epp:hello` keepalive is sent to the registry when idle. `forcequitInterval` (default shown above — 23 hours) controls how often the daemon gracefully logs out, disconnects, and exits — under `systemd` (`Restart=always`) it immediately reconnects with a fresh session. Both accept any [`timedelta`](https://docs.python.org/3/library/datetime.html#datetime.timedelta) keyword arguments, e.g. `{"minutes": 30}` or `{"seconds": 45}`.
+`keepaliveInterval` (default shown above — 5 minutes) controls how often an `epp:hello` keepalive is sent to the registry when idle. `forcequitInterval` (default shown above — 23 hours) controls how often the daemon gracefully logs out, disconnects, and exits — under `systemd` (`Restart=always`) it immediately reconnects with a fresh session. `sessionCheckInterval` (default shown above — 5 minutes) controls how often the live session is checked with `epp:poll op=req`: unlike `epp:hello`, a registry answers it only on a logged-in session, and `req` dequeues nothing (only `ack` does). If the registry refuses it (e.g. `2201 Authorization error`), the daemon reconnects and logs in again; `{}` disables the check. All three accept any [`timedelta`](https://docs.python.org/3/library/datetime.html#datetime.timedelta) keyword arguments, e.g. `{"minutes": 30}` or `{"seconds": 45}`.
 
 For the Unix-socket daemons (`eppyd`/`reppyd`) instead of `RabbitMQ`, provide a `local` block:
 
