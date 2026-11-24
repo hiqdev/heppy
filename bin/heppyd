@@ -29,7 +29,7 @@ config.merge(args)
 if (config.get('sentry_dsn', None) is not None):
     sentry_sdk.init(
         dsn=config.get('sentry_dsn'),
-        enable_tracing=True,
+        traces_sample_rate=1.0,
     )
 
 daemon = Daemon(config, RabbitMQConfig(config).resolve())
