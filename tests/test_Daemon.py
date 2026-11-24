@@ -5,6 +5,18 @@ from datetime import timedelta
 from heppy.Daemon import Daemon, EXIT_PLANNED, EXIT_SESSION_REJECTED
 
 
+class ConnectedClient:
+    def is_connected(self):
+        return True
+
+    def disconnect(self):
+        pass
+
+
+def closed_connection(query):
+    raise ConnectionError('closed the connection without a reply, connection dropped')
+
+
 class TestDaemon(unittest.TestCase):
     def make_daemon(self, hello_reply=None):
         daemon = Daemon({}, {})
@@ -26,6 +38,13 @@ class TestDaemon(unittest.TestCase):
         with self.assertRaises(SystemExit) as raised:
             daemon.quit()
         self.assertEqual(EXIT_PLANNED, raised.exception.code)
+
+    def test_forcequit_exits_planned_when_logout_finds_connection_closed(self):
+        daemon = self.make_daemon()
+        daemon.client = ConnectedClient()
+        daemon.request = closed_connection
+        daemon.started -= daemon.forcequitDelta + timedelta(seconds=1)
+        self.assert_exits_with(EXIT_PLANNED, daemon)
 
     def test_rejected_hello_exits_session_rejected(self):
         daemon = self.make_daemon({'result_code': '2500'})
