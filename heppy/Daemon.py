@@ -54,9 +54,17 @@ class Daemon:
         self.last_session_check = self.last_command
 
     def quit(self, code=EXIT_PLANNED):
+        # bin/heppyd calls a command as method(args): `heppyd <config> quit`
+        # passes its Args here, which SystemExit would print and exit with 1.
+        if not isinstance(code, int):
+            code = EXIT_PLANNED
         if self.is_connected():
             self.end_session()
-        print(QUIT_MESSAGE, flush=True)
+        try:
+            print(QUIT_MESSAGE, flush=True)
+        except (OSError, ValueError):
+            # stdout closed or its pipe gone: the quit must keep its exit code
+            pass
         raise SystemExit(code)
 
     def end_session(self):
