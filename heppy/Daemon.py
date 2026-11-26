@@ -54,11 +54,17 @@ class Daemon:
         self.last_session_check = self.last_command
 
     def quit(self, code=EXIT_PLANNED):
-        if self.client is not None:
-            self.logout()
-            self.client.disconnect()
+        if self.is_connected():
+            self.end_session()
         print(QUIT_MESSAGE, flush=True)
         raise SystemExit(code)
+
+    def end_session(self):
+        try:
+            self.logout()
+        except OSError as e:
+            pprint('LOGOUT FAILED: %s' % e)
+        self.client.disconnect()
 
     def hello(self):
         pprint("HELLO")
@@ -253,9 +259,12 @@ class Daemon:
             return self.send(query)
 
     def ensure_connected(self):
-        is_connected = getattr(self.client, 'is_connected', None)
-        if self.client is None or (is_connected is not None and not is_connected()):
+        if not self.is_connected():
             self.reconnect()
+
+    def is_connected(self):
+        is_connected = getattr(self.client, 'is_connected', None)
+        return self.client is not None and (is_connected is None or is_connected())
 
     def send(self, query) -> str:
         with self.handler.block_signals():
